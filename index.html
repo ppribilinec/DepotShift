@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Systém řízení a plánování docházky</title>
+  <title>DepotShift – Warehouse Roster & Agency Planner</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Ikony -->
@@ -71,8 +71,8 @@
         <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 mx-auto flex items-center justify-center text-2xl shadow-lg shadow-blue-500/30 mb-3">
           <i class="fa-solid fa-calendar-check"></i>
         </div>
-        <h1 class="text-xl font-extrabold tracking-tight">Plánování Docházky</h1>
-        <p class="text-xs text-slate-400 mt-1">Cloudový systém docházky • Přihlášení heslem nebo QR kódem</p>
+        <h1 class="text-xl font-extrabold tracking-tight">DepotShift</h1>
+        <p class="text-xs text-slate-400 mt-1">Warehouse Roster & Agency Planner • Přihlášení heslem nebo QR</p>
         
         <!-- Indikátor připojení ke cloudu na přihlašovací stránce -->
         <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-bold">
@@ -101,69 +101,40 @@
               <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                 <i class="fa-solid fa-lock text-xs"></i>
               </span>
-              <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••"
+              <input type="password" id="login-password" required autocomplete="current-password" placeholder="Zadejte heslo"
                      class="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium outline-none transition">
             </div>
           </div>
 
-          <div id="login-error" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
+          <div id="login-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
             <i class="fa-solid fa-circle-exclamation shrink-0"></i>
-            <span id="login-error-text">Neplatné uživatelské jméno nebo heslo.</span>
+            <span id="login-error-text">Neplatné přihlašovací údaje.</span>
           </div>
 
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2">
+          <button type="submit" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-extrabold text-sm shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-right-to-bracket"></i> Přihlásit se do systému
           </button>
         </form>
 
-        <!-- Rychlé testovací přihlášení (1 klik) -->
-        <div class="mt-6 pt-5 border-t border-slate-100">
-          <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider text-center mb-2.5">
-            Rychlé přihlášení podle role (1 klik)
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <button type="button" onclick="quickLogin('admin', 'admin123')"
-                    class="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-950 font-bold flex items-center gap-2.5 text-left transition">
-              <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-shield-halved text-xs"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="truncate">Admin (Peter)</div>
-                <div class="text-[9px] font-medium text-emerald-700 truncate">admin / admin123</div>
-              </div>
+        <!-- Rychlé testovací přístupy -->
+        <div class="mt-5 pt-4 border-t border-slate-100">
+          <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2 text-center">Rychlý testovací přístup (1 klik)</div>
+          <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+            <button type="button" onclick="quickLogin('admin', 'admin123')" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-bold text-left transition">
+              <div class="font-extrabold">Admin (Peter)</div>
+              <div class="text-[9px] text-emerald-700 font-mono">admin / admin123</div>
             </button>
-
-            <button type="button" onclick="quickLogin('roy', 'roy123')"
-                    class="p-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-950 font-bold flex items-center gap-2.5 text-left transition">
-              <div class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-handshake text-xs"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="truncate">Koordinátor Roy</div>
-                <div class="text-[9px] font-medium text-purple-700 truncate">roy / roy123</div>
-              </div>
+            <button type="button" onclick="quickLogin('roy', 'roy123')" class="p-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 font-bold text-left transition">
+              <div class="font-extrabold">Koordinátor Roy</div>
+              <div class="text-[9px] text-purple-700 font-mono">roy / roy123</div>
             </button>
-
-            <button type="button" onclick="quickLogin('vojtech', 'vojtech123')"
-                    class="p-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-950 font-bold flex items-center gap-2.5 text-left transition">
-              <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-user-tie text-xs"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="truncate">Předák Vojtěch</div>
-                <div class="text-[9px] font-medium text-blue-700 truncate">vojtech / vojtech123</div>
-              </div>
+            <button type="button" onclick="quickLogin('vojtech', 'vojtech123')" class="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-left transition">
+              <div class="font-extrabold">Předák Vojtěch</div>
+              <div class="text-[9px] text-blue-700 font-mono">vojtech / vojtech123</div>
             </button>
-
-            <button type="button" onclick="quickLogin('adam', 'adam123')"
-                    class="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-950 font-bold flex items-center gap-2.5 text-left transition">
-              <div class="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-boxes-stacked text-xs"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="truncate">Zaměstnanec Adam</div>
-                <div class="text-[9px] font-medium text-amber-800 truncate">adam / adam123</div>
-              </div>
+            <button type="button" onclick="quickLogin('adam', 'adam123')" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-left transition">
+              <div class="font-extrabold">Skladník Adam</div>
+              <div class="text-[9px] text-amber-700 font-mono">adam / adam123</div>
             </button>
           </div>
         </div>
@@ -172,19 +143,19 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- 2. HLAVNÍ APLIKAČNÍ PROSTŘEDÍ (ZOBRAZÍ SE PO PŘIHLÁŠENÍ) -->
+  <!-- 2. HLAVNÍ ROZHRANÍ APLIKACE (ZOBRAZÍ SE PO PŘIHLÁŠENÍ) -->
   <!-- ===================================================================== -->
-  <div id="main-app" class="hidden flex-1 flex flex-col min-h-screen pb-16 md:pb-0">
+  <div id="main-app" class="hidden min-h-screen flex flex-col pb-16 md:pb-0">
 
     <!-- HORNÍ LIŠTA -->
-    <header class="bg-slate-900 text-white shadow-md z-40 sticky top-0 px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
-      <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0">
-          <i class="fa-solid fa-calendar-check text-white text-base"></i>
+    <header class="bg-slate-900 text-white px-3 sm:px-6 py-3 shadow-md sticky top-0 z-40 flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-3 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-inner shrink-0">
+          <i class="fa-solid fa-calendar-check text-sm"></i>
         </div>
         <div class="min-w-0">
           <h1 class="text-sm sm:text-base font-bold tracking-tight leading-tight flex items-center gap-2 flex-wrap">
-            <span class="truncate">Plánování Docházky</span>
+            <span class="truncate">DepotShift</span>
             <span id="topbar-role-pill" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
               ADMIN
             </span>
@@ -203,6 +174,15 @@
       </div>
 
       <div class="flex items-center space-x-2 shrink-0">
+        <!-- Tlačítko pro Admina: Rychlé otevření přehledu požadavků zaměstnanců s odznakem -->
+        <button type="button" id="topbar-admin-req-btn" onclick="openAdminRequestsModal()"
+                class="hidden relative px-2.5 h-9 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 flex items-center justify-center gap-1.5 text-amber-300 text-xs font-extrabold transition"
+                title="Přehled požadavků zaměstnanců">
+          <i class="fa-solid fa-bell"></i>
+          <span class="hidden md:inline">Požadavky</span>
+          <span id="topbar-admin-req-badge" class="px-1.5 py-0.2 rounded-full bg-rose-600 text-white text-[10px] font-black">0</span>
+        </button>
+
         <div class="text-right hidden sm:block mr-1">
           <div id="topbar-user-name" class="text-xs font-bold text-white">Peter Pribilinec</div>
           <div id="topbar-user-sub" class="text-[10px] text-slate-400 font-medium">Administrátor systému</div>
@@ -288,6 +268,12 @@
             </div>
             <div draggable="true" ondragstart="handlePaletteDragStart(event, 'N')" class="cursor-grab px-2 py-1 rounded-lg text-[11px] font-extrabold bg-blue-100 text-blue-900 border border-blue-300 flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-blue-600"></span> N (Noční)
+            </div>
+            <div draggable="true" ondragstart="handlePaletteDragStart(event, 'DOV')" class="cursor-grab px-2 py-1 rounded-lg text-[11px] font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span> DOV
+            </div>
+            <div draggable="true" ondragstart="handlePaletteDragStart(event, 'NV')" class="cursor-grab px-2 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-100 text-cyan-900 border border-cyan-300 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-cyan-600"></span> NV
             </div>
             <div draggable="true" ondragstart="handlePaletteDragStart(event, '-')" class="cursor-grab px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-200 text-slate-700 border border-slate-300 flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-slate-500"></span> — (Volno)
@@ -468,6 +454,64 @@
       </section>
 
       <!-- ================================================================= -->
+      <!-- POHLED C2: ADMIN – ZPRÁVY & POŽADAVKY ZAMĚSTNANCŮ (CHAT + ŽÁDOSTI) -->
+      <!-- ================================================================= -->
+      <section id="view-admin-messages" class="app-view hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-comments text-blue-600"></i> Zprávy & Požadavky zaměstnanců
+            </h2>
+            <p class="text-xs text-slate-500">Soukromá komunikace se zaměstnanci a schvalování žádostí o dovolenou, náhradní volno či PN.</p>
+          </div>
+          <button type="button" onclick="openAdminRequestsModal()"
+                  class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-sm flex items-center gap-2 transition">
+            <i class="fa-solid fa-clipboard-list"></i> Otevřít přehled čekajících požadavků
+            <span id="admin-msg-view-pending-count" class="px-2 py-0.5 rounded-full bg-slate-900 text-white text-[10px]">0</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4" style="min-height: 460px;">
+          <!-- Levý sloupec: Seznam zaměstnanců -->
+          <div id="admin-chat-sidebar" class="md:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-3 bg-slate-900 text-white text-xs font-extrabold flex items-center justify-between">
+              <span><i class="fa-solid fa-users mr-1.5 text-blue-400"></i> Zaměstnanci (vlákna)</span>
+              <span class="text-[10px] text-slate-400 font-medium">Soukromý chat</span>
+            </div>
+            <div id="admin-chat-user-list" class="divide-y divide-slate-100 overflow-y-auto max-h-[480px] flex-1"></div>
+          </div>
+
+          <!-- Pravý sloupec: Vlákno konverzace -->
+          <div id="admin-chat-thread-panel" class="md:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+            <div id="admin-chat-header" class="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="backToAdminChatListMobile()" class="md:hidden w-8 h-8 rounded-xl bg-slate-200 text-slate-700 flex items-center justify-center">
+                  <i class="fa-solid fa-arrow-left text-xs"></i>
+                </button>
+                <div>
+                  <div id="admin-chat-active-name" class="font-extrabold text-sm text-slate-900">Vyberte zaměstnance</div>
+                  <div id="admin-chat-active-sub" class="text-[11px] text-slate-500">Klikněte na pracovníka vlevo pro zobrazení konverzace</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="admin-chat-messages-box" class="flex-1 p-4 space-y-3 overflow-y-auto bg-slate-100/60 max-h-[380px] min-h-[260px]">
+              <div class="text-center text-xs text-slate-400 py-12">Vyberte zaměstnance ze seznamu vlevo.</div>
+            </div>
+
+            <form id="admin-chat-reply-form" onsubmit="sendAdminChatReply(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+              <input type="text" id="admin-chat-reply-input" disabled placeholder="Napište odpověď zaměstnanci..."
+                     class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-slate-100">
+              <button type="submit" id="admin-chat-reply-btn" disabled
+                      class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-extrabold text-xs rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane"></i> Odeslat
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
       <!-- POHLED D: KOORDINÁTOR (ROY) – POŽADAVKY NA AG PRACOVNÍKY -->
       <!-- ================================================================= -->
       <section id="view-coord-requests" class="app-view hidden space-y-4">
@@ -534,34 +578,84 @@
       <!-- POHLED F: ZAMĚSTNANEC / PŘEDÁK – POUZE SVŮJ OSOBNÍ ROZPIS SMĚN -->
       <!-- ================================================================= -->
       <section id="view-employee-personal" class="app-view hidden space-y-4 max-w-3xl mx-auto">
-        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <h2 id="emp-personal-name" class="text-lg font-extrabold text-slate-900">Jméno zaměstnance</h2>
-              <span id="emp-personal-pos" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">Pozice</span>
+
+        <!-- Upozornění pro zaměstnance na zamítnutý / vyřízený požadavek -->
+        <div id="emp-rejection-banner" class="hidden bg-rose-600 text-white p-4 rounded-3xl shadow-xl border border-rose-400 animate-slide-up">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-lg shrink-0 mt-0.5">
+                <i class="fa-solid fa-circle-exclamation"></i>
+              </div>
+              <div class="space-y-1 text-xs">
+                <div class="font-black text-sm">Oznámení o zamítnutí požadavku</div>
+                <div id="emp-rejection-list" class="space-y-1 text-rose-100 font-medium"></div>
+              </div>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">Váš osobní rozpis směn na zvolený měsíc</p>
+            <button type="button" onclick="acknowledgeEmployeeNotifications()"
+                    class="px-3.5 py-2 rounded-xl bg-white text-rose-700 hover:bg-rose-50 font-extrabold text-xs shrink-0 shadow-sm transition">
+              Rozumím
+            </button>
+          </div>
+        </div>
+
+        <!-- Hlavička zaměstnance + Akční tlačítka Požadavek & Zpráva pro Admina -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 id="emp-personal-name" class="text-lg font-extrabold text-slate-900">Jméno zaměstnance</h2>
+                <span id="emp-personal-pos" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">Pozice</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Váš osobní rozpis směn na zvolený měsíc</p>
+            </div>
+
+            <div class="flex items-center space-x-2 self-end sm:self-center">
+              <button type="button" onclick="changeMonth(-1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+              <span id="emp-month-label" class="font-extrabold text-sm text-slate-900 min-w-[125px] text-center">Listopad 2026</span>
+              <button type="button" onclick="changeMonth(1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition">
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            </div>
           </div>
 
-          <div class="flex items-center space-x-2 self-end sm:self-center">
-            <button type="button" onclick="changeMonth(-1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition">
-              <i class="fa-solid fa-chevron-left text-xs"></i>
+          <!-- Dvě výrazná akční tlačítka pro zaměstnance -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-slate-100">
+            <button type="button" onclick="openEmployeeRequestModal()"
+                    class="py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-calendar-plus text-base"></i>
+              <span>Požadavek (Dovolená / NV / PN)</span>
             </button>
-            <span id="emp-month-label" class="font-extrabold text-sm text-slate-900 min-w-[125px] text-center">Listopad 2026</span>
-            <button type="button" onclick="changeMonth(1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition">
-              <i class="fa-solid fa-chevron-right text-xs"></i>
+
+            <button type="button" onclick="openEmployeeChatModal()"
+                    class="py-3 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-slate-900/15 flex items-center justify-center gap-2 transition relative">
+              <i class="fa-solid fa-comment-dots text-blue-400 text-base"></i>
+              <span>Zpráva pro Admina</span>
+              <span id="emp-chat-unread-badge" class="hidden px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black">Nová</span>
             </button>
           </div>
         </div>
 
         <div id="emp-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
 
+        <!-- Přehled odeslaných požadavků tohoto zaměstnance -->
+        <div id="emp-my-requests-box" class="hidden bg-white p-4 rounded-3xl border border-slate-200 shadow-sm space-y-2.5">
+          <h3 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> Moje odeslané požadavky
+          </h3>
+          <div id="emp-my-requests-list" class="space-y-2"></div>
+        </div>
+
         <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
             <h3 class="text-sm font-extrabold text-slate-900">Rozpis směn po dnech</h3>
-            <div class="flex items-center gap-2 text-[10px] font-bold">
+            <div class="flex items-center gap-1.5 flex-wrap text-[10px] font-bold">
               <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900">D = Denní</span>
               <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-900">N = Noční</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900">DOV = Dovolená</span>
+              <span class="px-2 py-0.5 rounded bg-cyan-100 text-cyan-900">NV = Náhr. volno</span>
+              <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-900">PN = Nemoc/Lékař</span>
               <span class="px-2 py-0.5 rounded bg-slate-200 text-slate-600">— = Volno</span>
             </div>
           </div>
@@ -675,12 +769,20 @@
           <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600"></span> N – Noční směna</span>
           <span class="text-[10px] text-blue-700" id="cell-hint-night">18:30 - 06:30</span>
         </button>
+        <button type="button" onclick="selectCellShift('DOV')" class="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold flex items-center justify-between transition">
+          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-600"></span> DOV – Dovolená</span>
+          <span class="text-[10px] text-emerald-700">Schválená dovolená</span>
+        </button>
+        <button type="button" onclick="selectCellShift('NV')" class="p-2.5 rounded-xl border border-cyan-200 bg-cyan-50 hover:bg-cyan-100 text-cyan-900 font-bold flex items-center justify-between transition">
+          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-cyan-600"></span> NV – Náhradní volno</span>
+          <span class="text-[10px] text-cyan-700">Náhradní volno</span>
+        </button>
         <button type="button" onclick="selectCellShift('-')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-between transition">
           <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-400"></span> — – Volno</span>
           <span class="text-[10px] text-slate-500">0 hod</span>
         </button>
         <button type="button" onclick="selectCellShift('PN')" class="p-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-900 font-bold flex items-center justify-between transition">
-          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-600"></span> PN – Práce neschopný</span>
+          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-600"></span> PN – Práce neschopný / Lékař</span>
           <span class="text-[10px] text-rose-700">Nemoc</span>
         </button>
         <button type="button" onclick="selectCellShift('A')" class="p-2.5 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold flex items-center justify-between transition">
@@ -798,6 +900,168 @@
   </div>
 
   <!-- ===================================================================== -->
+  <!-- MODÁLNÍ OKNO 5: ZAMĚSTNANEC – ZADÁNÍ POŽADAVKU S VÝBĚREM DNŮ V KALENDÁŘI -->
+  <!-- ===================================================================== -->
+  <div id="modal-emp-request" class="fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 animate-slide-up max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-calendar-plus text-emerald-600"></i> Nový požadavek zaměstnance
+          </h3>
+          <p class="text-[11px] text-slate-500">Vyberte typ žádosti a označte jedno nebo více dat v kalendáři.</p>
+        </div>
+        <button type="button" onclick="closeEmployeeRequestModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- 1. Výběr typu požadavku (3 karty) -->
+      <div class="mb-4">
+        <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">1. Vyberte typ požadavku</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+          <button type="button" onclick="selectRequestType('DOV')" id="req-type-card-DOV"
+                  class="req-type-card p-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50 text-emerald-950 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-umbrella-beach"></i>
+            </div>
+            <div>
+              <div class="leading-tight">Žádost o Dovolenou</div>
+              <div class="text-[10px] font-semibold text-emerald-700 mt-0.5">Kód v plánu: DOV</div>
+            </div>
+          </button>
+
+          <button type="button" onclick="selectRequestType('NV')" id="req-type-card-NV"
+                  class="req-type-card p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-cyan-600 text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+              <div class="leading-tight">Žádost o Náhradní volno</div>
+              <div class="text-[10px] font-semibold text-cyan-700 mt-0.5">Kód v plánu: NV</div>
+            </div>
+          </button>
+
+          <button type="button" onclick="selectRequestType('PN')" id="req-type-card-PN"
+                  class="req-type-card p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-notes-medical"></i>
+            </div>
+            <div>
+              <div class="leading-tight">Nahlášení PN / Lékař</div>
+              <div class="text-[10px] font-semibold text-rose-700 mt-0.5">Kód v plánu: PN</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Interaktivní kalendář pro výběr více dnů -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">
+            2. Označte dny (<span id="req-cal-month-title" class="text-slate-900">Listopad 2026</span>)
+          </label>
+          <span id="req-selected-count-pill" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">
+            Vybráno: 0 dnů
+          </span>
+        </div>
+
+        <div class="flex items-center gap-3 text-[10px] font-bold text-slate-500 mb-2 flex-wrap">
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-200 border border-amber-400"></span> Vaše Denní (D)</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-200 border border-blue-400"></span> Vaše Noční (N)</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-600"></span> Vybraný den (kliknutím zrušíte)</span>
+        </div>
+
+        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-extrabold text-slate-400 mb-1">
+          <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div>So</div><div>Ne</div>
+        </div>
+        <div id="req-interactive-calendar" class="grid grid-cols-7 gap-1.5"></div>
+      </div>
+
+      <!-- Volitelná poznámka -->
+      <div class="mb-4">
+        <label class="block text-[11px] font-bold text-slate-600 mb-1">Poznámka pro Admina (nepovinné)</label>
+        <input type="text" id="req-note-input" placeholder="Např. prohlídka u lékaře ráno, rodinné důvody..."
+               class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+      </div>
+
+      <!-- Spodní tlačítka Potvrdit požadavek a Storno -->
+      <div class="flex gap-2.5 pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeEmployeeRequestModal()"
+                class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-xl text-xs transition">
+          Storno
+        </button>
+        <button type="button" onclick="submitEmployeeRequest()"
+                class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-paper-plane"></i> Potvrdit požadavek
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODÁLNÍ OKNO 6: ZAMĚSTNANEC – SOUKROMÝ CHAT S ADMINEM -->
+  <!-- ===================================================================== -->
+  <div id="modal-emp-chat" class="fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-slide-up" style="max-height: 88vh;">
+      <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm">Soukromý chat s Adminem</h3>
+            <p class="text-[10px] text-slate-400">Zprávy vidíte pouze vy a administrátor</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeEmployeeChatModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div id="emp-chat-messages-box" class="flex-1 p-4 space-y-3 overflow-y-auto bg-slate-100/70 min-h-[260px] max-h-[380px]"></div>
+
+      <form onsubmit="sendEmployeeChatMessage(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+        <input type="text" id="emp-chat-input" required placeholder="Napište zprávu pro Admina..."
+               class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none">
+        <button type="submit" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5">
+          <i class="fa-solid fa-paper-plane"></i> Odeslat
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODÁLNÍ OKNO 7: ADMIN – PŘEHLED POŽADAVKŮ ZAMĚSTNANCŮ (VYSKAKOVACÍ OKNO) -->
+  <!-- ===================================================================== -->
+  <div id="modal-admin-requests" class="fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-slide-up" style="max-height: 90vh;">
+      <div class="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-lg font-black shrink-0">
+            <i class="fa-solid fa-clipboard-check"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base">Přehled požadavků zaměstnanců</h3>
+            <p class="text-[11px] text-slate-400">Potvrzením se změna propíše přímo do rozpisu směn. Zamítnutím se žádost zruší.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAdminRequestsModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div id="admin-requests-modal-body" class="p-4 sm:p-5 space-y-3 overflow-y-auto flex-1 bg-slate-50"></div>
+
+      <div class="p-3.5 bg-white border-t border-slate-200 flex justify-end">
+        <button type="button" onclick="closeAdminRequestsModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
+          Zavřít přehled
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
   <!-- JAVASCRIPT APLIKAČNÍ LOGIKA + FIREBASE REALTIME DATABASE SYNC -->
   <!-- ===================================================================== -->
   <script>
@@ -866,11 +1130,19 @@
     const MONTH_NAMES = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
 
     const SHIFT_BADGES = {
-      'D':  { label: 'D',  bg: 'bg-amber-100',    text: 'text-amber-900',  border: 'border-amber-300', desc: 'Denní směna' },
-      'N':  { label: 'N',  bg: 'bg-blue-100',     text: 'text-blue-900',   border: 'border-blue-300',  desc: 'Noční směna' },
-      '-':  { label: '—',  bg: 'bg-slate-200/90', text: 'text-slate-500',  border: 'border-slate-300', desc: 'Volno' },
-      'PN': { label: 'PN', bg: 'bg-rose-100',     text: 'text-rose-900',   border: 'border-rose-300',  desc: 'Práce neschopný' },
-      'A':  { label: 'A',  bg: 'bg-purple-100',   text: 'text-purple-900', border: 'border-purple-300',desc: 'Absence' }
+      'D':   { label: 'D',   bg: 'bg-amber-100',    text: 'text-amber-900',   border: 'border-amber-300',   desc: 'Denní směna' },
+      'N':   { label: 'N',   bg: 'bg-blue-100',     text: 'text-blue-900',    border: 'border-blue-300',    desc: 'Noční směna' },
+      'DOV': { label: 'DOV', bg: 'bg-emerald-100',  text: 'text-emerald-900', border: 'border-emerald-300', desc: 'Dovolená' },
+      'NV':  { label: 'NV',  bg: 'bg-cyan-100',     text: 'text-cyan-900',    border: 'border-cyan-300',    desc: 'Náhradní volno' },
+      '-':   { label: '—',   bg: 'bg-slate-200/90', text: 'text-slate-500',   border: 'border-slate-300',   desc: 'Volno' },
+      'PN':  { label: 'PN',  bg: 'bg-rose-100',     text: 'text-rose-900',    border: 'border-rose-300',    desc: 'Práce neschopný / Lékař' },
+      'A':   { label: 'A',   bg: 'bg-purple-100',   text: 'text-purple-900',  border: 'border-purple-300',  desc: 'Absence' }
+    };
+
+    const EMP_REQUEST_TYPES = {
+      'DOV': { title: 'Žádost o Dovolenou', short: 'Dovolená (DOV)', code: 'DOV', badgeBg: 'bg-emerald-100 text-emerald-900 border-emerald-300' },
+      'NV':  { title: 'Žádost o Náhradní volno', short: 'Náhradní volno (NV)', code: 'NV', badgeBg: 'bg-cyan-100 text-cyan-900 border-cyan-300' },
+      'PN':  { title: 'Nahlášení PN / Lékař', short: 'PN / Lékař (PN)', code: 'PN', badgeBg: 'bg-rose-100 text-rose-900 border-rose-300' }
     };
 
     // Globální stav aplikace
@@ -881,12 +1153,18 @@
       shiftTimes: {},
       schedule: {},
       agRequests: [],
+      employeeRequests: [], // Žádosti zaměstnanců o DOV / NV / PN
+      chatMessages: [],     // Soukromý chat mezi zaměstnanci a Adminem
       auditLog: [],
       currentUser: null,
       currentYear: 2026,
       currentMonth: 10, // Listopad (0-indexed)
       activeView: '',
       activeCell: null,
+      selectedChatUserId: null,
+      reqModalType: 'DOV',
+      reqModalSelectedDays: [],
+      adminShownLoginPopup: false,
       lastCloudHash: '',
       isSyncing: false
     };
@@ -924,6 +1202,8 @@
       safeStorage.setItem('att_times_v6', JSON.stringify(state.shiftTimes));
       safeStorage.setItem('att_schedule_v6', JSON.stringify(state.schedule));
       safeStorage.setItem('att_ag_requests_v6', JSON.stringify(state.agRequests));
+      safeStorage.setItem('att_emp_requests_v6', JSON.stringify(state.employeeRequests));
+      safeStorage.setItem('att_chat_msgs_v6', JSON.stringify(state.chatMessages));
       safeStorage.setItem('att_audit_v6', JSON.stringify(state.auditLog));
     }
 
@@ -933,18 +1213,24 @@
         const t = safeStorage.getItem('att_times_v6');
         const s = safeStorage.getItem('att_schedule_v6');
         const r = safeStorage.getItem('att_ag_requests_v6');
+        const er = safeStorage.getItem('att_emp_requests_v6');
+        const cm = safeStorage.getItem('att_chat_msgs_v6');
         const a = safeStorage.getItem('att_audit_v6');
 
         state.users = u ? JSON.parse(u) : JSON.parse(JSON.stringify(INITIAL_USERS));
         state.shiftTimes = t ? JSON.parse(t) : JSON.parse(JSON.stringify(DEFAULT_SHIFT_TIMES));
         state.schedule = s ? JSON.parse(s) : {};
         state.agRequests = r ? JSON.parse(r) : [];
+        state.employeeRequests = er ? JSON.parse(er) : [];
+        state.chatMessages = cm ? JSON.parse(cm) : [];
         state.auditLog = a ? JSON.parse(a) : [];
       } catch (e) {
         state.users = JSON.parse(JSON.stringify(INITIAL_USERS));
         state.shiftTimes = JSON.parse(JSON.stringify(DEFAULT_SHIFT_TIMES));
         state.schedule = {};
         state.agRequests = [];
+        state.employeeRequests = [];
+        state.chatMessages = [];
         state.auditLog = [];
       }
     }
@@ -957,6 +1243,8 @@
         shiftTimes: state.shiftTimes,
         schedule: state.schedule,
         agRequests: state.agRequests,
+        employeeRequests: state.employeeRequests,
+        chatMessages: state.chatMessages,
         auditLog: state.auditLog,
         updatedAt: Date.now()
       };
@@ -965,6 +1253,8 @@
         shiftTimes: payload.shiftTimes,
         schedule: payload.schedule,
         agRequests: payload.agRequests,
+        employeeRequests: payload.employeeRequests,
+        chatMessages: payload.chatMessages,
         auditLog: payload.auditLog
       });
 
@@ -1008,23 +1298,27 @@
         }
 
         // Firebase může převést pole s mezerami na objekty, normalizujeme je zpět na pole
-        const normalizedUsers = Array.isArray(cloudData.users)
-          ? cloudData.users.filter(Boolean)
-          : Object.values(cloudData.users).filter(Boolean);
+        const normalizeArr = (val) => {
+          if (!val) return [];
+          return Array.isArray(val) ? val.filter(Boolean) : Object.values(val).filter(Boolean);
+        };
 
-        const normalizedRequests = cloudData.agRequests
-          ? (Array.isArray(cloudData.agRequests) ? cloudData.agRequests.filter(Boolean) : Object.values(cloudData.agRequests).filter(Boolean))
-          : [];
-
-        const normalizedAudit = cloudData.auditLog
-          ? (Array.isArray(cloudData.auditLog) ? cloudData.auditLog.filter(Boolean) : Object.values(cloudData.auditLog).filter(Boolean))
-          : [];
+        const normalizedUsers = normalizeArr(cloudData.users);
+        const normalizedRequests = normalizeArr(cloudData.agRequests);
+        const normalizedEmpRequests = normalizeArr(cloudData.employeeRequests).map(r => ({
+          ...r,
+          days: normalizeArr(r.days)
+        }));
+        const normalizedChat = normalizeArr(cloudData.chatMessages);
+        const normalizedAudit = normalizeArr(cloudData.auditLog);
 
         const newHash = JSON.stringify({
           users: normalizedUsers,
           shiftTimes: cloudData.shiftTimes || DEFAULT_SHIFT_TIMES,
           schedule: cloudData.schedule || {},
           agRequests: normalizedRequests,
+          employeeRequests: normalizedEmpRequests,
+          chatMessages: normalizedChat,
           auditLog: normalizedAudit
         });
 
@@ -1039,6 +1333,8 @@
         state.shiftTimes = cloudData.shiftTimes || JSON.parse(JSON.stringify(DEFAULT_SHIFT_TIMES));
         state.schedule = cloudData.schedule || {};
         state.agRequests = normalizedRequests;
+        state.employeeRequests = normalizedEmpRequests;
+        state.chatMessages = normalizedChat;
         state.auditLog = normalizedAudit;
         state.lastCloudHash = newHash;
         saveLocalBackup();
@@ -1050,7 +1346,7 @@
             state.currentUser = refreshed;
             document.getElementById('topbar-user-name').textContent = refreshed.name;
           }
-          // Překreslíme aktuální pohled (pokud uživatel zrovna needituje draft uživatelů nebo nepíše do inputu)
+          updateNotificationBadges();
           const activeTag = document.activeElement ? document.activeElement.tagName : '';
           const isTyping = (activeTag === 'INPUT' || activeTag === 'SELECT' || activeTag === 'TEXTAREA');
           if (!isTyping) {
@@ -1069,10 +1365,18 @@
         renderShiftSettingsForm();
         initUserDraftsAndRender();
       }
+      if (state.activeView === 'view-admin-messages') renderAdminMessagesView();
       if (state.activeView === 'view-admin-audit') renderAuditLogTable();
       if (state.activeView === 'view-coord-requests') renderCoordinatorRequestsView();
       if (state.activeView === 'view-coord-overview') renderCoordinatorOverviewView();
       if (state.activeView === 'view-employee-personal') renderEmployeePersonalView();
+
+      if (!document.getElementById('modal-emp-chat').classList.contains('hidden')) {
+        renderEmployeeChatMessages();
+      }
+      if (!document.getElementById('modal-admin-requests').classList.contains('hidden')) {
+        renderAdminRequestsModalBody();
+      }
     }
 
     async function manualForceSync() {
@@ -1156,11 +1460,17 @@
 
     function showLoginScreen() {
       state.currentUser = null;
-      document.getElementById('login-screen').classList.remove('hidden');
-      document.getElementById('main-app').classList.add('hidden');
-      document.getElementById('login-error').classList.add('hidden');
-      document.getElementById('login-username').value = '';
-      document.getElementById('login-password').value = '';
+      const loginScreen = document.getElementById('login-screen');
+      const mainApp = document.getElementById('main-app');
+      const loginError = document.getElementById('login-error');
+      const loginUser = document.getElementById('login-username');
+      const loginPass = document.getElementById('login-password');
+
+      if (loginScreen) loginScreen.classList.remove('hidden');
+      if (mainApp) mainApp.classList.add('hidden');
+      if (loginError) loginError.classList.add('hidden');
+      if (loginUser) loginUser.value = '';
+      if (loginPass) loginPass.value = '';
     }
 
     function handleLoginSubmit(e) {
@@ -1201,25 +1511,37 @@
       document.getElementById('topbar-user-name').textContent = user.name;
       const pill = document.getElementById('topbar-role-pill');
       const sub = document.getElementById('topbar-user-sub');
+      const adminReqBtn = document.getElementById('topbar-admin-req-btn');
 
       if (user.role === 'admin') {
         pill.textContent = 'ADMIN';
         pill.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
         sub.textContent = 'Plná administrace docházky';
+        adminReqBtn.classList.remove('hidden');
         setupNavigationForRole('admin');
         switchView('view-admin-schedule');
+        updateNotificationBadges();
+
+        // Hned po přihlášení Admina automaticky vyskočí okno s přehledem čekajících požadavků
+        const pendingReqs = state.employeeRequests.filter(r => r.status === 'pending');
+        if (pendingReqs.length > 0) {
+          openAdminRequestsModal();
+        }
       } else if (user.role === 'coordinator') {
         pill.textContent = 'KOORDINÁTOR AG';
         pill.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30';
         sub.textContent = 'Správa agenturních směn';
+        adminReqBtn.classList.add('hidden');
         setupNavigationForRole('coordinator');
         switchView('view-coord-requests');
       } else {
         pill.textContent = 'ZAMĚSTNANEC';
         pill.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30';
         sub.textContent = 'Osobní přehled směn';
+        adminReqBtn.classList.add('hidden');
         setupNavigationForRole('employee');
         switchView('view-employee-personal');
+        updateNotificationBadges();
       }
 
       showToast(`Přihlášen uživatel: ${user.name}`);
@@ -1242,11 +1564,15 @@
           <button type="button" onclick="switchView('view-admin-schedule')" data-view="view-admin-schedule" class="nav-tab-btn px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
             <i class="fa-solid fa-calendar-days text-blue-600"></i> Plánování směn
           </button>
+          <button type="button" onclick="switchView('view-admin-messages')" data-view="view-admin-messages" class="nav-tab-btn px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-comments text-amber-600"></i> Zprávy & Požadavky
+            <span id="nav-admin-unread-pill" class="hidden px-1.5 py-0.2 rounded-full bg-rose-600 text-white text-[10px] font-black">0</span>
+          </button>
           <button type="button" onclick="switchView('view-admin-users')" data-view="view-admin-users" class="nav-tab-btn px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-users-gear text-emerald-600"></i> Administrace uživatelů a časů
+            <i class="fa-solid fa-users-gear text-emerald-600"></i> Uživatelé & Časy
           </button>
           <button type="button" onclick="switchView('view-admin-audit')" data-view="view-admin-audit" class="nav-tab-btn px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> Audit Log změn
+            <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> Audit Log
           </button>
         `;
         desktopActions.innerHTML = `
@@ -1258,11 +1584,15 @@
           <button type="button" onclick="switchView('view-admin-schedule')" data-view="view-admin-schedule" class="mob-tab-btn flex-1 flex flex-col items-center py-1 text-blue-600">
             <i class="fa-solid fa-calendar-days text-base"></i><span class="text-[10px] font-bold mt-0.5">Směny</span>
           </button>
+          <button type="button" onclick="switchView('view-admin-messages')" data-view="view-admin-messages" class="mob-tab-btn relative flex-1 flex flex-col items-center py-1 text-slate-400">
+            <i class="fa-solid fa-comments text-base"></i><span class="text-[10px] font-semibold mt-0.5">Zprávy</span>
+            <span id="mob-admin-unread-dot" class="hidden absolute top-0.5 right-5 w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+          </button>
           <button type="button" onclick="switchView('view-admin-users')" data-view="view-admin-users" class="mob-tab-btn flex-1 flex flex-col items-center py-1 text-slate-400">
-            <i class="fa-solid fa-users-gear text-base"></i><span class="text-[10px] font-semibold mt-0.5">Uživatelé & Časy</span>
+            <i class="fa-solid fa-users-gear text-base"></i><span class="text-[10px] font-semibold mt-0.5">Uživatelé</span>
           </button>
           <button type="button" onclick="switchView('view-admin-audit')" data-view="view-admin-audit" class="mob-tab-btn flex-1 flex flex-col items-center py-1 text-slate-400">
-            <i class="fa-solid fa-clock-rotate-left text-base"></i><span class="text-[10px] font-semibold mt-0.5">Audit Log</span>
+            <i class="fa-solid fa-clock-rotate-left text-base"></i><span class="text-[10px] font-semibold mt-0.5">Audit</span>
           </button>
         `;
       } else if (role === 'coordinator') {
@@ -1323,6 +1653,7 @@
       });
 
       if (viewId === 'view-admin-schedule') renderAdminScheduleTable();
+      if (viewId === 'view-admin-messages') renderAdminMessagesView();
       if (viewId === 'view-admin-users') {
         renderShiftSettingsForm();
         initUserDraftsAndRender();
@@ -1591,12 +1922,14 @@
       }
 
       headHtml += `
-        <th class="px-2 py-2 bg-slate-800 text-amber-300 min-w-[34px]">D</th>
-        <th class="px-2 py-2 bg-slate-800 text-blue-300 min-w-[34px]">N</th>
-        <th class="px-2 py-2 bg-slate-800 text-slate-300 min-w-[34px]">—</th>
-        <th class="px-2 py-2 bg-slate-800 text-rose-300 min-w-[34px]">PN</th>
-        <th class="px-2 py-2 bg-slate-800 text-purple-300 min-w-[34px]">A</th>
-        <th class="px-2 py-2 bg-slate-800 text-emerald-300 min-w-[52px]">Hod.</th>
+        <th class="px-2 py-2 bg-slate-800 text-amber-300 min-w-[32px]">D</th>
+        <th class="px-2 py-2 bg-slate-800 text-blue-300 min-w-[32px]">N</th>
+        <th class="px-2 py-2 bg-slate-800 text-emerald-300 min-w-[36px]">DOV</th>
+        <th class="px-2 py-2 bg-slate-800 text-cyan-300 min-w-[32px]">NV</th>
+        <th class="px-2 py-2 bg-slate-800 text-slate-300 min-w-[32px]">—</th>
+        <th class="px-2 py-2 bg-slate-800 text-rose-300 min-w-[32px]">PN</th>
+        <th class="px-2 py-2 bg-slate-800 text-purple-300 min-w-[32px]">A</th>
+        <th class="px-2 py-2 bg-slate-800 text-emerald-300 min-w-[50px]">Hod.</th>
       </tr>`;
       thead.innerHTML = headHtml;
 
@@ -1609,7 +1942,7 @@
 
       filteredUsers.forEach((user, idx) => {
         const userShifts = monthSchedule[user.id] || {};
-        const counts = { D: 0, N: 0, '-': 0, PN: 0, A: 0, hours: 0 };
+        const counts = { D: 0, N: 0, DOV: 0, NV: 0, '-': 0, PN: 0, A: 0, hours: 0 };
 
         if (user.isAGPlaceholder) {
           const hasAnyShift = Object.values(userShifts).some(v => {
@@ -1672,6 +2005,8 @@
         bodyHtml += `
           <td class="font-bold text-amber-800 bg-amber-50/40 border-r border-slate-200">${counts.D}</td>
           <td class="font-bold text-blue-800 bg-blue-50/40 border-r border-slate-200">${counts.N}</td>
+          <td class="font-bold text-emerald-800 bg-emerald-50/40 border-r border-slate-200">${counts.DOV}</td>
+          <td class="font-bold text-cyan-800 bg-cyan-50/40 border-r border-slate-200">${counts.NV}</td>
           <td class="font-medium text-slate-500 bg-slate-100/60 border-r border-slate-200">${counts['-']}</td>
           <td class="font-bold text-rose-700 bg-rose-50/40 border-r border-slate-200">${counts.PN}</td>
           <td class="font-bold text-purple-700 bg-purple-50/40 border-r border-slate-200">${counts.A}</td>
@@ -1688,14 +2023,14 @@
       for (let d = 1; d <= daysInMonth; d++) {
         footHtml += `<td class="px-0.5 py-1 text-xs font-bold text-amber-900">${dayTotals[d].D}</td>`;
       }
-      footHtml += `<td colspan="6" class="bg-amber-100/40"></td></tr>`;
+      footHtml += `<td colspan="8" class="bg-amber-100/40"></td></tr>`;
 
       footHtml += `<tr class="bg-blue-50 text-blue-900 border-t border-blue-200">
         <td class="sticky-col bg-blue-100 text-left px-3 py-1.5 font-extrabold text-[11px] border-r border-blue-200">Noční směna (N)</td>`;
       for (let d = 1; d <= daysInMonth; d++) {
         footHtml += `<td class="px-0.5 py-1 text-xs font-bold text-blue-900">${dayTotals[d].N}</td>`;
       }
-      footHtml += `<td colspan="6" class="bg-blue-100/40"></td></tr>`;
+      footHtml += `<td colspan="8" class="bg-blue-100/40"></td></tr>`;
 
       tfoot.innerHTML = footHtml;
     }
@@ -2421,18 +2756,18 @@
           timeInfo = (cellObj.start && cellObj.end)
             ? `${cellObj.start} – ${cellObj.end}`
             : `${state.shiftTimes.day.start} – ${state.shiftTimes.day.end}`;
-        } else if (s === 'N') {
-          cardStyle = 'bg-blue-50 border-blue-300 text-blue-950 shadow-xs';
-          badgeHtml = '<span class="px-2 py-0.5 rounded-lg bg-blue-600 text-white font-black text-xs">N • Noční</span>';
-          timeInfo = (cellObj.start && cellObj.end)
-            ? `${cellObj.start} – ${cellObj.end}`
-            : (user.position === 'AGENTURA'
-              ? `${state.shiftTimes.agency.start} – ${state.shiftTimes.agency.end}`
-              : `${state.shiftTimes.night.start} – ${state.shiftTimes.night.end}`);
+        } else if (s === 'DOV') {
+          cardStyle = 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-xs';
+          badgeHtml = '<span class="px-2 py-0.5 rounded-lg bg-emerald-600 text-white font-black text-xs">DOV • Dovolená</span>';
+          timeInfo = 'Schválená dovolená';
+        } else if (s === 'NV') {
+          cardStyle = 'bg-cyan-50 border-cyan-300 text-cyan-950 shadow-xs';
+          badgeHtml = '<span class="px-2 py-0.5 rounded-lg bg-cyan-600 text-white font-black text-xs">NV • Náhradní volno</span>';
+          timeInfo = 'Náhradní volno';
         } else if (s === 'PN') {
           cardStyle = 'bg-rose-50 border-rose-300 text-rose-900';
-          badgeHtml = '<span class="px-2 py-0.5 rounded-lg bg-rose-600 text-white font-black text-xs">PN • Nemoc</span>';
-          timeInfo = 'Práce neschopný';
+          badgeHtml = '<span class="px-2 py-0.5 rounded-lg bg-rose-600 text-white font-black text-xs">PN • Nemoc/Lékař</span>';
+          timeInfo = 'Práce neschopný / Lékař';
         } else if (s === 'A') {
           cardStyle = 'bg-purple-50 border-purple-300 text-purple-900';
           badgeHtml = '<span class="px-2 py-0.5 rounded-lg bg-purple-600 text-white font-black text-xs">A • Absence</span>';
@@ -2471,6 +2806,642 @@
           <div class="text-xl font-black text-emerald-600 mt-1">${Math.round(totalHours * 10) / 10} h</div>
         </div>
       `;
+
+      renderEmployeeRejectionBanner();
+      renderEmployeeSentRequestsList();
+    }
+
+    // -------------------------------------------------------------------------
+    // 11B. POŽADAVKY ZAMĚSTNANCŮ (DOV / NV / PN) + SCHVALOVÁNÍ ADMINEM + CHAT
+    // -------------------------------------------------------------------------
+    function updateNotificationBadges() {
+      const pendingReqs = state.employeeRequests.filter(r => r.status === 'pending').length;
+      const unreadFromEmps = state.chatMessages.filter(m => m.senderRole !== 'admin' && !m.readByAdmin).length;
+      const totalAdminAlerts = pendingReqs + unreadFromEmps;
+
+      const topBadge = document.getElementById('topbar-admin-req-badge');
+      if (topBadge) topBadge.textContent = pendingReqs;
+
+      const navPill = document.getElementById('nav-admin-unread-pill');
+      if (navPill) {
+        if (totalAdminAlerts > 0) {
+          navPill.textContent = totalAdminAlerts;
+          navPill.classList.remove('hidden');
+        } else {
+          navPill.classList.add('hidden');
+        }
+      }
+
+      const mobDot = document.getElementById('mob-admin-unread-dot');
+      if (mobDot) {
+        if (totalAdminAlerts > 0) mobDot.classList.remove('hidden');
+        else mobDot.classList.add('hidden');
+      }
+
+      const msgViewBadge = document.getElementById('admin-msg-view-pending-count');
+      if (msgViewBadge) msgViewBadge.textContent = pendingReqs;
+
+      if (state.currentUser && state.currentUser.role !== 'admin') {
+        const unreadForEmp = state.chatMessages.filter(
+          m => m.employeeId === state.currentUser.id && m.senderRole === 'admin' && !m.readByEmployee
+        ).length;
+        const empChatBadge = document.getElementById('emp-chat-unread-badge');
+        if (empChatBadge) {
+          if (unreadForEmp > 0) {
+            empChatBadge.textContent = `${unreadForEmp} nová`;
+            empChatBadge.classList.remove('hidden');
+          } else {
+            empChatBadge.classList.add('hidden');
+          }
+        }
+      }
+    }
+
+    // Otevření modálu pro zadání požadavku zaměstnance
+    function openEmployeeRequestModal() {
+      if (!state.currentUser) return;
+      state.reqModalType = 'DOV';
+      state.reqModalSelectedDays = [];
+      document.getElementById('req-note-input').value = '';
+      selectRequestType('DOV');
+      renderRequestInteractiveCalendar();
+      document.getElementById('modal-emp-request').classList.remove('hidden');
+    }
+
+    function closeEmployeeRequestModal() {
+      document.getElementById('modal-emp-request').classList.add('hidden');
+    }
+
+    function selectRequestType(typeCode) {
+      state.reqModalType = typeCode;
+      ['DOV', 'NV', 'PN'].forEach(code => {
+        const card = document.getElementById(`req-type-card-${code}`);
+        if (!card) return;
+        if (code === typeCode) {
+          const activeClasses = {
+            DOV: 'req-type-card p-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50 text-emerald-950 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5 shadow-xs',
+            NV:  'req-type-card p-3 rounded-2xl border-2 border-cyan-600 bg-cyan-50 text-cyan-950 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5 shadow-xs',
+            PN:  'req-type-card p-3 rounded-2xl border-2 border-rose-600 bg-rose-50 text-rose-950 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5 shadow-xs'
+          };
+          card.className = activeClasses[code];
+        } else {
+          card.className = 'req-type-card p-3 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-left transition flex sm:flex-col items-center sm:items-start gap-2.5';
+        }
+      });
+    }
+
+    function toggleRequestCalendarDay(day) {
+      const idx = state.reqModalSelectedDays.indexOf(day);
+      if (idx > -1) {
+        state.reqModalSelectedDays.splice(idx, 1);
+      } else {
+        state.reqModalSelectedDays.push(day);
+        state.reqModalSelectedDays.sort((a, b) => a - b);
+      }
+      renderRequestInteractiveCalendar();
+    }
+
+    function renderRequestInteractiveCalendar() {
+      const user = state.currentUser;
+      if (!user) return;
+      const year = state.currentYear;
+      const month = state.currentMonth;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const periodKey = getPeriodKey();
+      const myShifts = state.schedule[periodKey]?.[user.id] || {};
+
+      document.getElementById('req-cal-month-title').textContent = `${MONTH_NAMES[month]} ${year}`;
+      document.getElementById('req-selected-count-pill').textContent = `Vybráno: ${state.reqModalSelectedDays.length} dnů`;
+
+      // Zarovnání na pondělí (Po = 0 .. Ne = 6)
+      const firstDow = (new Date(year, month, 1).getDay() + 6) % 7;
+      let html = '';
+
+      for (let empty = 0; empty < firstDow; empty++) {
+        html += `<div class="h-12 rounded-xl bg-slate-50/50"></div>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const shiftCode = parseShiftCell(myShifts[d]).code;
+        const isSelected = state.reqModalSelectedDays.includes(d);
+
+        let baseStyle = 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100';
+        let shiftTag = '<span class="text-[9px] text-slate-400 font-semibold">—</span>';
+
+        if (shiftCode === 'D') {
+          baseStyle = 'bg-amber-50 border-amber-300 text-amber-950 hover:bg-amber-100';
+          shiftTag = '<span class="text-[9px] font-black text-amber-700">D</span>';
+        } else if (shiftCode === 'N') {
+          baseStyle = 'bg-blue-50 border-blue-300 text-blue-950 hover:bg-blue-100';
+          shiftTag = '<span class="text-[9px] font-black text-blue-700">N</span>';
+        } else if (shiftCode === 'DOV' || shiftCode === 'NV' || shiftCode === 'PN') {
+          baseStyle = 'bg-slate-100 border-slate-300 text-slate-700';
+          shiftTag = `<span class="text-[9px] font-black text-slate-600">${shiftCode}</span>`;
+        }
+
+        if (isSelected) {
+          baseStyle = 'bg-emerald-600 border-emerald-700 text-white ring-2 ring-emerald-400 shadow-md scale-[1.03]';
+          shiftTag = '<span class="text-[9px] font-black text-emerald-100"><i class="fa-solid fa-check"></i> Vybráno</span>';
+        }
+
+        html += `
+          <button type="button" onclick="toggleRequestCalendarDay(${d})"
+                  class="h-12 rounded-xl border ${baseStyle} flex flex-col items-center justify-center transition p-1">
+            <span class="text-xs font-extrabold leading-none">${d}</span>
+            <div class="mt-1 leading-none">${shiftTag}</div>
+          </button>
+        `;
+      }
+
+      document.getElementById('req-interactive-calendar').innerHTML = html;
+    }
+
+    function submitEmployeeRequest() {
+      const user = state.currentUser;
+      if (!user) return;
+      if (state.reqModalSelectedDays.length === 0) {
+        showToast('Vyberte prosím v kalendáři alespoň jeden den.');
+        return;
+      }
+
+      const periodKey = getPeriodKey();
+      const typeInfo = EMP_REQUEST_TYPES[state.reqModalType];
+      const note = document.getElementById('req-note-input').value.trim();
+      const myShifts = state.schedule[periodKey]?.[user.id] || {};
+
+      const originalShifts = {};
+      state.reqModalSelectedDays.forEach(d => {
+        originalShifts[d] = parseShiftCell(myShifts[d]).code;
+      });
+
+      const now = new Date();
+      const createdAt = `${now.toLocaleDateString('cs-CZ')} ${now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })}`;
+      const formattedDays = state.reqModalSelectedDays.map(d => `${d}.${state.currentMonth + 1}.`).join(', ');
+
+      const newReq = {
+        id: 'ereq_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        employeeId: user.id,
+        employeeName: user.name,
+        periodKey,
+        year: state.currentYear,
+        month: state.currentMonth,
+        type: state.reqModalType,
+        typeTitle: typeInfo.title,
+        days: [...state.reqModalSelectedDays],
+        originalShifts,
+        note,
+        status: 'pending',
+        seenByEmployee: true,
+        createdAt
+      };
+
+      state.employeeRequests.unshift(newReq);
+
+      // Automaticky odešle i zprávu do soukromého chatu s Adminem
+      const chatText = `📋 Nový požadavek: ${typeInfo.title} na dny ${formattedDays}${note ? ` (Pozn.: ${note})` : ''}.`;
+      state.chatMessages.push({
+        id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        employeeId: user.id,
+        employeeName: user.name,
+        senderId: user.id,
+        senderName: user.name,
+        senderRole: 'employee',
+        text: chatText,
+        timestamp: createdAt,
+        readByAdmin: false,
+        readByEmployee: true
+      });
+
+      addAuditEntry('POŽADAVEK ZAMĚSTNANCE', `${user.name} odeslal "${typeInfo.title}" na dny: ${formattedDays}.`);
+      persistData();
+      closeEmployeeRequestModal();
+      renderEmployeePersonalView();
+      showToast('Požadavek byl odeslán Adminovi ke schválení.');
+    }
+
+    function renderEmployeeRejectionBanner() {
+      const user = state.currentUser;
+      const banner = document.getElementById('emp-rejection-banner');
+      const listEl = document.getElementById('emp-rejection-list');
+      if (!user || !banner || !listEl) return;
+
+      const unseenRejected = state.employeeRequests.filter(
+        r => r.employeeId === user.id && r.status === 'rejected' && !r.seenByEmployee
+      );
+
+      if (unseenRejected.length === 0) {
+        banner.classList.add('hidden');
+        return;
+      }
+
+      listEl.innerHTML = unseenRejected.map(r => {
+        const daysStr = r.days.map(d => `${d}.${r.month + 1}.`).join(', ');
+        return `<div>• Váš požadavek <strong>${r.typeTitle}</strong> na dny <strong>${daysStr}</strong> byl zrušen / zamítnut administrátorem.</div>`;
+      }).join('');
+      banner.classList.remove('hidden');
+    }
+
+    function acknowledgeEmployeeNotifications() {
+      if (!state.currentUser) return;
+      state.employeeRequests.forEach(r => {
+        if (r.employeeId === state.currentUser.id && r.status === 'rejected') {
+          r.seenByEmployee = true;
+        }
+      });
+      persistData();
+      renderEmployeeRejectionBanner();
+    }
+
+    function renderEmployeeSentRequestsList() {
+      const user = state.currentUser;
+      const box = document.getElementById('emp-my-requests-box');
+      const list = document.getElementById('emp-my-requests-list');
+      if (!user || !box || !list) return;
+
+      const myReqs = state.employeeRequests.filter(r => r.employeeId === user.id);
+      if (myReqs.length === 0) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      box.classList.remove('hidden');
+      list.innerHTML = myReqs.slice(0, 6).map(r => {
+        const daysStr = r.days.map(d => `${d}.${r.month + 1}.`).join(', ');
+        const statusPill = r.status === 'approved'
+          ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[10px]">Potvrzeno</span>'
+          : (r.status === 'rejected'
+            ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-extrabold text-[10px]">Zrušeno / Zamítnuto</span>'
+            : '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-extrabold text-[10px]">Čeká na schválení</span>');
+
+        return `
+          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2 text-xs">
+            <div>
+              <div class="font-extrabold text-slate-900">${r.typeTitle}</div>
+              <div class="text-[11px] text-slate-600">Dny: <strong>${daysStr}</strong> • <span class="text-slate-400">${r.createdAt}</span></div>
+            </div>
+            <div>${statusPill}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // -------------------------------------------------------------------------
+    // 11C. ADMIN: SCHVALOVÁNÍ POŽADAVKŮ ZAMĚSTNANCŮ (POTVRDIT / ZAMÍTNOUT)
+    // -------------------------------------------------------------------------
+    function openAdminRequestsModal() {
+      if (state.currentUser?.role !== 'admin') return;
+      renderAdminRequestsModalBody();
+      document.getElementById('modal-admin-requests').classList.remove('hidden');
+    }
+
+    function closeAdminRequestsModal() {
+      document.getElementById('modal-admin-requests').classList.add('hidden');
+    }
+
+    function renderAdminRequestsModalBody() {
+      const container = document.getElementById('admin-requests-modal-body');
+      if (!container) return;
+
+      const pending = state.employeeRequests.filter(r => r.status === 'pending');
+      const resolved = state.employeeRequests.filter(r => r.status !== 'pending').slice(0, 8);
+
+      let html = '';
+
+      if (pending.length === 0) {
+        html += `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 text-center space-y-1.5">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center text-lg">
+              <i class="fa-solid fa-check-double"></i>
+            </div>
+            <div class="font-extrabold text-sm text-slate-900">Žádné nevyřízené požadavky</div>
+            <p class="text-xs text-slate-500">Všechny žádosti zaměstnanců o dovolenou, NV nebo PN jsou vyřízeny.</p>
+          </div>
+        `;
+      } else {
+        html += `<div class="text-[11px] font-extrabold text-amber-800 uppercase tracking-wider">Čekající požadavky ke schválení (${pending.length})</div>`;
+        html += pending.map(r => {
+          const typeCfg = EMP_REQUEST_TYPES[r.type] || EMP_REQUEST_TYPES['DOV'];
+          const daysBadges = r.days.map(d => {
+            const orig = r.originalShifts?.[d] || '—';
+            return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 font-bold text-[11px]">
+              ${d}.${r.month + 1}. <span class="text-[9px] text-slate-500">(pův. ${orig})</span>
+            </span>`;
+          }).join(' ');
+
+          return `
+            <div class="bg-white p-4 rounded-2xl border-2 border-amber-300 shadow-sm space-y-3">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-black text-sm text-slate-900">${r.employeeName}</span>
+                    <span class="px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold ${typeCfg.badgeBg}">${r.typeTitle}</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">Odesláno: ${r.createdAt}</div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5">${daysBadges}</div>
+
+              ${r.note ? `<div class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700"><i class="fa-solid fa-quote-left text-slate-400 mr-1"></i> ${r.note}</div>` : ''}
+
+              <div class="flex gap-2 pt-1">
+                <button type="button" onclick="resolveEmployeeRequest('${r.id}', 'approved')"
+                        class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition">
+                  <i class="fa-solid fa-check"></i> Potvrdit (propíše do rozpisu)
+                </button>
+                <button type="button" onclick="resolveEmployeeRequest('${r.id}', 'rejected')"
+                        class="flex-1 py-2.5 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs flex items-center justify-center gap-1.5 transition">
+                  <i class="fa-solid fa-xmark"></i> Zamítnout
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (resolved.length > 0) {
+        html += `<div class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider pt-3">Nedávno vyřízené požadavky</div>`;
+        html += resolved.map(r => {
+          const daysStr = r.days.map(d => `${d}.${r.month + 1}.`).join(', ');
+          const badge = r.status === 'approved'
+            ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[10px]">Potvrzeno</span>'
+            : '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-extrabold text-[10px]">Zamítnuto</span>';
+          return `
+            <div class="bg-white/80 p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-2 text-xs">
+              <div>
+                <span class="font-bold text-slate-800">${r.employeeName}</span> • <span class="text-slate-600">${r.typeTitle}</span>
+                <div class="text-[10px] text-slate-400">Dny: ${daysStr}</div>
+              </div>
+              ${badge}
+            </div>
+          `;
+        }).join('');
+      }
+
+      container.innerHTML = html;
+    }
+
+    function resolveEmployeeRequest(reqId, decision) {
+      if (state.currentUser?.role !== 'admin') return;
+      const req = state.employeeRequests.find(r => r.id === reqId);
+      if (!req) return;
+
+      const now = new Date();
+      const ts = `${now.toLocaleDateString('cs-CZ')} ${now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })}`;
+      const daysStr = req.days.map(d => `${d}.${req.month + 1}.`).join(', ');
+
+      req.status = decision;
+
+      if (decision === 'approved') {
+        req.seenByEmployee = true;
+        if (!state.schedule[req.periodKey]) {
+          state.schedule[req.periodKey] = {};
+        }
+        if (!state.schedule[req.periodKey][req.employeeId]) {
+          state.schedule[req.periodKey][req.employeeId] = {};
+        }
+        req.days.forEach(d => {
+          state.schedule[req.periodKey][req.employeeId][d] = req.type;
+        });
+
+        state.chatMessages.push({
+          id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          employeeId: req.employeeId,
+          employeeName: req.employeeName,
+          senderId: state.currentUser.id,
+          senderName: state.currentUser.name,
+          senderRole: 'admin',
+          text: `✅ Váš požadavek "${req.typeTitle}" na dny ${daysStr} byl POTVRZEN a zapsán do rozpisu směn (${req.type}).`,
+          timestamp: ts,
+          readByAdmin: true,
+          readByEmployee: false
+        });
+
+        addAuditEntry('SCHVÁLENÍ POŽADAVKU', `Potvrzen požadavek "${req.typeTitle}" (${req.type}) pro ${req.employeeName} na dny: ${daysStr}.`);
+        showToast(`Požadavek pro ${req.employeeName} byl potvrzen a zapsán do rozpisu.`);
+      } else {
+        req.seenByEmployee = false;
+
+        state.chatMessages.push({
+          id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          employeeId: req.employeeId,
+          employeeName: req.employeeName,
+          senderId: state.currentUser.id,
+          senderName: state.currentUser.name,
+          senderRole: 'admin',
+          text: `❌ Váš požadavek "${req.typeTitle}" na dny ${daysStr} byl ZAMÍTNUT / ZRUŠEN administrátorem.`,
+          timestamp: ts,
+          readByAdmin: true,
+          readByEmployee: false
+        });
+
+        addAuditEntry('ZAMÍTNUTÍ POŽADAVKU', `Zamítnut požadavek "${req.typeTitle}" pro ${req.employeeName} na dny: ${daysStr}.`);
+        showToast(`Požadavek pro ${req.employeeName} byl zamítnut.`);
+      }
+
+      persistData();
+      updateNotificationBadges();
+      renderAdminRequestsModalBody();
+      if (state.activeView === 'view-admin-schedule') renderAdminScheduleTable();
+      if (state.activeView === 'view-admin-messages') renderAdminMessagesView();
+    }
+
+    // -------------------------------------------------------------------------
+    // 11D. SOUKROMÝ CHAT MEZI ZAMĚSTNANCI A ADMINEM
+    // -------------------------------------------------------------------------
+    function openEmployeeChatModal() {
+      if (!state.currentUser) return;
+      let changed = false;
+      state.chatMessages.forEach(m => {
+        if (m.employeeId === state.currentUser.id && m.senderRole === 'admin' && !m.readByEmployee) {
+          m.readByEmployee = true;
+          changed = true;
+        }
+      });
+      if (changed) {
+        persistData();
+        updateNotificationBadges();
+      }
+      renderEmployeeChatMessages();
+      document.getElementById('modal-emp-chat').classList.remove('hidden');
+    }
+
+    function closeEmployeeChatModal() {
+      document.getElementById('modal-emp-chat').classList.add('hidden');
+    }
+
+    function renderEmployeeChatMessages() {
+      const user = state.currentUser;
+      const box = document.getElementById('emp-chat-messages-box');
+      if (!user || !box) return;
+
+      const thread = state.chatMessages.filter(m => m.employeeId === user.id);
+      if (thread.length === 0) {
+        box.innerHTML = `<div class="text-center text-xs text-slate-400 py-10">Zatím žádné zprávy. Napište dotaz nebo zprávu pro administrátora.</div>`;
+        return;
+      }
+
+      box.innerHTML = thread.map(m => {
+        const isMine = m.senderRole !== 'admin';
+        return `
+          <div class="flex flex-col ${isMine ? 'items-end' : 'items-start'}">
+            <div class="max-w-[82%] px-3.5 py-2.5 rounded-2xl text-xs shadow-xs ${isMine ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-900 rounded-bl-sm'}">
+              <div class="text-[10px] font-extrabold mb-0.5 ${isMine ? 'text-blue-200' : 'text-emerald-700'}">${isMine ? 'Vy' : m.senderName + ' (Admin)'}</div>
+              <div class="leading-relaxed font-medium">${m.text}</div>
+            </div>
+            <span class="text-[9px] text-slate-400 mt-0.5 px-1">${m.timestamp}</span>
+          </div>
+        `;
+      }).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendEmployeeChatMessage(e) {
+      e.preventDefault();
+      const user = state.currentUser;
+      const input = document.getElementById('emp-chat-input');
+      const text = (input.value || '').trim();
+      if (!user || !text) return;
+
+      const now = new Date();
+      const ts = `${now.toLocaleDateString('cs-CZ')} ${now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })}`;
+
+      state.chatMessages.push({
+        id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        employeeId: user.id,
+        employeeName: user.name,
+        senderId: user.id,
+        senderName: user.name,
+        senderRole: 'employee',
+        text,
+        timestamp: ts,
+        readByAdmin: false,
+        readByEmployee: true
+      });
+
+      input.value = '';
+      persistData();
+      renderEmployeeChatMessages();
+      showToast('Zpráva pro Admina byla odeslána.');
+    }
+
+    // Admin pohled na chaty zaměstnanců
+    function renderAdminMessagesView() {
+      const listEl = document.getElementById('admin-chat-user-list');
+      if (!listEl) return;
+
+      const employees = state.users.filter(u => u.role !== 'admin' && !u.isAGPlaceholder);
+      if (!state.selectedChatUserId && employees.length > 0) {
+        // Prioritně vybereme uživatele s nepřečtenou zprávou
+        const withUnread = employees.find(u => state.chatMessages.some(m => m.employeeId === u.id && m.senderRole !== 'admin' && !m.readByAdmin));
+        state.selectedChatUserId = withUnread ? withUnread.id : employees[0].id;
+      }
+
+      listEl.innerHTML = employees.map(emp => {
+        const msgs = state.chatMessages.filter(m => m.employeeId === emp.id);
+        const unread = msgs.filter(m => m.senderRole !== 'admin' && !m.readByAdmin).length;
+        const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1] : null;
+        const isActive = state.selectedChatUserId === emp.id;
+
+        return `
+          <button type="button" onclick="selectAdminChatThread('${emp.id}')"
+                  class="w-full p-3 text-left transition flex items-center justify-between gap-2 ${isActive ? 'bg-blue-50 border-l-4 border-blue-600' : 'hover:bg-slate-50'}">
+            <div class="min-w-0">
+              <div class="font-extrabold text-xs text-slate-900 truncate">${emp.name}</div>
+              <div class="text-[10px] text-slate-500 truncate mt-0.5">${lastMsg ? lastMsg.text : 'Žádné zprávy'}</div>
+            </div>
+            ${unread > 0 ? `<span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black shrink-0">${unread}</span>` : ''}
+          </button>
+        `;
+      }).join('');
+
+      if (state.selectedChatUserId) {
+        renderAdminActiveChatThread(state.selectedChatUserId);
+      }
+    }
+
+    function selectAdminChatThread(empId) {
+      state.selectedChatUserId = empId;
+      let changed = false;
+      state.chatMessages.forEach(m => {
+        if (m.employeeId === empId && m.senderRole !== 'admin' && !m.readByAdmin) {
+          m.readByAdmin = true;
+          changed = true;
+        }
+      });
+      if (changed) {
+        persistData();
+        updateNotificationBadges();
+      }
+      renderAdminMessagesView();
+    }
+
+    function renderAdminActiveChatThread(empId) {
+      const emp = state.users.find(u => u.id === empId);
+      const box = document.getElementById('admin-chat-messages-box');
+      const replyInput = document.getElementById('admin-chat-reply-input');
+      const replyBtn = document.getElementById('admin-chat-reply-btn');
+      if (!emp || !box) return;
+
+      document.getElementById('admin-chat-active-name').textContent = emp.name;
+      document.getElementById('admin-chat-active-sub').textContent = `${emp.position} • Soukromá konverzace`;
+      replyInput.disabled = false;
+      replyBtn.disabled = false;
+
+      const thread = state.chatMessages.filter(m => m.employeeId === empId);
+      if (thread.length === 0) {
+        box.innerHTML = `<div class="text-center text-xs text-slate-400 py-12">Zatím žádná historie zpráv s pracovníkem ${emp.name}.</div>`;
+        return;
+      }
+
+      box.innerHTML = thread.map(m => {
+        const isAdmin = m.senderRole === 'admin';
+        return `
+          <div class="flex flex-col ${isAdmin ? 'items-end' : 'items-start'}">
+            <div class="max-w-[80%] px-3.5 py-2.5 rounded-2xl text-xs shadow-xs ${isAdmin ? 'bg-slate-900 text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-900 rounded-bl-sm'}">
+              <div class="text-[10px] font-extrabold mb-0.5 ${isAdmin ? 'text-emerald-400' : 'text-blue-700'}">${isAdmin ? 'Vy (Admin)' : emp.name}</div>
+              <div class="leading-relaxed font-medium">${m.text}</div>
+            </div>
+            <span class="text-[9px] text-slate-400 mt-0.5 px-1">${m.timestamp}</span>
+          </div>
+        `;
+      }).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendAdminChatReply(e) {
+      e.preventDefault();
+      if (state.currentUser?.role !== 'admin' || !state.selectedChatUserId) return;
+      const input = document.getElementById('admin-chat-reply-input');
+      const text = (input.value || '').trim();
+      if (!text) return;
+
+      const emp = state.users.find(u => u.id === state.selectedChatUserId);
+      const now = new Date();
+      const ts = `${now.toLocaleDateString('cs-CZ')} ${now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })}`;
+
+      state.chatMessages.push({
+        id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        employeeId: state.selectedChatUserId,
+        employeeName: emp ? emp.name : '',
+        senderId: state.currentUser.id,
+        senderName: state.currentUser.name,
+        senderRole: 'admin',
+        text,
+        timestamp: ts,
+        readByAdmin: true,
+        readByEmployee: false
+      });
+
+      input.value = '';
+      persistData();
+      renderAdminMessagesView();
+      showToast('Odpověď byla odeslána zaměstnanci.');
+    }
+
+    function backToAdminChatListMobile() {
+      state.selectedChatUserId = null;
+      renderAdminMessagesView();
     }
 
     // -------------------------------------------------------------------------
