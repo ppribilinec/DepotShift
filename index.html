@@ -657,12 +657,25 @@
     if (Array.isArray(remote.auditLog)) appState.auditLog = remote.auditLog;
   }
 
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      clearTimeout(id);
+    }
+  }
+
   async function pullFromFirebase(silent = true) {
     try {
-      const res = await fetch(FIREBASE_DB_URL + "?t=" + Date.now(), { cache: "no-store" });
+      const res = await fetchWithTimeout(FIREBASE_DB_URL, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      }, 8000);
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
-      if (data) {
+      if (data && typeof data === "object") {
         mergeRemoteState(data);
         safeStorage.set("depotshift_cache", JSON.stringify(appState));
       } else {
@@ -678,23 +691,25 @@
       }
       if (!silent) showToast("Synchronizováno s databází.", "success");
     } catch (err) {
-      updateSyncBadges(false);
-      if (!silent) showToast("Nelze se spojit s Firebase (běží offline).", "error");
+      console.warn("Firebase pull error:", err);
+      updateSyncBadges(false, "Offline (lokální záloha)");
+      if (!silent) showToast("Nelze se spojit s Firebase: " + err.message, "error");
     }
   }
 
   async function pushToFirebase(silent = false) {
     safeStorage.set("depotshift_cache", JSON.stringify(appState));
     try {
-      const res = await fetch(FIREBASE_DB_URL, {
+      const res = await fetchWithTimeout(FIREBASE_DB_URL, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appState)
-      });
+      }, 8000);
       if (!res.ok) throw new Error("HTTP " + res.status);
       updateSyncBadges(true, "Uloženo v cloudu");
     } catch (err) {
-      updateSyncBadges(false);
+      console.warn("Firebase push error:", err);
+      updateSyncBadges(false, "Offline (lokální záloha)");
       if (!silent) showToast("Uloženo lokálně (Firebase nedostupná).", "warn");
     }
   }
