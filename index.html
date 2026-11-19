@@ -597,24 +597,20 @@
       N: { start: "18:30", end: "06:30" },
       AG: { start: "19:00", end: "07:00" }
     },
-    // schedules[YYYY-MM][userId][day] = { type: 'D'|'N'|'DOV'|'NV'|'PN'|'A', start?: '19:00', end?: '07:00' }
     schedules: {},
-    // agSlots: [ { id, date: 'YYYY-MM-DD', label: 'Požadavek AG 1', assignedName: '', shift: 'N', start: '19:00', end: '07:00' } ]
     agSlots: [],
-    // requests: [ { id, userId, userName, type: 'DOV'|'NV'|'PN', dates: ['YYYY-MM-DD'], note, status: 'pending'|'approved'|'rejected', seenByUser: false, createdAt } ]
     requests: [],
-    // chats[userId] = [ { id, senderRole: 'employee'|'admin', senderName, text, time, readByAdmin, readByEmp } ]
     chats: {},
     auditLog: []
   };
 
   let currentUser = null;
-  let currentDate = new Date(2026, 10, 1); // Default November 2026 (or current month)
+  let currentDate = new Date(2026, 10, 1);
   let activeAdminTab = "schedule";
   let activeCoordTab = "requests";
   let draftUsers = [];
   let selectedChatUserId = null;
-  let editingCell = null; // { kind: 'user'|'ag', id, dateStr, day }
+  let editingCell = null;
   let empReqType = "DOV";
   let empReqDates = [];
   let dragPayload = null;
@@ -636,12 +632,12 @@
       }
     } else {
       if (loginBadge) {
-        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-red-500/15 text-red-300 border border-red-500/30";
-        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-400"></span> Offline (lokální záloha)`;
+        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30";
+        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> ${labelText || "Lokální režim (připraveno)"}`;
       }
       if (headerBadge) {
-        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/15 text-red-300 border border-red-500/30";
-        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Offline`;
+        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30";
+        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Lokální`;
       }
     }
   }
@@ -657,7 +653,7 @@
     if (Array.isArray(remote.auditLog)) appState.auditLog = remote.auditLog;
   }
 
-  async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 6000) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -672,28 +668,25 @@
       const res = await fetchWithTimeout(FIREBASE_DB_URL, {
         method: "GET",
         headers: { "Accept": "application/json" }
-      }, 8000);
+      }, 6000);
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
       if (data && typeof data === "object") {
         mergeRemoteState(data);
         safeStorage.set("depotshift_cache", JSON.stringify(appState));
       } else {
-        // Initialize empty DB with default state
         await pushToFirebase(true);
       }
       updateSyncBadges(true, "Firebase Online");
       if (currentUser) {
-        // Refresh current user object in case role/name updated
         const refreshed = appState.users.find(u => u.id === currentUser.id);
         if (refreshed) currentUser = refreshed;
         renderActiveRoleView();
       }
       if (!silent) showToast("Synchronizováno s databází.", "success");
     } catch (err) {
-      console.warn("Firebase pull error:", err);
-      updateSyncBadges(false, "Offline (lokální záloha)");
-      if (!silent) showToast("Nelze se spojit s Firebase: " + err.message, "error");
+      updateSyncBadges(false, "Lokální režim (připraveno)");
+      if (!silent) showToast("Firebase nedostupná – běží lokální záloha.", "warn");
     }
   }
 
@@ -704,12 +697,11 @@
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appState)
-      }, 8000);
+      }, 6000);
       if (!res.ok) throw new Error("HTTP " + res.status);
       updateSyncBadges(true, "Uloženo v cloudu");
     } catch (err) {
-      console.warn("Firebase push error:", err);
-      updateSyncBadges(false, "Offline (lokální záloha)");
+      updateSyncBadges(false, "Lokální režim (uloženo)");
       if (!silent) showToast("Uloženo lokálně (Firebase nedostupná).", "warn");
     }
   }
@@ -825,7 +817,6 @@
     buildNavigationForRole();
     renderActiveRoleView();
 
-    // If Admin logs in and there are pending employee requests, automatically pop up overview modal
     if (user.role === "admin") {
       const pending = appState.requests.filter(r => r.status === "pending");
       if (pending.length > 0) {
@@ -934,7 +925,7 @@
   }
 
   // ==================== ADMIN: SCHEDULE MATRIX & AUTO-SCHEDULER ====================
-  function getShiftBadgeHtml(entry, isAg = false) {
+  function getShiftBadgeHtml(entry) {
     if (!entry || !entry.type) {
       return `<span class="text-slate-500 font-bold">—</span>`;
     }
@@ -981,7 +972,6 @@
     const dailyDCounts = Array(days + 1).fill(0);
     const dailyNCounts = Array(days + 1).fill(0);
 
-    // 1. Core employees rows
     scheduleableUsers.forEach(user => {
       const uSched = monthSched[user.id] || {};
       let shiftCount = 0;
@@ -1020,7 +1010,6 @@
       </td></tr>`;
     });
 
-    // 2. Agency slots rows for current month
     const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey));
     if (monthAgSlots.length > 0) {
       bodyHtml += `<tr><td colspan="${days + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1.5 px-3 text-[11px] font-extrabold text-purple-300 uppercase tracking-wider">
@@ -1043,7 +1032,7 @@
             if (slot.shift === "D") dailyDCounts[d]++;
             else dailyNCounts[d]++;
             bodyHtml += `<td onclick="openAgCellModal('${slot.id}')" class="shift-cell text-center border-l border-slate-800 cursor-pointer">
-              ${getShiftBadgeHtml({ type: slot.shift, start: slot.start, end: slot.end }, true)}
+              ${getShiftBadgeHtml({ type: slot.shift, start: slot.start, end: slot.end })}
             </td>`;
           } else {
             bodyHtml += `<td class="shift-cell text-center border-l border-slate-800/60 text-slate-700">—</td>`;
@@ -1056,7 +1045,6 @@
 
     document.getElementById("admin-matrix-body").innerHTML = bodyHtml;
 
-    // Footer daily totals
     let footHtml = `<tr><td class="sticky-col py-2 px-3 text-[11px] text-slate-300">Obsazení D / N</td>`;
     for (let d = 1; d <= days; d++) {
       const dOk = dailyDCounts[d] >= 3;
@@ -1069,7 +1057,6 @@
     document.getElementById("admin-matrix-foot").innerHTML = footHtml;
   }
 
-  // Check N -> D rest rule
   function violatesNightToDay(userId, day, newType) {
     const mKey = getMonthKey();
     const uSched = (appState.schedules[mKey] && appState.schedules[mKey][userId]) || {};
@@ -1082,7 +1069,6 @@
     return null;
   }
 
-  // Drag and Drop strictly within the SAME employee row (bypasses pair/foreman auto-rules)
   function onShiftDragStart(e, userId, fromDay) {
     dragPayload = { userId, fromDay };
     e.dataTransfer.effectAllowed = "move";
@@ -1114,7 +1100,6 @@
     const movingEntry = uSched[dragPayload.fromDay];
     if (!movingEntry || !movingEntry.type) return;
 
-    // Temporarily remove from old day to validate rest rule on target day
     delete uSched[dragPayload.fromDay];
     const restErr = violatesNightToDay(targetUserId, targetDay, movingEntry.type);
     if (restErr) {
@@ -1132,7 +1117,6 @@
     pushToFirebase();
   }
 
-  // Cell edit modal (User)
   function openUserCellModal(userId, day) {
     const user = appState.users.find(u => u.id === userId);
     const mKey = getMonthKey();
@@ -1147,7 +1131,6 @@
     openModal("modal-cell-edit");
   }
 
-  // Cell edit modal (Agency slot)
   function openAgCellModal(slotId) {
     const slot = appState.agSlots.find(s => s.id === slotId);
     if (!slot) return;
@@ -1243,7 +1226,6 @@
     pushToFirebase();
   }
 
-  // Auto-scheduler ONLY for core employees (never touches agency workers)
   function runAutoSchedule() {
     const mKey = getMonthKey();
     const days = getDaysInMonth();
@@ -1252,22 +1234,16 @@
 
     if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
 
-    // 2-2-3 K/D cycle helper (14-day cycle)
     const isPatternA = (day) => {
-      const idx = (day - 1) % 14;
-      // Week 1: Tue(1), Fri(4), Sat(5), Sun(6) | Week 2: Wed(9), Thu(10) -> adjusted for calendar weekday
-      const dow = new Date(y, m, day).getDay(); // 0=Sun, 1=Mon...
+      const dow = new Date(y, m, day).getDay();
       const weekNum = Math.floor((day - 1) / 7) % 2;
-      if (weekNum === 0) return [2, 5, 6, 0].includes(dow); // Út, Pá, So, Ne
-      return [1, 3, 4].includes(dow); // Po, St, Čt
+      if (weekNum === 0) return [2, 5, 6, 0].includes(dow);
+      return [1, 3, 4].includes(dow);
     };
 
     const coreUsers = appState.users.filter(u => u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" && u.group !== "agency");
-
-    // Reset core schedule for month
     coreUsers.forEach(u => { appState.schedules[mKey][u.id] = {}; });
 
-    // 1. Foremen: Vojtech on Shift A (Night ONLY), Marek & Ladislav on Shift B (Night ONLY)
     coreUsers.forEach(u => {
       const low = u.name.toLowerCase();
       if (u.role === "foreman" || low.includes("vojtěch") || low.includes("marek") || low.includes("ladislav")) {
@@ -1279,8 +1255,6 @@
       }
     });
 
-    // 2. Paired teams & remaining core workers
-    // Pairs: (Adam + Daniel), (Hossen + Hossain), (Rahman + Islam)
     const pair1 = coreUsers.filter(u => u.name.includes("Doležal"));
     const pair2 = coreUsers.filter(u => u.name.includes("Hossen") || u.name.includes("Hossain"));
     const pair3 = coreUsers.filter(u => u.name.includes("Rahman") || u.name.includes("Islam"));
@@ -1308,7 +1282,6 @@
       assignUnit([u], idx % 2 === 0, true);
     });
 
-    // 3. Ensure target of ~3 people on Day shift (D) each day without violating N -> D
     for (let d = 1; d <= days; d++) {
       let dCount = coreUsers.filter(u => appState.schedules[mKey][u.id][d]?.type === "D").length;
       if (dCount < 3) {
@@ -1581,7 +1554,6 @@
 
     document.getElementById("emp-month-label").textContent = currentDate.toLocaleDateString("cs-CZ", { month: "long", year: "numeric" });
 
-    // Check for any rejected requests not yet dismissed
     const rejected = appState.requests.find(r => r.userId === currentUser.id && r.status === "rejected" && !r.seenByUser);
     const rejBanner = document.getElementById("emp-rejected-banner");
     if (rejected) {
@@ -1591,7 +1563,6 @@
       rejBanner.classList.add("hidden");
     }
 
-    // Unread admin replies indicator
     const thread = appState.chats[currentUser.id] || [];
     const hasUnread = thread.some(msg => msg.senderRole === "admin" && !msg.readByEmp);
     document.getElementById("emp-unread-badge").classList.toggle("hidden", !hasUnread);
@@ -1631,7 +1602,6 @@
       </div>
     `;
 
-    // Calendar grid (Monday first)
     const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;
     let calHtml = "";
     for (let i = 0; i < firstDow; i++) {
@@ -1675,7 +1645,6 @@
     pushToFirebase();
   }
 
-  // Employee Request Modal
   function openEmployeeRequestModal() {
     empReqType = "DOV";
     empReqDates = [];
@@ -1760,7 +1729,6 @@
       createdAt: new Date().toLocaleString("cs-CZ")
     });
 
-    // Also record in chat history
     if (!appState.chats[currentUser.id]) appState.chats[currentUser.id] = [];
     appState.chats[currentUser.id].push({
       id: "m_" + Date.now(),
@@ -2020,11 +1988,10 @@
   }
 
   function exportAuditCSV() {
-    let csv = "﻿Cas;Uzivatel;Typ;Detail
-";
+    const NL = String.fromCharCode(10);
+    let csv = "\uFEFFCas;Uzivatel;Typ;Detail" + NL;
     appState.auditLog.forEach(a => {
-      csv += `"${a.time}";"${a.actor}";"${a.type}";"${a.detail}"
-`;
+      csv += `"${a.time}";"${a.actor}";"${a.type}";"${a.detail}"` + NL;
     });
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
@@ -2059,16 +2026,13 @@
 
   // ==================== INITIALIZATION ====================
   async function initApp() {
-    // Load local cache first for instant boot
     const cached = safeStorage.get("depotshift_cache");
     if (cached) {
       try { mergeRemoteState(JSON.parse(cached)); } catch (e) {}
     }
 
-    // Pull latest state from Firebase
     await pullFromFirebase(true);
 
-    // Check URL QR token auto-login
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
     if (token) {
@@ -2079,14 +2043,12 @@
       }
     }
 
-    // Restore session if active
     const savedUid = safeStorage.get("depotshift_session_uid");
     if (savedUid) {
       const savedUser = appState.users.find(u => u.id === savedUid);
       if (savedUser) completeLogin(savedUser);
     }
 
-    // Periodic background sync every 15 seconds
     setInterval(() => pullFromFirebase(true), 15000);
   }
 
