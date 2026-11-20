@@ -19,6 +19,120 @@
     ::-webkit-scrollbar { height: 7px; width: 7px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+    /* ==================== SVĚTLÝ MOTIV (LIGHT THEME) ==================== */
+    body.theme-light { background: #f1f5f9; color: #0f172a; }
+    body.theme-light::-webkit-scrollbar-track,
+    body.theme-light *::-webkit-scrollbar-track { background: #e2e8f0; }
+    body.theme-light::-webkit-scrollbar-thumb,
+    body.theme-light *::-webkit-scrollbar-thumb { background: #94a3b8; }
+
+    body.theme-light #login-screen {
+      background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 55%, #ffffff 100%) !important;
+    }
+
+    /* Sticky buňky matice směn */
+    body.theme-light .sticky-col { background: #ffffff !important; border-right: 1px solid #cbd5e1 !important; color: #0f172a !important; }
+    body.theme-light .sticky-header { background: #f8fafc !important; color: #0f172a !important; border-bottom: 1px solid #cbd5e1 !important; }
+    body.theme-light .sticky-corner { background: #f1f5f9 !important; border-right: 1px solid #cbd5e1 !important; color: #0f172a !important; }
+    body.theme-light .shift-cell:hover { filter: brightness(0.95); }
+
+    /* Pozadí karet, panelů, modálů a řádků */
+    body.theme-light .bg-slate-950,
+    body.theme-light .bg-slate-950\/90,
+    body.theme-light .bg-slate-950\/60,
+    body.theme-light .bg-slate-950\/50,
+    body.theme-light .bg-slate-950\/40 { background-color: #f8fafc !important; }
+
+    body.theme-light .bg-slate-900,
+    body.theme-light .bg-slate-900\/95,
+    body.theme-light .bg-slate-900\/90,
+    body.theme-light .bg-slate-900\/70,
+    body.theme-light .bg-slate-900\/40 { background-color: #ffffff !important; }
+
+    body.theme-light .bg-slate-800,
+    body.theme-light .bg-slate-800\/90,
+    body.theme-light .bg-slate-800\/80,
+    body.theme-light .bg-slate-800\/70,
+    body.theme-light .bg-slate-800\/60 { background-color: #f1f5f9 !important; }
+
+    body.theme-light .bg-slate-700 { background-color: #e2e8f0 !important; color: #0f172a !important; }
+
+    body.theme-light .hover\:bg-slate-800:hover,
+    body.theme-light .hover\:bg-slate-800\/40:hover,
+    body.theme-light .hover\:bg-slate-700:hover { background-color: #e2e8f0 !important; }
+
+    /* Ohraničení a oddělovače */
+    body.theme-light .border-slate-800,
+    body.theme-light .border-slate-800\/90,
+    body.theme-light .border-slate-800\/80,
+    body.theme-light .border-slate-800\/70,
+    body.theme-light .border-slate-800\/60,
+    body.theme-light .border-slate-800\/40 { border-color: #e2e8f0 !important; }
+
+    body.theme-light .border-slate-700,
+    body.theme-light .border-slate-700\/80,
+    body.theme-light .border-slate-700\/70,
+    body.theme-light .border-slate-600 { border-color: #cbd5e1 !important; }
+
+    body.theme-light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+    body.theme-light .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
+
+    /* Typografie ve světlém režimu (zachová bílý text na barevných tlačítkách a odznacích) */
+    body.theme-light .text-white:not(.bg-blue-600):not(.bg-emerald-600):not(.bg-purple-600):not(.bg-red-500):not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) {
+      color: #0f172a !important;
+    }
+    body.theme-light .bg-blue-600,
+    body.theme-light .bg-blue-600 *,
+    body.theme-light .bg-emerald-600,
+    body.theme-light .bg-emerald-600 *,
+    body.theme-light .bg-purple-600,
+    body.theme-light .bg-purple-600 *,
+    body.theme-light .bg-red-500,
+    body.theme-light .bg-red-500 * { color: #ffffff !important; }
+
+    body.theme-light .text-slate-200:not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) { color: #1e293b !important; }
+    body.theme-light .text-slate-300:not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) { color: #334155 !important; }
+    body.theme-light .text-slate-400:not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) { color: #475569 !important; }
+    body.theme-light .text-slate-500 { color: #64748b !important; }
+    body.theme-light .text-slate-600,
+    body.theme-light .text-slate-700 { color: #94a3b8 !important; }
+
+    /* Kontrastní akcenty ve světlém motivu */
+    body.theme-light .text-emerald-300,
+    body.theme-light .text-emerald-400 { color: #047857 !important; }
+    body.theme-light .text-blue-300,
+    body.theme-light .text-blue-400 { color: #1d4ed8 !important; }
+    body.theme-light .text-sky-400 { color: #0369a1 !important; }
+    body.theme-light .text-purple-200,
+    body.theme-light .text-purple-300,
+    body.theme-light .text-purple-400 { color: #6d28d9 !important; }
+    body.theme-light .text-amber-200,
+    body.theme-light .text-amber-300,
+    body.theme-light .text-amber-400 { color: #b45309 !important; }
+    body.theme-light .text-red-200,
+    body.theme-light .text-red-300,
+    body.theme-light .text-red-400 { color: #b91c1c !important; }
+
+    /* Sekce agenturních pracovníků ve světlém režimu */
+    body.theme-light .bg-purple-950\/40 { background-color: #f3e8ff !important; }
+    body.theme-light .bg-purple-950\/10 { background-color: #faf5ff !important; }
+    body.theme-light .hover\:bg-purple-950\/20:hover { background-color: #f3e8ff !important; }
+
+    /* Formulářové prvky */
+    body.theme-light input:not([type="checkbox"]),
+    body.theme-light select,
+    body.theme-light textarea {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    body.theme-light input::placeholder { color: #94a3b8 !important; }
+
+    /* Toast notifikace ve světlém režimu */
+    body.theme-light .bg-emerald-950\/95 { background-color: #ecfdf5 !important; color: #065f46 !important; }
+    body.theme-light .bg-red-950\/95 { background-color: #fef2f2 !important; color: #991b1b !important; }
+    body.theme-light .bg-amber-950\/95 { background-color: #fffbeb !important; color: #92400e !important; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -26,7 +140,12 @@
 <!-- ==================== PŘIHLAŠOVACÍ OBRAZOVKA ==================== -->
 <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
   <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden">
-    <div class="bg-slate-950/90 p-6 text-center border-b border-slate-800">
+    <div class="relative bg-slate-950/90 p-6 pt-12 sm:pt-7 text-center border-b border-slate-800">
+      <button type="button" onclick="toggleTheme()" id="login-theme-btn" title="Přepnout světlý / tmavý motiv"
+        class="theme-toggle-btn absolute top-3.5 right-3.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1.5">
+        <i class="fa-solid fa-sun text-amber-400"></i>
+        <span>Světlý motiv</span>
+      </button>
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
         <i class="fa-solid fa-calendar-check text-2xl text-white"></i>
       </div>
@@ -108,6 +227,13 @@
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Přepínač světlého / tmavého motivu -->
+        <button type="button" onclick="toggleTheme()" id="header-theme-btn" title="Přepnout světlý / tmavý motiv"
+          class="theme-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-sun text-amber-400"></i>
+          <span class="hidden md:inline">Světlý motiv</span>
+        </button>
+
         <!-- Zvoneček žádostí pro Admina -->
         <button id="admin-req-bell" onclick="openAdminRequestsModal()" class="hidden relative px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-bold items-center gap-1.5">
           <i class="fa-solid fa-bell"></i>
@@ -603,6 +729,33 @@
   let empReqDates = [];
   let dragPayload = null;
   let isOnline = false;
+  let currentTheme = "dark";
+
+  // ==================== PŘEPÍNAČ MOTIVU (LIGHT / DARK) ====================
+  function applyTheme(theme) {
+    currentTheme = theme === "light" ? "light" : "dark";
+    const isLight = currentTheme === "light";
+    document.body.classList.toggle("theme-light", isLight);
+    safeStorage.set("depotshift_theme", currentTheme);
+
+    const loginBtn = document.getElementById("login-theme-btn");
+    if (loginBtn) {
+      loginBtn.innerHTML = isLight
+        ? `<i class="fa-solid fa-moon text-indigo-600"></i><span>Tmavý motiv</span>`
+        : `<i class="fa-solid fa-sun text-amber-400"></i><span>Světlý motiv</span>`;
+    }
+
+    const headerBtn = document.getElementById("header-theme-btn");
+    if (headerBtn) {
+      headerBtn.innerHTML = isLight
+        ? `<i class="fa-solid fa-moon text-indigo-600"></i><span class="hidden md:inline">Tmavý motiv</span>`
+        : `<i class="fa-solid fa-sun text-amber-400"></i><span class="hidden md:inline">Světlý motiv</span>`;
+    }
+  }
+
+  function toggleTheme() {
+    applyTheme(currentTheme === "dark" ? "light" : "dark");
+  }
 
   // ==================== FIREBASE SYNCHRONIZACE ====================
   function updateSyncBadges(online, labelText) {
@@ -2019,6 +2172,9 @@
 
   // ==================== INICIALIZACE ====================
   async function initApp() {
+    const savedTheme = safeStorage.get("depotshift_theme");
+    applyTheme(savedTheme || "dark");
+
     const cached = safeStorage.get("depotshift_cache");
     if (cached) {
       try { mergeRemoteState(JSON.parse(cached)); } catch (e) {}
