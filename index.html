@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -9,148 +9,79 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; }
-    .sticky-col { position: sticky; left: 0; z-index: 20; background: #1e293b; border-right: 1px solid #334155; }
-    .sticky-header { position: sticky; top: 0; z-index: 30; background: #1e293b; }
-    .sticky-corner { position: sticky; left: 0; top: 0; z-index: 40; background: #0f172a; border-right: 1px solid #334155; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; transition: background-color 0.2s, color 0.2s; }
+
+    /* Dark Theme (Default) */
+    [data-theme="dark"] body { background: #0f172a; color: #f8fafc; }
+    [data-theme="dark"] .sticky-col { position: sticky; left: 0; z-index: 20; background: #1e293b; border-right: 1px solid #334155; }
+    [data-theme="dark"] .sticky-header { position: sticky; top: 0; z-index: 30; background: #1e293b; }
+    [data-theme="dark"] .sticky-corner { position: sticky; left: 0; top: 0; z-index: 40; background: #0f172a; border-right: 1px solid #334155; }
+
+    /* Light Theme Overrides */
+    [data-theme="light"] body { background: #f1f5f9; color: #0f172a; }
+    [data-theme="light"] .bg-slate-950,
+    [data-theme="light"] .bg-slate-950\/90,
+    [data-theme="light"] .bg-slate-950\/60,
+    [data-theme="light"] .bg-slate-950\/50,
+    [data-theme="light"] .bg-slate-950\/40 { background-color: #e2e8f0 !important; }
+    [data-theme="light"] .bg-slate-900,
+    [data-theme="light"] .bg-slate-900\/90,
+    [data-theme="light"] .bg-slate-900\/70,
+    [data-theme="light"] .bg-slate-900\/40 { background-color: #ffffff !important; }
+    [data-theme="light"] .bg-slate-800,
+    [data-theme="light"] .bg-slate-800\/90,
+    [data-theme="light"] .bg-slate-800\/80,
+    [data-theme="light"] .bg-slate-800\/70,
+    [data-theme="light"] .bg-slate-800\/60 { background-color: #f8fafc !important; }
+    [data-theme="light"] .border-slate-800,
+    [data-theme="light"] .border-slate-800\/90,
+    [data-theme="light"] .border-slate-800\/80,
+    [data-theme="light"] .border-slate-800\/70,
+    [data-theme="light"] .border-slate-700,
+    [data-theme="light"] .border-slate-700\/80,
+    [data-theme="light"] .border-slate-600 { border-color: #cbd5e1 !important; }
+    [data-theme="light"] .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+    [data-theme="light"] .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
+    [data-theme="light"] .text-white { color: #0f172a !important; }
+    [data-theme="light"] .text-slate-200,
+    [data-theme="light"] .text-slate-300 { color: #334155 !important; }
+    [data-theme="light"] .text-slate-400,
+    [data-theme="light"] .text-slate-500 { color: #64748b !important; }
+    [data-theme="light"] .bg-blue-600.text-white,
+    [data-theme="light"] .bg-emerald-600.text-white,
+    [data-theme="light"] .bg-purple-600.text-white,
+    [data-theme="light"] .bg-red-500.text-white { color: #ffffff !important; }
+    [data-theme="light"] .bg-blue-600 .text-white,
+    [data-theme="light"] .bg-blue-600 i { color: #ffffff !important; }
+    [data-theme="light"] .sticky-col { position: sticky; left: 0; z-index: 20; background: #f8fafc; border-right: 1px solid #cbd5e1; }
+    [data-theme="light"] .sticky-header { position: sticky; top: 0; z-index: 30; background: #f1f5f9; }
+    [data-theme="light"] .sticky-corner { position: sticky; left: 0; top: 0; z-index: 40; background: #e2e8f0; border-right: 1px solid #cbd5e1; }
+    [data-theme="light"] #login-screen { background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 50%, #dbeafe 100%) !important; }
+
     .shift-cell { min-width: 58px; height: 48px; transition: transform 0.1s, filter 0.1s; user-select: none; }
-    .shift-cell:hover { filter: brightness(1.15); }
+    .shift-cell:hover { filter: brightness(1.12); }
     .drag-over { outline: 2px dashed #38bdf8 !important; outline-offset: -2px; background: rgba(56, 189, 248, 0.2) !important; }
     ::-webkit-scrollbar { height: 7px; width: 7px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-    /* ==================== SVĚTLÝ MOTIV (LIGHT THEME) ==================== */
-    body.theme-light { background: #f1f5f9; color: #0f172a; }
-    body.theme-light::-webkit-scrollbar-track,
-    body.theme-light *::-webkit-scrollbar-track { background: #e2e8f0; }
-    body.theme-light::-webkit-scrollbar-thumb,
-    body.theme-light *::-webkit-scrollbar-thumb { background: #94a3b8; }
-
-    body.theme-light #login-screen {
-      background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 55%, #ffffff 100%) !important;
-    }
-
-    /* Sticky buňky matice směn */
-    body.theme-light .sticky-col { background: #ffffff !important; border-right: 1px solid #cbd5e1 !important; color: #0f172a !important; }
-    body.theme-light .sticky-header { background: #f8fafc !important; color: #0f172a !important; border-bottom: 1px solid #cbd5e1 !important; }
-    body.theme-light .sticky-corner { background: #f1f5f9 !important; border-right: 1px solid #cbd5e1 !important; color: #0f172a !important; }
-    body.theme-light .shift-cell:hover { filter: brightness(0.95); }
-
-    /* Pozadí karet, panelů, modálů a řádků */
-    body.theme-light .bg-slate-950,
-    body.theme-light .bg-slate-950\/90,
-    body.theme-light .bg-slate-950\/60,
-    body.theme-light .bg-slate-950\/50,
-    body.theme-light .bg-slate-950\/40 { background-color: #f8fafc !important; }
-
-    body.theme-light .bg-slate-900,
-    body.theme-light .bg-slate-900\/95,
-    body.theme-light .bg-slate-900\/90,
-    body.theme-light .bg-slate-900\/70,
-    body.theme-light .bg-slate-900\/40 { background-color: #ffffff !important; }
-
-    body.theme-light .bg-slate-800,
-    body.theme-light .bg-slate-800\/90,
-    body.theme-light .bg-slate-800\/80,
-    body.theme-light .bg-slate-800\/70,
-    body.theme-light .bg-slate-800\/60 { background-color: #f1f5f9 !important; }
-
-    body.theme-light .bg-slate-700 { background-color: #e2e8f0 !important; color: #0f172a !important; }
-
-    body.theme-light .hover\:bg-slate-800:hover,
-    body.theme-light .hover\:bg-slate-800\/40:hover,
-    body.theme-light .hover\:bg-slate-700:hover { background-color: #e2e8f0 !important; }
-
-    /* Ohraničení a oddělovače */
-    body.theme-light .border-slate-800,
-    body.theme-light .border-slate-800\/90,
-    body.theme-light .border-slate-800\/80,
-    body.theme-light .border-slate-800\/70,
-    body.theme-light .border-slate-800\/60,
-    body.theme-light .border-slate-800\/40 { border-color: #e2e8f0 !important; }
-
-    body.theme-light .border-slate-700,
-    body.theme-light .border-slate-700\/80,
-    body.theme-light .border-slate-700\/70,
-    body.theme-light .border-slate-600 { border-color: #cbd5e1 !important; }
-
-    body.theme-light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
-    body.theme-light .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
-
-    /* Typografie ve světlém režimu (zachová bílý text na barevných tlačítkách a odznacích) */
-    body.theme-light .text-white:not(.bg-blue-600):not(.bg-emerald-600):not(.bg-purple-600):not(.bg-red-500):not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) {
-      color: #0f172a !important;
-    }
-    body.theme-light .bg-blue-600,
-    body.theme-light .bg-blue-600 *,
-    body.theme-light .bg-emerald-600,
-    body.theme-light .bg-emerald-600 *,
-    body.theme-light .bg-purple-600,
-    body.theme-light .bg-purple-600 *,
-    body.theme-light .bg-red-500,
-    body.theme-light .bg-red-500 * { color: #ffffff !important; }
-
-    body.theme-light .text-slate-200:not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) { color: #1e293b !important; }
-    body.theme-light .text-slate-300:not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) { color: #334155 !important; }
-    body.theme-light .text-slate-400:not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-purple-600 *):not(.bg-red-500 *) { color: #475569 !important; }
-    body.theme-light .text-slate-500 { color: #64748b !important; }
-    body.theme-light .text-slate-600,
-    body.theme-light .text-slate-700 { color: #94a3b8 !important; }
-
-    /* Kontrastní akcenty ve světlém motivu */
-    body.theme-light .text-emerald-300,
-    body.theme-light .text-emerald-400 { color: #047857 !important; }
-    body.theme-light .text-blue-300,
-    body.theme-light .text-blue-400 { color: #1d4ed8 !important; }
-    body.theme-light .text-sky-400 { color: #0369a1 !important; }
-    body.theme-light .text-purple-200,
-    body.theme-light .text-purple-300,
-    body.theme-light .text-purple-400 { color: #6d28d9 !important; }
-    body.theme-light .text-amber-200,
-    body.theme-light .text-amber-300,
-    body.theme-light .text-amber-400 { color: #b45309 !important; }
-    body.theme-light .text-red-200,
-    body.theme-light .text-red-300,
-    body.theme-light .text-red-400 { color: #b91c1c !important; }
-
-    /* Sekce agenturních pracovníků ve světlém režimu */
-    body.theme-light .bg-purple-950\/40 { background-color: #f3e8ff !important; }
-    body.theme-light .bg-purple-950\/10 { background-color: #faf5ff !important; }
-    body.theme-light .hover\:bg-purple-950\/20:hover { background-color: #f3e8ff !important; }
-
-    /* Formulářové prvky */
-    body.theme-light input:not([type="checkbox"]),
-    body.theme-light select,
-    body.theme-light textarea {
-      background-color: #f8fafc !important;
-      color: #0f172a !important;
-      border-color: #cbd5e1 !important;
-    }
-    body.theme-light input::placeholder { color: #94a3b8 !important; }
-
-    /* Toast notifikace ve světlém režimu */
-    body.theme-light .bg-emerald-950\/95 { background-color: #ecfdf5 !important; color: #065f46 !important; }
-    body.theme-light .bg-red-950\/95 { background-color: #fef2f2 !important; color: #991b1b !important; }
-    body.theme-light .bg-amber-950\/95 { background-color: #fffbeb !important; color: #92400e !important; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-<!-- ==================== PŘIHLAŠOVACÍ OBRAZOVKA ==================== -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative">
+  <!-- Theme Toggle on Login -->
+  <button type="button" onclick="toggleTheme()" class="theme-toggle-btn absolute top-4 right-4 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs font-bold shadow-lg flex items-center gap-2 hover:border-blue-500 transition">
+    <i class="fa-solid fa-sun text-amber-400"></i> <span>Světlý motiv</span>
+  </button>
+
   <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden">
-    <div class="relative bg-slate-950/90 p-6 pt-12 sm:pt-7 text-center border-b border-slate-800">
-      <button type="button" onclick="toggleTheme()" id="login-theme-btn" title="Přepnout světlý / tmavý motiv"
-        class="theme-toggle-btn absolute top-3.5 right-3.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1.5">
-        <i class="fa-solid fa-sun text-amber-400"></i>
-        <span>Světlý motiv</span>
-      </button>
+    <div class="bg-slate-950/90 p-6 text-center border-b border-slate-800">
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
         <i class="fa-solid fa-calendar-check text-2xl text-white"></i>
       </div>
       <h1 class="text-2xl font-extrabold tracking-tight text-white">DepotShift</h1>
-      <p class="text-xs text-slate-400 mt-1">Warehouse Roster &amp; Agency Planner • Přihlášení heslem nebo QR</p>
+      <p class="text-xs text-slate-400 mt-1">Warehouse Roster &amp; Agency Planner • Více dep</p>
       <div id="login-sync-badge" class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Připojování k databázi...
       </div>
@@ -175,7 +106,7 @@
         </div>
       </div>
 
-      <div id="login-error" class="hidden p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs font-medium"></div>
+      <div id="login-error" class="hidden p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-400 text-xs font-medium"></div>
 
       <button type="submit" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-bold text-sm shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2">
         <i class="fa-solid fa-right-to-bracket"></i> Přihlásit se do systému
@@ -185,20 +116,20 @@
         <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center mb-2.5">Rychlý testovací přístup (1 klik)</p>
         <div class="grid grid-cols-2 gap-2">
           <button type="button" onclick="quickLogin('admin','admin123')" class="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-left transition">
-            <div class="text-xs font-bold text-emerald-300">Admin (Peter)</div>
-            <div class="text-[10px] text-emerald-400/80 font-mono">admin / admin123</div>
+            <div class="text-xs font-bold text-emerald-500">Admin (Peter)</div>
+            <div class="text-[10px] text-emerald-600 font-mono">admin / admin123</div>
           </button>
           <button type="button" onclick="quickLogin('roy','roy123')" class="p-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-left transition">
-            <div class="text-xs font-bold text-purple-300">Koordinátor Roy</div>
-            <div class="text-[10px] text-purple-400/80 font-mono">roy / roy123</div>
+            <div class="text-xs font-bold text-purple-500">Koordinátor Roy</div>
+            <div class="text-[10px] text-purple-600 font-mono">roy / roy123</div>
           </button>
           <button type="button" onclick="quickLogin('vojtech','vojtech123')" class="p-2.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-left transition">
-            <div class="text-xs font-bold text-blue-300">Předák Vojtěch</div>
-            <div class="text-[10px] text-blue-400/80 font-mono">vojtech / vojtech123</div>
+            <div class="text-xs font-bold text-blue-500">Předák Vojtěch</div>
+            <div class="text-[10px] text-blue-600 font-mono">vojtech / vojtech123</div>
           </button>
           <button type="button" onclick="quickLogin('adam','adam123')" class="p-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-left transition">
-            <div class="text-xs font-bold text-amber-300">Skladník Adam</div>
-            <div class="text-[10px] text-amber-400/80 font-mono">adam / adam123</div>
+            <div class="text-xs font-bold text-amber-500">Skladník Adam</div>
+            <div class="text-[10px] text-amber-600 font-mono">adam / adam123</div>
           </button>
         </div>
       </div>
@@ -206,9 +137,9 @@
   </div>
 </div>
 
-<!-- ==================== HLAVNÍ APLIKACE ==================== -->
+<!-- ==================== MAIN APPLICATION ==================== -->
 <div id="main-app" class="hidden flex-col min-h-screen">
-  <!-- HORNÍ LIŠTA -->
+  <!-- TOP NAVBAR -->
   <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-3 sm:px-6 py-3">
     <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
@@ -218,7 +149,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">DepotShift</span>
-            <button onclick="manualSyncNow()" id="header-sync-badge" title="Kliknutím vynutíte synchronizaci" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+            <button onclick="manualSyncNow()" id="header-sync-badge" title="Kliknutím vynutíte synchronizaci" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Sync...
             </button>
           </div>
@@ -227,15 +158,13 @@
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Přepínač světlého / tmavého motivu -->
-        <button type="button" onclick="toggleTheme()" id="header-theme-btn" title="Přepnout světlý / tmavý motiv"
-          class="theme-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5">
-          <i class="fa-solid fa-sun text-amber-400"></i>
-          <span class="hidden md:inline">Světlý motiv</span>
+        <!-- Theme Toggle Button -->
+        <button type="button" onclick="toggleTheme()" class="theme-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-sun text-amber-400"></i> <span class="hidden md:inline">Světlý motiv</span>
         </button>
 
-        <!-- Zvoneček žádostí pro Admina -->
-        <button id="admin-req-bell" onclick="openAdminRequestsModal()" class="hidden relative px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-bold items-center gap-1.5">
+        <!-- Admin pending requests bell -->
+        <button id="admin-req-bell" onclick="openAdminRequestsModal()" class="hidden relative px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 text-xs font-bold items-center gap-1.5">
           <i class="fa-solid fa-bell"></i>
           <span class="hidden sm:inline">Žádosti</span>
           <span id="admin-req-count" class="px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold">0</span>
@@ -243,28 +172,39 @@
 
         <div class="text-right">
           <div id="current-user-name" class="text-xs sm:text-sm font-bold text-white"></div>
-          <div id="current-user-role" class="text-[10px] uppercase tracking-wider font-semibold text-blue-400"></div>
+          <div id="current-user-role" class="text-[10px] uppercase tracking-wider font-semibold text-blue-500"></div>
         </div>
 
-        <button onclick="logout()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 hover:text-red-300 border border-slate-700 text-slate-300 text-xs font-bold transition flex items-center gap-1.5">
+        <button onclick="logout()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 hover:text-red-400 border border-slate-700 text-slate-300 text-xs font-bold transition flex items-center gap-1.5">
           <i class="fa-solid fa-right-from-bracket"></i>
           <span class="hidden sm:inline">Odhlásit</span>
         </button>
       </div>
     </div>
 
-    <!-- NAVIGAČNÍ ZÁLOŽKY -->
+    <!-- NAVIGATION TABS -->
     <nav id="nav-tabs" class="max-w-[1600px] mx-auto mt-3 pt-2.5 border-t border-slate-800/80 flex gap-1.5 overflow-x-auto pb-1"></nav>
   </header>
 
-  <!-- NOTIFIKAČNÍ BUBLINA -->
+  <!-- TOAST NOTIFICATION -->
   <div id="toast-box" class="fixed bottom-4 right-4 z-50 hidden max-w-sm px-4 py-3 rounded-xl shadow-2xl text-xs font-bold border"></div>
 
-  <!-- OBSAHOVÁ ČÁST -->
+  <!-- CONTENT AREA -->
   <main class="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-6">
 
-    <!-- ==================== ADMIN: PLÁNOVÁNÍ SMĚN ==================== -->
+    <!-- ==================== ADMIN VIEW: SCHEDULE ==================== -->
     <section id="view-admin-schedule" class="hidden space-y-4">
+      <!-- Depot Selector Bar -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mr-1"><i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Aktivní depo:</span>
+          <div id="admin-depot-pills" class="flex flex-wrap gap-1.5"></div>
+        </div>
+        <button onclick="activeAdminTab='users'; buildNavigationForRole(); renderActiveRoleView();" class="text-xs font-bold text-blue-500 hover:underline">
+          <i class="fa-solid fa-plus-circle mr-1"></i> Spravovat / přidat depo
+        </button>
+      </div>
+
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
@@ -274,18 +214,18 @@
 
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="runAutoSchedule()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Autoplánování (kmenoví)
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Autoplánování (<span id="auto-depot-name"></span>)
           </button>
           <button onclick="openAgRequestModal()" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-user-plus"></i> Přidat požadavek AG
           </button>
-          <button onclick="clearCurrentMonth()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-300 border border-slate-700 text-xs font-bold">
-            <i class="fa-solid fa-eraser"></i> Vyčistit měsíc
+          <button onclick="clearCurrentMonth()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-slate-700 text-xs font-bold">
+            <i class="fa-solid fa-eraser"></i> Vyčistit depo
           </button>
         </div>
       </div>
 
-      <!-- Legenda -->
+      <!-- Legend & Drag info -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
         <div class="flex flex-wrap items-center gap-2">
           <span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">Denní (<span id="lbl-d-time"></span>)</span>
@@ -300,7 +240,7 @@
         </div>
       </div>
 
-      <!-- Matice směn -->
+      <!-- Matrix Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
         <div class="overflow-x-auto max-h-[72vh]">
           <table class="w-full border-collapse text-xs">
@@ -312,15 +252,35 @@
       </div>
     </section>
 
-    <!-- ==================== ADMIN: UŽIVATELÉ A ČASY SMĚN ==================== -->
+    <!-- ==================== ADMIN VIEW: USERS, DEPOTS & SETTINGS ==================== -->
     <section id="view-admin-users" class="hidden space-y-5">
+      <!-- Depots Management -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+              <i class="fa-solid fa-warehouse text-blue-500"></i> Správa dep (poboček)
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Vytvořte nová depa. V tabulce níže pak každému zaměstnanci a koordinátorovi zaškrtnete, na kterých depech působí.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="new-depot-name" type="text" placeholder="Název nového depa (např. Depo Praha)" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-56 focus:outline-none focus:border-blue-500" />
+            <button type="button" onclick="createNewDepot()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Přidat depo
+            </button>
+          </div>
+        </div>
+        <div id="depots-list-box" class="flex flex-wrap gap-2.5"></div>
+      </div>
+
+      <!-- Shift Times Config -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
         <h3 class="text-base font-extrabold text-white mb-4 flex items-center gap-2">
           <i class="fa-solid fa-clock text-blue-400"></i> Administrace časů směn
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-            <div class="text-xs font-bold text-amber-400 mb-2">Denní směna (Kmenoví)</div>
+            <div class="text-xs font-bold text-amber-500 mb-2">Denní směna (Kmenoví)</div>
             <div class="flex items-center gap-2">
               <input id="cfg-d-start" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
               <span class="text-slate-400">–</span>
@@ -328,7 +288,7 @@
             </div>
           </div>
           <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-            <div class="text-xs font-bold text-blue-400 mb-2">Noční směna (Kmenoví)</div>
+            <div class="text-xs font-bold text-blue-500 mb-2">Noční směna (Kmenoví)</div>
             <div class="flex items-center gap-2">
               <input id="cfg-n-start" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
               <span class="text-slate-400">–</span>
@@ -336,7 +296,7 @@
             </div>
           </div>
           <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-            <div class="text-xs font-bold text-purple-400 mb-2">Noční směna (Agenturní výchozí)</div>
+            <div class="text-xs font-bold text-purple-500 mb-2">Noční směna (Agenturní výchozí)</div>
             <div class="flex items-center gap-2">
               <input id="cfg-ag-start" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
               <span class="text-slate-400">–</span>
@@ -346,13 +306,14 @@
         </div>
       </div>
 
+      <!-- Users Management (Draft mode with Save button + Depot Checkboxes) -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-users-gear text-emerald-400"></i> Správa uživatelů, rolí a přístupů
+              <i class="fa-solid fa-users-gear text-emerald-500"></i> Správa uživatelů, rolí a přiřazení k depům
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Provedené změny se projeví až po kliknutí na tlačítko <strong>Uložit změny</strong>.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Zaškrtněte u každého zaměstnance i koordinátora depa, na kterých pracuje / má přístup, a potvrďte tlačítkem <strong>Uložit změny</strong>.</p>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="addDraftUser()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
@@ -370,10 +331,11 @@
               <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
                 <th class="py-2.5 px-2">Jméno a příjmení</th>
                 <th class="py-2.5 px-2">Pozice / Role</th>
+                <th class="py-2.5 px-2">Přiřazená depa (práce / přístup)</th>
                 <th class="py-2.5 px-2">Login</th>
                 <th class="py-2.5 px-2">Heslo</th>
-                <th class="py-2.5 px-2 text-center">V plánu směn</th>
-                <th class="py-2.5 px-2 text-center">QR přístup</th>
+                <th class="py-2.5 px-2 text-center">V plánu</th>
+                <th class="py-2.5 px-2 text-center">QR</th>
                 <th class="py-2.5 px-2 text-right">Akce</th>
               </tr>
             </thead>
@@ -383,12 +345,12 @@
       </div>
     </section>
 
-    <!-- ==================== ADMIN: ZPRÁVY & POŽADAVKY ==================== -->
+    <!-- ==================== ADMIN VIEW: CHAT & REQUESTS ==================== -->
     <section id="view-admin-chat" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <h3 class="text-sm font-extrabold text-white mb-3 flex items-center justify-between">
-          <span><i class="fa-solid fa-comments text-blue-400 mr-1.5"></i> Konverzace se zaměstnanci</span>
-          <button onclick="openAdminRequestsModal()" class="text-[11px] px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+          <span><i class="fa-solid fa-comments text-blue-500 mr-1.5"></i> Konverzace se zaměstnanci</span>
+          <button onclick="openAdminRequestsModal()" class="text-[11px] px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">
             Žádosti (<span id="chat-tab-req-count">0</span>)
           </button>
         </h3>
@@ -409,10 +371,10 @@
       </div>
     </section>
 
-    <!-- ==================== ADMIN: AUDIT LOG ==================== -->
+    <!-- ==================== ADMIN VIEW: AUDIT LOG ==================== -->
     <section id="view-admin-audit" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-base font-extrabold text-white"><i class="fa-solid fa-clock-rotate-left text-amber-400 mr-2"></i>Audit Log provedených změn</h3>
+        <h3 class="text-base font-extrabold text-white"><i class="fa-solid fa-clock-rotate-left text-amber-500 mr-2"></i>Audit Log provedených změn</h3>
         <button onclick="exportAuditCSV()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200">
           <i class="fa-solid fa-file-csv mr-1"></i> Export CSV
         </button>
@@ -432,26 +394,33 @@
       </div>
     </section>
 
-    <!-- ==================== KOORDINÁTOR (ROY): POŽADAVKY AG ==================== -->
+    <!-- ==================== COORDINATOR (ROY) VIEW: AG REQUESTS ==================== -->
     <section id="view-coord-requests" class="hidden space-y-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-base sm:text-lg font-extrabold text-white">Požadavky na agenturní zaměstnance</h2>
-            <p class="text-xs text-slate-400">Doplňte jména konkrétních agenturních pracovníků ke dnům a potvrďte tlačítkem <strong>Uložit změny</strong>.</p>
+            <p class="text-xs text-slate-400">Zobrazují se pouze požadavky pro vaše přidělená depa. Doplňte jména a klikněte na <strong>Uložit změny</strong>.</p>
           </div>
           <button onclick="saveCoordinatorAgAssignments()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg flex items-center gap-1.5">
             <i class="fa-solid fa-floppy-disk"></i> Uložit změny
           </button>
         </div>
+
+        <!-- Depot filter for Coordinator -->
+        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800">
+          <span class="text-xs font-bold text-slate-400">Filtr depa:</span>
+          <div id="coord-depot-pills" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
         <div id="coord-requests-list" class="space-y-3"></div>
       </div>
     </section>
 
-    <!-- ==================== KOORDINÁTOR (ROY): PŘEHLED SMĚN AG ==================== -->
+    <!-- ==================== COORDINATOR (ROY) VIEW: AG SUMMARY ==================== -->
     <section id="view-coord-summary" class="hidden space-y-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
-        <div class="flex items-center justify-between mb-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <h2 class="text-base sm:text-lg font-extrabold text-white">Přehled odpracovaných směn agenturních zaměstnanců</h2>
           <div class="flex items-center gap-2">
             <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-slate-800 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
@@ -463,13 +432,13 @@
       </div>
     </section>
 
-    <!-- ==================== ZAMĚSTNANEC / PŘEDÁK: OSOBNÍ ROZPIS ==================== -->
+    <!-- ==================== EMPLOYEE / FOREMAN PERSONAL VIEW ==================== -->
     <section id="view-employee-home" class="hidden space-y-4">
-      <div id="emp-rejected-banner" class="hidden p-4 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-200 flex items-start justify-between gap-3">
+      <div id="emp-rejected-banner" class="hidden p-4 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-400 flex items-start justify-between gap-3">
         <div class="flex items-start gap-3">
-          <i class="fa-solid fa-circle-exclamation text-red-400 text-lg mt-0.5"></i>
+          <i class="fa-solid fa-circle-exclamation text-red-500 text-lg mt-0.5"></i>
           <div>
-            <div class="font-extrabold text-sm text-red-300">Váš požadavek byl zamítnut / zrušen</div>
+            <div class="font-extrabold text-sm">Váš požadavek byl zamítnut / zrušen</div>
             <div id="emp-rejected-text" class="text-xs mt-1"></div>
           </div>
         </div>
@@ -497,11 +466,15 @@
         </div>
       </div>
 
+      <div id="emp-assigned-depots-bar" class="text-xs text-slate-400 px-1"></div>
+
+      <!-- Employee Stats -->
       <div id="emp-stats-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2.5"></div>
 
+      <!-- Personal Monthly Calendar Grid -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <div class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-bold text-slate-400 mb-2">
-          <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div class="text-amber-400">So</div><div class="text-amber-400">Ne</div>
+          <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div class="text-amber-500">So</div><div class="text-amber-500">Ne</div>
         </div>
         <div id="emp-calendar-grid" class="grid grid-cols-7 gap-1.5"></div>
       </div>
@@ -509,7 +482,7 @@
   </main>
 </div>
 
-<!-- ==================== MODÁL: ÚPRAVA BUŇKY (ADMIN) ==================== -->
+<!-- ==================== MODAL: CELL EDIT (ADMIN) ==================== -->
 <div id="modal-cell-edit" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -531,7 +504,7 @@
     </div>
 
     <div id="cell-custom-time-box" class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2.5">
-      <div class="text-xs font-bold text-purple-300 flex items-center justify-between">
+      <div class="text-xs font-bold text-purple-400 flex items-center justify-between">
         <span><i class="fa-solid fa-clock mr-1"></i> Přesný čas směny (od – do)</span>
         <button onclick="deleteAgSlotFromCell()" id="btn-delete-ag-slot" class="hidden text-[11px] text-red-400 hover:underline font-bold">
           <i class="fa-solid fa-trash"></i> Smazat AG slot
@@ -547,14 +520,18 @@
   </div>
 </div>
 
-<!-- ==================== MODÁL: PŘIDAT POŽADAVEK AG ==================== -->
+<!-- ==================== MODAL: ADD AG REQUEST (ADMIN) ==================== -->
 <div id="modal-ag-request" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-user-plus text-purple-400 mr-1.5"></i>Nový požadavek na AG zaměstnance</h3>
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-user-plus text-purple-500 mr-1.5"></i>Nový požadavek na AG zaměstnance</h3>
       <button onclick="closeModal('modal-ag-request')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div class="space-y-3">
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Cílové depo</label>
+        <select id="ag-req-depot" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select>
+      </div>
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1">Datum směny</label>
         <input id="ag-req-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
@@ -590,18 +567,18 @@
   </div>
 </div>
 
-<!-- ==================== MODÁL: POŽADAVEK ZAMĚSTNANCE ==================== -->
+<!-- ==================== MODAL: EMPLOYEE REQUEST (DOV / NV / PN) ==================== -->
 <div id="modal-emp-request" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-calendar-plus text-amber-400 mr-2"></i>Nový požadavek</h3>
+      <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-calendar-plus text-amber-500 mr-2"></i>Nový požadavek</h3>
       <button onclick="closeModal('modal-emp-request')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
 
     <div>
       <label class="block text-xs font-bold text-slate-400 mb-2">1. Vyberte typ požadavku:</label>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <button type="button" onclick="selectEmpReqType('DOV')" id="req-type-DOV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-emerald-500/20 border-emerald-400 text-emerald-200">
+        <button type="button" onclick="selectEmpReqType('DOV')" id="req-type-DOV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-emerald-500/20 border-emerald-400 text-emerald-500">
           <i class="fa-solid fa-umbrella-beach block mb-1 text-sm"></i> Žádost o Dovolenou
         </button>
         <button type="button" onclick="selectEmpReqType('NV')" id="req-type-NV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300">
@@ -616,7 +593,7 @@
     <div>
       <div class="flex items-center justify-between mb-2">
         <label class="text-xs font-bold text-slate-400">2. Klikněte na dny v kalendáři (lze vybrat více):</label>
-        <span id="emp-req-selected-count" class="text-xs font-bold text-amber-400">Vybráno: 0 dnů</span>
+        <span id="emp-req-selected-count" class="text-xs font-bold text-amber-500">Vybráno: 0 dnů</span>
       </div>
       <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-500 mb-1">
         <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div>So</div><div>Ne</div>
@@ -636,22 +613,22 @@
   </div>
 </div>
 
-<!-- ==================== MODÁL: PŘEHLED POŽADAVKŮ PRO ADMINA ==================== -->
+<!-- ==================== MODAL: ADMIN INCOMING REQUESTS ==================== -->
 <div id="modal-admin-requests" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-5 space-y-4 shadow-2xl max-h-[88vh] overflow-y-auto">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-inbox text-amber-400 mr-2"></i>Přehled požadavků zaměstnanců</h3>
+      <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-inbox text-amber-500 mr-2"></i>Přehled požadavků zaměstnanců</h3>
       <button onclick="closeModal('modal-admin-requests')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div id="admin-requests-list" class="space-y-3"></div>
   </div>
 </div>
 
-<!-- ==================== MODÁL: CHAT ZAMĚSTNANCE ==================== -->
+<!-- ==================== MODAL: EMPLOYEE CHAT ==================== -->
 <div id="modal-emp-chat" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-4 flex flex-col h-[75vh] shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-comments text-blue-400 mr-1.5"></i>Soukromá zpráva pro Admina</h3>
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-comments text-blue-500 mr-1.5"></i>Soukromá zpráva pro Admina</h3>
       <button onclick="closeModal('modal-emp-chat')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div id="emp-chat-messages" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
@@ -662,7 +639,7 @@
   </div>
 </div>
 
-<!-- ==================== MODÁL: QR KÓD ==================== -->
+<!-- ==================== MODAL: QR CODE ==================== -->
 <div id="modal-qr" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 text-center space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -680,38 +657,69 @@
 <script>
   const FIREBASE_DB_URL = "https://planovani-dochazky-default-rtdb.europe-west1.firebasedatabase.app/depotshift_v1.json";
 
+  // Safe storage wrapper
   const memStore = {};
   const safeStorage = {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; } }
   };
 
-  const DEFAULT_USERS = [
-    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, group: "admin" },
-    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, group: "coordinator" },
-    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, group: "core" },
-    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, group: "core" },
-    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, group: "core" },
-    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, group: "core" },
-    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, group: "core" },
-    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, group: "core" },
-    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, group: "core" },
-    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, group: "core" },
-    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, group: "core" },
-    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, group: "core" },
-    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, group: "core" },
-    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, group: "core" },
-    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, group: "core" }
+  // ==================== THEME ENGINE (DARK / LIGHT) ====================
+  function applyTheme(theme) {
+    const t = theme === "light" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", t);
+    safeStorage.set("depotshift_theme", t);
+    document.querySelectorAll(".theme-toggle-btn").forEach(btn => {
+      if (t === "light") {
+        btn.innerHTML = `<i class="fa-solid fa-moon text-indigo-600"></i> <span class="hidden md:inline">Tmavý motiv</span>`;
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-sun text-amber-400"></i> <span class="hidden md:inline">Světlý motiv</span>`;
+      }
+    });
+  }
+
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(cur === "dark" ? "light" : "dark");
+  }
+
+  // Default Depots
+  const DEFAULT_DEPOTS = [
+    { id: "depo_plzen", name: "Depo Plzeň" },
+    { id: "depo_teplice", name: "Depo Teplice" }
   ];
 
+  // Default Users with assigned Depots
+  const DEFAULT_USERS = [
+    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"] },
+    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"] },
+    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"] },
+    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"] },
+    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"] },
+    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"] },
+    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"] },
+    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"] }
+  ];
+
+  // Global App State
   let appState = {
+    depots: JSON.parse(JSON.stringify(DEFAULT_DEPOTS)),
     users: JSON.parse(JSON.stringify(DEFAULT_USERS)),
     shiftTimes: {
       D: { start: "03:00", end: "15:00" },
       N: { start: "18:30", end: "06:30" },
       AG: { start: "19:00", end: "07:00" }
     },
+    // schedules[YYYY-MM][depotId][userId][day] = { type: 'D'|'N'|'DOV'|'NV'|'PN'|'A', start?, end? }
     schedules: {},
+    // agSlots: [ { id, depotId, date: 'YYYY-MM-DD', label, assignedName, shift, start, end } ]
     agSlots: [],
     requests: [],
     chats: {},
@@ -720,6 +728,8 @@
 
   let currentUser = null;
   let currentDate = new Date(2026, 10, 1);
+  let activeDepotId = "depo_plzen";
+  let coordSelectedDepotId = "ALL";
   let activeAdminTab = "schedule";
   let activeCoordTab = "requests";
   let draftUsers = [];
@@ -728,63 +738,86 @@
   let empReqType = "DOV";
   let empReqDates = [];
   let dragPayload = null;
-  let isOnline = false;
-  let currentTheme = "dark";
 
-  // ==================== PŘEPÍNAČ MOTIVU (LIGHT / DARK) ====================
-  function applyTheme(theme) {
-    currentTheme = theme === "light" ? "light" : "dark";
-    const isLight = currentTheme === "light";
-    document.body.classList.toggle("theme-light", isLight);
-    safeStorage.set("depotshift_theme", currentTheme);
-
-    const loginBtn = document.getElementById("login-theme-btn");
-    if (loginBtn) {
-      loginBtn.innerHTML = isLight
-        ? `<i class="fa-solid fa-moon text-indigo-600"></i><span>Tmavý motiv</span>`
-        : `<i class="fa-solid fa-sun text-amber-400"></i><span>Světlý motiv</span>`;
+  // ==================== STATE MIGRATION & HELPERS ====================
+  function ensureMultiDepotConsistency() {
+    if (!Array.isArray(appState.depots) || appState.depots.length === 0) {
+      appState.depots = JSON.parse(JSON.stringify(DEFAULT_DEPOTS));
+    }
+    const defaultDepotId = appState.depots[0].id;
+    if (!appState.depots.some(d => d.id === activeDepotId)) {
+      activeDepotId = defaultDepotId;
     }
 
-    const headerBtn = document.getElementById("header-theme-btn");
-    if (headerBtn) {
-      headerBtn.innerHTML = isLight
-        ? `<i class="fa-solid fa-moon text-indigo-600"></i><span class="hidden md:inline">Tmavý motiv</span>`
-        : `<i class="fa-solid fa-sun text-amber-400"></i><span class="hidden md:inline">Světlý motiv</span>`;
-    }
+    // Ensure every user has a depots array
+    appState.users.forEach(u => {
+      if (!Array.isArray(u.depots)) {
+        const def = DEFAULT_USERS.find(x => x.id === u.id);
+        u.depots = def ? [...def.depots] : [defaultDepotId];
+      }
+    });
+
+    // Migrate legacy single-depot schedules[mKey][userId] -> schedules[mKey][defaultDepotId][userId]
+    Object.keys(appState.schedules || {}).forEach(mKey => {
+      const mObj = appState.schedules[mKey];
+      if (!mObj || typeof mObj !== "object") return;
+      const keys = Object.keys(mObj);
+      const isLegacyUserMap = keys.some(k => k.startsWith("u_") || appState.users.some(u => u.id === k));
+      if (isLegacyUserMap) {
+        const migrated = {};
+        appState.depots.forEach(d => { migrated[d.id] = {}; });
+        keys.forEach(uid => {
+          migrated[defaultDepotId][uid] = mObj[uid];
+        });
+        appState.schedules[mKey] = migrated;
+      }
+    });
+
+    // Ensure every agSlot has depotId
+    appState.agSlots.forEach(s => {
+      if (!s.depotId) s.depotId = defaultDepotId;
+    });
   }
 
-  function toggleTheme() {
-    applyTheme(currentTheme === "dark" ? "light" : "dark");
+  function getDepotName(depotId) {
+    const d = appState.depots.find(x => x.id === depotId);
+    return d ? d.name : "Hlavní depo";
   }
 
-  // ==================== FIREBASE SYNCHRONIZACE ====================
+  function getDepotScheduleMap(mKey, depotId = activeDepotId) {
+    if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
+    if (!appState.schedules[mKey][depotId]) appState.schedules[mKey][depotId] = {};
+    return appState.schedules[mKey][depotId];
+  }
+
+  // ==================== FIREBASE SYNC ENGINE ====================
   function updateSyncBadges(online, labelText) {
-    isOnline = online;
     const loginBadge = document.getElementById("login-sync-badge");
     const headerBadge = document.getElementById("header-sync-badge");
     if (online) {
       if (loginBadge) {
-        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30";
-        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> ${labelText || "Firebase Online"}`;
+        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30";
+        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${labelText || "Firebase Online"}`;
       }
       if (headerBadge) {
-        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30";
-        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${labelText || "Firebase Online"}`;
+        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30";
+        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ${labelText || "Online"}`;
       }
     } else {
       if (loginBadge) {
-        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30";
-        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> ${labelText || "Lokální režim (připraveno)"}`;
+        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-500 border border-amber-500/30";
+        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> ${labelText || "Lokální režim"}`;
       }
       if (headerBadge) {
-        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30";
-        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Lokální režim`;
+        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-500 border border-amber-500/30";
+        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Lokální`;
       }
     }
   }
 
   function mergeRemoteState(remote) {
     if (!remote || typeof remote !== "object") return;
+    if (Array.isArray(remote.depots) && remote.depots.length > 0) appState.depots = remote.depots;
     if (Array.isArray(remote.users) && remote.users.length > 0) appState.users = remote.users;
     if (remote.shiftTimes) appState.shiftTimes = remote.shiftTimes;
     if (remote.schedules) appState.schedules = remote.schedules;
@@ -792,6 +825,7 @@
     if (Array.isArray(remote.requests)) appState.requests = remote.requests;
     if (remote.chats) appState.chats = remote.chats;
     if (Array.isArray(remote.auditLog)) appState.auditLog = remote.auditLog;
+    ensureMultiDepotConsistency();
   }
 
   async function fetchWithTimeout(url, options = {}, timeoutMs = 6000) {
@@ -826,7 +860,7 @@
       }
       if (!silent) showToast("Synchronizováno s databází.", "success");
     } catch (err) {
-      updateSyncBadges(false, "Lokální režim (připraveno)");
+      updateSyncBadges(false, "Lokální režim");
       if (!silent) showToast("Firebase nedostupná – běží lokální záloha.", "warn");
     }
   }
@@ -842,7 +876,7 @@
       if (!res.ok) throw new Error("HTTP " + res.status);
       updateSyncBadges(true, "Uloženo v cloudu");
     } catch (err) {
-      updateSyncBadges(false, "Lokální režim (uloženo)");
+      updateSyncBadges(false, "Lokální režim");
       if (!silent) showToast("Uloženo lokálně (Firebase nedostupná).", "warn");
     }
   }
@@ -851,7 +885,7 @@
     pullFromFirebase(false);
   }
 
-  // ==================== POMOCNÉ FUNKCE ====================
+  // ==================== DATE & HOURS HELPERS ====================
   function getMonthKey(dateObj = currentDate) {
     const y = dateObj.getFullYear();
     const m = String(dateObj.getMonth() + 1).padStart(2, "0");
@@ -918,7 +952,7 @@
     if (el) { el.classList.add("hidden"); el.classList.remove("flex"); }
   }
 
-  // ==================== PŘIHLÁŠENÍ A RELACE ====================
+  // ==================== AUTHENTICATION ====================
   function handleLoginSubmit(e) {
     e.preventDefault();
     const loginVal = document.getElementById("login-username").value.trim().toLowerCase();
@@ -955,6 +989,10 @@
     document.getElementById("current-user-name").textContent = user.name;
     document.getElementById("current-user-role").textContent = user.roleLabel || user.role;
 
+    if (user.role === "coordinator") {
+      coordSelectedDepotId = "ALL";
+    }
+
     buildNavigationForRole();
     renderActiveRoleView();
 
@@ -974,7 +1012,7 @@
     document.getElementById("login-screen").classList.remove("hidden");
   }
 
-  // ==================== NAVIGACE DLE ROLE ====================
+  // ==================== NAVIGATION & ROLE ROUTING ====================
   function buildNavigationForRole() {
     const nav = document.getElementById("nav-tabs");
     nav.innerHTML = "";
@@ -985,7 +1023,7 @@
       bell.classList.add("inline-flex");
       const tabs = [
         { id: "schedule", icon: "fa-calendar-days", label: "Plánování směn" },
-        { id: "users", icon: "fa-users-gear", label: "Uživatelé & Časy" },
+        { id: "users", icon: "fa-users-gear", label: "Uživatelé, Depa & Časy" },
         { id: "chat", icon: "fa-comments", label: "Zprávy & Požadavky" },
         { id: "audit", icon: "fa-clock-rotate-left", label: "Audit Log" }
       ];
@@ -1015,7 +1053,7 @@
       bell.classList.add("hidden");
       const info = document.createElement("div");
       info.className = "text-xs text-slate-400 font-semibold py-1";
-      info.innerHTML = `<i class="fa-solid fa-user-check text-emerald-400 mr-1.5"></i>Osobní přehled směn na zvolený měsíc`;
+      info.innerHTML = `<i class="fa-solid fa-user-check text-emerald-500 mr-1.5"></i>Osobní přehled směn napříč přiřazenými depy`;
       nav.appendChild(info);
     }
   }
@@ -1065,9 +1103,17 @@
     renderActiveRoleView();
   }
 
-  // ==================== ADMIN: MATICE SMĚN & AUTOPLÁNOVÁNÍ ====================
-  function getShiftBadgeHtml(entry) {
+  // ==================== ADMIN: SCHEDULE MATRIX & MULTI-DEPOT ====================
+  function selectAdminDepot(depotId) {
+    activeDepotId = depotId;
+    renderAdminSchedule();
+  }
+
+  function getShiftBadgeHtml(entry, otherDepotConflictName = null) {
     if (!entry || !entry.type) {
+      if (otherDepotConflictName) {
+        return `<div class="px-1 py-0.5 rounded bg-slate-700/60 text-slate-300 text-[9px] font-bold leading-tight" title="Naplánováno na jiném depu">${otherDepotConflictName}</div>`;
+      }
       return `<span class="text-slate-500 font-bold">—</span>`;
     }
     const map = {
@@ -1084,43 +1130,69 @@
   }
 
   function renderAdminSchedule() {
+    ensureMultiDepotConsistency();
     const mKey = getMonthKey();
     const days = getDaysInMonth();
     const y = currentDate.getFullYear();
     const m = currentDate.getMonth();
 
+    // Render depot switcher pills
+    const pillsBox = document.getElementById("admin-depot-pills");
+    pillsBox.innerHTML = appState.depots.map(d => {
+      const isAct = d.id === activeDepotId;
+      return `<button onclick="selectAdminDepot('${d.id}')"
+        class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
+        ${d.name}
+      </button>`;
+    }).join("");
+
+    document.getElementById("auto-depot-name").textContent = getDepotName(activeDepotId);
     document.getElementById("admin-month-label").textContent = currentDate.toLocaleDateString("cs-CZ", { month: "long", year: "numeric" });
     document.getElementById("lbl-d-time").textContent = `${appState.shiftTimes.D.start}–${appState.shiftTimes.D.end}`;
     document.getElementById("lbl-n-time").textContent = `${appState.shiftTimes.N.start}–${appState.shiftTimes.N.end}`;
 
     const dayNames = ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
-    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[180px] text-slate-300">Pracovník / Pozice</th>`;
+    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[180px] text-slate-300">Pracovník (${getDepotName(activeDepotId)})</th>`;
     for (let d = 1; d <= days; d++) {
       const dow = new Date(y, m, d).getDay();
       const isWknd = dow === 0 || dow === 6;
-      headHtml += `<th class="sticky-header py-2 px-1 text-center border-l border-slate-800 ${isWknd ? "bg-slate-950 text-amber-400" : "text-slate-300"}">
+      headHtml += `<th class="sticky-header py-2 px-1 text-center border-l border-slate-800 ${isWknd ? "bg-slate-950 text-amber-500" : "text-slate-300"}">
         <div class="text-[11px] font-extrabold">${d}.</div>
         <div class="text-[9px] font-normal opacity-75">${dayNames[dow]}</div>
       </th>`;
     }
-    headHtml += `<th class="sticky-header py-2 px-2.5 text-center border-l border-slate-700 text-emerald-400">Směn / Hod</th></tr>`;
+    headHtml += `<th class="sticky-header py-2 px-2.5 text-center border-l border-slate-700 text-emerald-500">Směn / Hod</th></tr>`;
     document.getElementById("admin-matrix-head").innerHTML = headHtml;
 
-    const scheduleableUsers = appState.users.filter(u => u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator");
-    const monthSched = appState.schedules[mKey] || {};
+    // Filter employees assigned to activeDepotId
+    const scheduleableUsers = appState.users.filter(u =>
+      u.isScheduleable !== false &&
+      u.role !== "admin" &&
+      u.role !== "coordinator" &&
+      Array.isArray(u.depots) && u.depots.includes(activeDepotId)
+    );
+
+    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
 
     let bodyHtml = "";
     const dailyDCounts = Array(days + 1).fill(0);
     const dailyNCounts = Array(days + 1).fill(0);
 
+    if (scheduleableUsers.length === 0) {
+      bodyHtml += `<tr><td colspan="${days + 2}" class="py-6 px-4 text-center text-xs text-slate-400">
+        K tomuto depu (<strong>${getDepotName(activeDepotId)}</strong>) zatím nejsou přiřazeni žádní kmenoví zaměstnanci. Přiřaďte je v záložce <strong>Uživatelé, Depa &amp; Časy</strong>.
+      </td></tr>`;
+    }
+
     scheduleableUsers.forEach(user => {
-      const uSched = monthSched[user.id] || {};
+      const uSched = depotSched[user.id] || {};
       let shiftCount = 0;
       let totalHours = 0;
+      const multiDepotTag = user.depots.length > 1 ? `<span class="ml-1 px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 text-[9px]">${user.depots.length} depa</span>` : "";
 
       bodyHtml += `<tr class="hover:bg-slate-800/40">
         <td class="sticky-col py-2 px-3">
-          <div class="font-bold text-white text-xs truncate max-w-[165px]">${user.name}</div>
+          <div class="font-bold text-white text-xs truncate max-w-[165px]">${user.name}${multiDepotTag}</div>
           <div class="text-[10px] text-slate-400">${user.roleLabel || user.role}</div>
         </td>`;
 
@@ -1128,6 +1200,20 @@
         const entry = uSched[d];
         const dow = new Date(y, m, d).getDay();
         const isWknd = dow === 0 || dow === 6;
+
+        // Check if user already has a shift on another depot this day
+        let otherDepotConflict = null;
+        if (!entry || !entry.type) {
+          for (const dep of appState.depots) {
+            if (dep.id === activeDepotId) continue;
+            const otherEntry = appState.schedules[mKey]?.[dep.id]?.[user.id]?.[d];
+            if (otherEntry && otherEntry.type) {
+              otherDepotConflict = `${dep.name.replace("Depo ", "")}: ${otherEntry.type}`;
+              break;
+            }
+          }
+        }
+
         if (entry && entry.type) {
           if (entry.type === "D") { dailyDCounts[d]++; shiftCount++; }
           if (entry.type === "N") { dailyNCounts[d]++; shiftCount++; }
@@ -1142,19 +1228,20 @@
           ondragleave="onShiftDragLeave(event)"
           ondrop="onShiftDrop(event, '${user.id}', ${d})"
           onclick="openUserCellModal('${user.id}', ${d})">
-          ${getShiftBadgeHtml(entry)}
+          ${getShiftBadgeHtml(entry, otherDepotConflict)}
         </td>`;
       }
 
       bodyHtml += `<td class="py-2 px-2.5 text-center border-l border-slate-800 font-bold text-slate-200 whitespace-nowrap">
-        ${shiftCount} sm <span class="text-slate-500">/</span> <span class="text-emerald-400">${totalHours}h</span>
+        ${shiftCount} sm <span class="text-slate-500">/</span> <span class="text-emerald-500">${totalHours}h</span>
       </td></tr>`;
     });
 
-    const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey));
+    // Agency slots for active depot & month
+    const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey) && s.depotId === activeDepotId);
     if (monthAgSlots.length > 0) {
-      bodyHtml += `<tr><td colspan="${days + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1.5 px-3 text-[11px] font-extrabold text-purple-300 uppercase tracking-wider">
-        <i class="fa-solid fa-people-arrows mr-1.5"></i> Agenturní pracovníci &amp; Požadavky AG (${monthAgSlots.length})
+      bodyHtml += `<tr><td colspan="${days + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1.5 px-3 text-[11px] font-extrabold text-purple-400 uppercase tracking-wider">
+        <i class="fa-solid fa-people-arrows mr-1.5"></i> Agenturní pracovníci – ${getDepotName(activeDepotId)} (${monthAgSlots.length})
       </td></tr>`;
 
       monthAgSlots.forEach(slot => {
@@ -1164,7 +1251,7 @@
 
         bodyHtml += `<tr class="bg-purple-950/10 hover:bg-purple-950/20">
           <td class="sticky-col py-2 px-3">
-            <div class="font-bold ${slot.assignedName ? "text-purple-200" : "text-amber-300"} text-xs truncate max-w-[165px]">${displayName}</div>
+            <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-xs truncate max-w-[165px]">${displayName}</div>
             <div class="text-[10px] text-purple-400">Agentura • ${slot.start}–${slot.end}</div>
           </td>`;
 
@@ -1176,11 +1263,11 @@
               ${getShiftBadgeHtml({ type: slot.shift, start: slot.start, end: slot.end })}
             </td>`;
           } else {
-            bodyHtml += `<td class="shift-cell text-center border-l border-slate-800/60 text-slate-700">—</td>`;
+            bodyHtml += `<td class="shift-cell text-center border-l border-slate-800/60 text-slate-600">—</td>`;
           }
         }
 
-        bodyHtml += `<td class="py-2 px-2.5 text-center border-l border-slate-800 font-bold text-purple-300">1 sm / ${hrs}h</td></tr>`;
+        bodyHtml += `<td class="py-2 px-2.5 text-center border-l border-slate-800 font-bold text-purple-400">1 sm / ${hrs}h</td></tr>`;
       });
     }
 
@@ -1190,21 +1277,29 @@
     for (let d = 1; d <= days; d++) {
       const dOk = dailyDCounts[d] >= 3;
       footHtml += `<td class="py-1.5 px-1 text-center border-l border-slate-800 text-[10px]">
-        <div class="${dOk ? "text-amber-400" : "text-red-400"}">D:${dailyDCounts[d]}</div>
-        <div class="text-blue-400">N:${dailyNCounts[d]}</div>
+        <div class="${dOk ? "text-amber-500" : "text-red-500"}">D:${dailyDCounts[d]}</div>
+        <div class="text-blue-500">N:${dailyNCounts[d]}</div>
       </td>`;
     }
     footHtml += `<td class="py-2 px-2 text-center border-l border-slate-700 text-[10px] text-slate-400">Cíl D: 3</td></tr>`;
     document.getElementById("admin-matrix-foot").innerHTML = footHtml;
   }
 
+  // Check N -> D rest rule across ALL depots for that user
+  function getUserShiftAcrossDepots(mKey, userId, day) {
+    for (const dep of appState.depots) {
+      const e = appState.schedules[mKey]?.[dep.id]?.[userId]?.[day];
+      if (e && e.type) return e;
+    }
+    return null;
+  }
+
   function violatesNightToDay(userId, day, newType) {
     const mKey = getMonthKey();
-    const uSched = (appState.schedules[mKey] && appState.schedules[mKey][userId]) || {};
-    if (newType === "D" && day > 1 && uSched[day - 1]?.type === "N") {
+    if (newType === "D" && day > 1 && getUserShiftAcrossDepots(mKey, userId, day - 1)?.type === "N") {
       return "Nelze naplánovat Denní směnu (D) hned po Noční směně (N) z předchozího dne!";
     }
-    if (newType === "N" && uSched[day + 1]?.type === "D") {
+    if (newType === "N" && getUserShiftAcrossDepots(mKey, userId, day + 1)?.type === "D") {
       return "Nelze naplánovat Noční směnu (N), protože následující den má pracovník Denní směnu (D)!";
     }
     return null;
@@ -1234,10 +1329,10 @@
     if (dragPayload.fromDay === targetDay) return;
 
     const mKey = getMonthKey();
-    if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
-    if (!appState.schedules[mKey][targetUserId]) appState.schedules[mKey][targetUserId] = {};
+    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
+    if (!depotSched[targetUserId]) depotSched[targetUserId] = {};
 
-    const uSched = appState.schedules[mKey][targetUserId];
+    const uSched = depotSched[targetUserId];
     const movingEntry = uSched[dragPayload.fromDay];
     if (!movingEntry || !movingEntry.type) return;
 
@@ -1252,7 +1347,7 @@
 
     uSched[targetDay] = movingEntry;
     const emp = appState.users.find(u => u.id === targetUserId);
-    addAudit("Přesun směny (D&D)", `${emp?.name}: ${movingEntry.type} z ${dragPayload.fromDay}.${currentDate.getMonth()+1}. na ${targetDay}.${currentDate.getMonth()+1}.`);
+    addAudit("Přesun směny (D&D)", `[${getDepotName(activeDepotId)}] ${emp?.name}: ${movingEntry.type} z ${dragPayload.fromDay}.${currentDate.getMonth()+1}. na ${targetDay}.${currentDate.getMonth()+1}.`);
     dragPayload = null;
     renderAdminSchedule();
     pushToFirebase();
@@ -1261,11 +1356,11 @@
   function openUserCellModal(userId, day) {
     const user = appState.users.find(u => u.id === userId);
     const mKey = getMonthKey();
-    const entry = appState.schedules[mKey]?.[userId]?.[day] || {};
+    const entry = getDepotScheduleMap(mKey, activeDepotId)[userId]?.[day] || {};
     editingCell = { kind: "user", userId, day };
 
     document.getElementById("cell-modal-title").textContent = `${user.name} – ${day}. ${currentDate.getMonth() + 1}. ${currentDate.getFullYear()}`;
-    document.getElementById("cell-modal-sub").textContent = `Pozice: ${user.roleLabel || user.role}`;
+    document.getElementById("cell-modal-sub").textContent = `Depo: ${getDepotName(activeDepotId)} • Pozice: ${user.roleLabel || user.role}`;
     document.getElementById("btn-delete-ag-slot").classList.add("hidden");
     document.getElementById("cell-time-start").value = entry.start || (entry.type === "N" ? appState.shiftTimes.N.start : appState.shiftTimes.D.start);
     document.getElementById("cell-time-end").value = entry.end || (entry.type === "N" ? appState.shiftTimes.N.end : appState.shiftTimes.D.end);
@@ -1278,7 +1373,7 @@
     editingCell = { kind: "ag", slotId };
 
     document.getElementById("cell-modal-title").textContent = `${slot.assignedName || slot.label} (${slot.date})`;
-    document.getElementById("cell-modal-sub").textContent = "Agenturní směna – úprava typu, přesného času nebo smazání";
+    document.getElementById("cell-modal-sub").textContent = `Depo: ${getDepotName(slot.depotId)} • Agenturní směna`;
     document.getElementById("btn-delete-ag-slot").classList.remove("hidden");
     document.getElementById("cell-time-start").value = slot.start || "19:00";
     document.getElementById("cell-time-end").value = slot.end || "07:00";
@@ -1298,25 +1393,25 @@
         }
       }
       const mKey = getMonthKey();
-      if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
-      if (!appState.schedules[mKey][userId]) appState.schedules[mKey][userId] = {};
+      const depotSched = getDepotScheduleMap(mKey, activeDepotId);
+      if (!depotSched[userId]) depotSched[userId] = {};
 
       if (!newType) {
-        delete appState.schedules[mKey][userId][day];
+        delete depotSched[userId][day];
       } else {
-        appState.schedules[mKey][userId][day] = { type: newType };
+        depotSched[userId][day] = { type: newType };
       }
       const emp = appState.users.find(u => u.id === userId);
-      addAudit("Úprava směny", `${emp?.name} (${day}.${currentDate.getMonth()+1}.): nastaveno "${newType || "Volno"}"`);
+      addAudit("Úprava směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${day}.${currentDate.getMonth()+1}.): nastaveno "${newType || "Volno"}"`);
     } else if (editingCell.kind === "ag") {
       const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
       if (slot) {
         if (!newType) {
           appState.agSlots = appState.agSlots.filter(s => s.id !== slot.id);
-          addAudit("Smazání AG slotu", `${slot.assignedName || slot.label} (${slot.date})`);
+          addAudit("Smazání AG slotu", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date})`);
         } else {
           slot.shift = newType;
-          addAudit("Úprava AG směny", `${slot.assignedName || slot.label} (${slot.date}): ${newType}`);
+          addAudit("Úprava AG směny", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date}): ${newType}`);
         }
       }
     }
@@ -1337,19 +1432,20 @@
       if (slot) {
         slot.start = start;
         slot.end = end;
-        addAudit("Čas AG směny", `${slot.assignedName || slot.label} (${slot.date}): ${start}–${end}`);
+        addAudit("Čas AG směny", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date}): ${start}–${end}`);
       }
     } else if (editingCell.kind === "user") {
       const { userId, day } = editingCell;
       const mKey = getMonthKey();
-      if (!appState.schedules[mKey]?.[userId]?.[day]) {
+      const depotSched = getDepotScheduleMap(mKey, activeDepotId);
+      if (!depotSched[userId]?.[day]) {
         showToast("Nejprve vyberte typ směny (D nebo N).", "warn");
         return;
       }
-      appState.schedules[mKey][userId][day].start = start;
-      appState.schedules[mKey][userId][day].end = end;
+      depotSched[userId][day].start = start;
+      depotSched[userId][day].end = end;
       const emp = appState.users.find(u => u.id === userId);
-      addAudit("Vlastní čas směny", `${emp?.name} (${day}.${currentDate.getMonth()+1}.): ${start}–${end}`);
+      addAudit("Vlastní čas směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${day}.${currentDate.getMonth()+1}.): ${start}–${end}`);
     }
 
     closeModal("modal-cell-edit");
@@ -1361,19 +1457,20 @@
     if (!editingCell || editingCell.kind !== "ag") return;
     const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
     appState.agSlots = appState.agSlots.filter(s => s.id !== editingCell.slotId);
-    addAudit("Smazání požadavku AG", `${slot?.assignedName || slot?.label} (${slot?.date})`);
+    addAudit("Smazání požadavku AG", `[${getDepotName(slot?.depotId)}] ${slot?.assignedName || slot?.label} (${slot?.date})`);
     closeModal("modal-cell-edit");
     renderAdminSchedule();
     pushToFirebase();
   }
 
+  // Auto-scheduler for core employees assigned to activeDepotId
   function runAutoSchedule() {
     const mKey = getMonthKey();
     const days = getDaysInMonth();
     const y = currentDate.getFullYear();
     const m = currentDate.getMonth();
 
-    if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
+    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
 
     const isPatternA = (day) => {
       const dow = new Date(y, m, day).getDay();
@@ -1382,20 +1479,28 @@
       return [1, 3, 4].includes(dow);
     };
 
-    const coreUsers = appState.users.filter(u => u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" && u.group !== "agency");
-    coreUsers.forEach(u => { appState.schedules[mKey][u.id] = {}; });
+    const coreUsers = appState.users.filter(u =>
+      u.isScheduleable !== false &&
+      u.role !== "admin" &&
+      u.role !== "coordinator" &&
+      Array.isArray(u.depots) && u.depots.includes(activeDepotId)
+    );
 
-    coreUsers.forEach(u => {
-      const low = u.name.toLowerCase();
-      if (u.role === "foreman" || low.includes("vojtěch") || low.includes("marek") || low.includes("ladislav")) {
-        const useA = low.includes("vojtěch");
-        for (let d = 1; d <= days; d++) {
-          const work = useA ? isPatternA(d) : !isPatternA(d);
-          if (work) appState.schedules[mKey][u.id][d] = { type: "N" };
+    coreUsers.forEach(u => { depotSched[u.id] = {}; });
+
+    // 1. Foremen on Night ONLY
+    const foremen = coreUsers.filter(u => u.role === "foreman");
+    foremen.forEach((u, idx) => {
+      const useA = idx % 2 === 0;
+      for (let d = 1; d <= days; d++) {
+        const work = useA ? isPatternA(d) : !isPatternA(d);
+        if (work && !getUserShiftAcrossDepots(mKey, u.id, d)) {
+          depotSched[u.id][d] = { type: "N" };
         }
       }
     });
 
+    // 2. Paired teams & singles
     const pair1 = coreUsers.filter(u => u.name.includes("Doležal"));
     const pair2 = coreUsers.filter(u => u.name.includes("Hossen") || u.name.includes("Hossain"));
     const pair3 = coreUsers.filter(u => u.name.includes("Rahman") || u.name.includes("Islam"));
@@ -1407,10 +1512,11 @@
         const work = patternA ? isPatternA(d) : !isPatternA(d);
         if (!work) continue;
         members.forEach(member => {
-          const prev = appState.schedules[mKey][member.id][d - 1]?.type;
+          if (getUserShiftAcrossDepots(mKey, member.id, d)) return;
+          const prev = getUserShiftAcrossDepots(mKey, member.id, d - 1)?.type;
           let type = preferDay ? "D" : "N";
           if (type === "D" && prev === "N") type = "N";
-          appState.schedules[mKey][member.id][d] = { type };
+          depotSched[member.id][d] = { type };
         });
       }
     };
@@ -1423,38 +1529,43 @@
       assignUnit([u], idx % 2 === 0, true);
     });
 
+    // 3. Target 3 people on Day shift (D)
     for (let d = 1; d <= days; d++) {
-      let dCount = coreUsers.filter(u => appState.schedules[mKey][u.id][d]?.type === "D").length;
+      let dCount = coreUsers.filter(u => depotSched[u.id]?.[d]?.type === "D").length;
       if (dCount < 3) {
         for (const u of singles) {
           if (dCount >= 3) break;
-          const cur = appState.schedules[mKey][u.id][d]?.type;
-          const prev = appState.schedules[mKey][u.id][d - 1]?.type;
-          const next = appState.schedules[mKey][u.id][d + 1]?.type;
+          const cur = getUserShiftAcrossDepots(mKey, u.id, d)?.type;
+          const prev = getUserShiftAcrossDepots(mKey, u.id, d - 1)?.type;
+          const next = getUserShiftAcrossDepots(mKey, u.id, d + 1)?.type;
           if (!cur && prev !== "N" && next !== "D") {
-            appState.schedules[mKey][u.id][d] = { type: "D" };
+            depotSched[u.id][d] = { type: "D" };
             dCount++;
           }
         }
       }
     }
 
-    addAudit("Autoplánování", `Vygenerován rozpis pro kmenové zaměstnance (${mKey}). Agenturní směny ponechány beze změny.`);
+    addAudit("Autoplánování", `[${getDepotName(activeDepotId)}] Vygenerován rozpis pro kmenové zaměstnance (${mKey}).`);
     renderAdminSchedule();
     pushToFirebase();
-    showToast("Rozpis pro kmenové zaměstnance byl vygenerován.", "success");
+    showToast(`Rozpis pro ${getDepotName(activeDepotId)} byl vygenerován.`, "success");
   }
 
   function clearCurrentMonth() {
     const mKey = getMonthKey();
-    appState.schedules[mKey] = {};
-    addAudit("Vyčištění měsíce", `Vymazány kmenové směny pro ${mKey}.`);
+    if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
+    appState.schedules[mKey][activeDepotId] = {};
+    addAudit("Vyčištění depa", `[${getDepotName(activeDepotId)}] Vymazány kmenové směny pro ${mKey}.`);
     renderAdminSchedule();
     pushToFirebase();
   }
 
-  // ==================== POŽADAVKY NA AG PRACOVNÍKY ====================
+  // ==================== AG REQUESTS (ADMIN & COORDINATOR) ====================
   function openAgRequestModal() {
+    const sel = document.getElementById("ag-req-depot");
+    sel.innerHTML = appState.depots.map(d => `<option value="${d.id}" ${d.id === activeDepotId ? "selected" : ""}>${d.name}</option>`).join("");
+
     const defaultDate = formatDateStr(currentDate.getFullYear(), currentDate.getMonth(), 1);
     document.getElementById("ag-req-date").value = defaultDate;
     document.getElementById("ag-req-start").value = appState.shiftTimes.AG.start;
@@ -1463,6 +1574,7 @@
   }
 
   function createAgRequests() {
+    const depotId = document.getElementById("ag-req-depot").value || activeDepotId;
     const dateVal = document.getElementById("ag-req-date").value;
     const count = Math.max(1, parseInt(document.getElementById("ag-req-count").value || "1", 10));
     const shift = document.getElementById("ag-req-shift").value;
@@ -1470,10 +1582,11 @@
     const end = document.getElementById("ag-req-end").value || "07:00";
     if (!dateVal) return;
 
-    const existingForDate = appState.agSlots.filter(s => s.date === dateVal).length;
+    const existingForDate = appState.agSlots.filter(s => s.date === dateVal && s.depotId === depotId).length;
     for (let i = 1; i <= count; i++) {
       appState.agSlots.push({
         id: "ag_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+        depotId,
         date: dateVal,
         label: `Požadavek AG ${existingForDate + i}`,
         assignedName: "",
@@ -1483,26 +1596,55 @@
       });
     }
 
-    addAudit("Požadavek AG", `Vytvořeno ${count}× požadavek AG na datum ${dateVal} (${start}–${end}).`);
+    addAudit("Požadavek AG", `[${getDepotName(depotId)}] Vytvořeno ${count}× požadavek AG na datum ${dateVal} (${start}–${end}).`);
     closeModal("modal-ag-request");
     renderAdminSchedule();
     pushToFirebase();
-    showToast(`Přidáno ${count} požadavků AG na ${dateVal}.`, "success");
+    showToast(`Přidáno ${count} požadavků AG (${getDepotName(depotId)}).`, "success");
+  }
+
+  function getAllowedCoordinatorDepots() {
+    const allowedIds = Array.isArray(currentUser.depots) ? currentUser.depots : [];
+    return appState.depots.filter(d => allowedIds.includes(d.id));
+  }
+
+  function selectCoordDepot(depotId) {
+    coordSelectedDepotId = depotId;
+    renderCoordinatorRequests();
   }
 
   function renderCoordinatorRequests() {
-    const container = document.getElementById("coord-requests-list");
-    const sorted = [...appState.agSlots].sort((a, b) => a.date.localeCompare(b.date));
+    const allowedDepots = getAllowedCoordinatorDepots();
+    const allowedIds = allowedDepots.map(d => d.id);
 
-    if (sorted.length === 0) {
-      container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-950/60 rounded-xl border border-slate-800">Aktuálně nejsou vypsány žádné požadavky na agenturní zaměstnance.</div>`;
+    const pillsBox = document.getElementById("coord-depot-pills");
+    if (allowedDepots.length === 0) {
+      pillsBox.innerHTML = `<span class="text-xs text-red-400">Nemáte přiřazeno žádné depo. Kontaktujte Admina.</span>`;
+      document.getElementById("coord-requests-list").innerHTML = "";
       return;
     }
 
-    container.innerHTML = sorted.map(slot => `
+    let pillsHtml = `<button onclick="selectCoordDepot('ALL')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === "ALL" ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">Všechna moje depa (${allowedDepots.length})</button>`;
+    pillsHtml += allowedDepots.map(d => `
+      <button onclick="selectCoordDepot('${d.id}')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === d.id ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">${d.name}</button>
+    `).join("");
+    pillsBox.innerHTML = pillsHtml;
+
+    const container = document.getElementById("coord-requests-list");
+    const filtered = appState.agSlots
+      .filter(s => allowedIds.includes(s.depotId) && (coordSelectedDepotId === "ALL" || s.depotId === coordSelectedDepotId))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-950/60 rounded-xl border border-slate-800">Pro zvolená depa nejsou vypsány žádné požadavky na agenturní zaměstnance.</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(slot => `
       <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-extrabold">${getDepotName(slot.depotId)}</span>
             <span class="px-2 py-0.5 rounded bg-purple-600 text-white text-[11px] font-extrabold">${slot.date}</span>
             <span class="font-bold text-white text-xs">${slot.label}</span>
             <span class="text-[11px] text-slate-400">(${slot.shift} • ${slot.start}–${slot.end})</span>
@@ -1522,7 +1664,7 @@
   function deleteAgSlotByCoord(slotId) {
     const slot = appState.agSlots.find(s => s.id === slotId);
     appState.agSlots = appState.agSlots.filter(s => s.id !== slotId);
-    addAudit("Smazání požadavku AG", `${slot?.label} (${slot?.date})`);
+    addAudit("Smazání požadavku AG", `[${getDepotName(slot?.depotId)}] ${slot?.label} (${slot?.date})`);
     renderCoordinatorRequests();
     pushToFirebase();
     showToast("Požadavek AG byl smazán.", "info");
@@ -1542,11 +1684,12 @@
 
   function renderCoordinatorSummary() {
     const mKey = getMonthKey();
+    const allowedIds = getAllowedCoordinatorDepots().map(d => d.id);
     document.getElementById("coord-month-label").textContent = currentDate.toLocaleDateString("cs-CZ", { month: "long", year: "numeric" });
-    const slots = appState.agSlots.filter(s => s.date.startsWith(mKey));
+    const slots = appState.agSlots.filter(s => s.date.startsWith(mKey) && allowedIds.includes(s.depotId));
 
     if (slots.length === 0) {
-      document.getElementById("coord-summary-content").innerHTML = `<p class="text-xs text-slate-400 py-4">V tomto měsíci nejsou evidovány žádné agenturní směny.</p>`;
+      document.getElementById("coord-summary-content").innerHTML = `<p class="text-xs text-slate-400 py-4">V tomto měsíci nejsou pro vaše depa evidovány žádné agenturní směny.</p>`;
       return;
     }
 
@@ -1555,11 +1698,12 @@
       const h = calcDurationHours(s.start, s.end);
       totalHours += h;
       return `<tr class="border-b border-slate-800">
+        <td class="py-2.5 px-3 font-bold text-blue-500">${getDepotName(s.depotId)}</td>
         <td class="py-2.5 px-3 font-bold text-white">${s.date}</td>
-        <td class="py-2.5 px-3">${s.assignedName ? `<span class="text-emerald-300 font-bold">${s.assignedName}</span>` : `<span class="text-amber-300">${s.label} (neobsazeno)</span>`}</td>
+        <td class="py-2.5 px-3">${s.assignedName ? `<span class="text-emerald-500 font-bold">${s.assignedName}</span>` : `<span class="text-amber-500">${s.label} (neobsazeno)</span>`}</td>
         <td class="py-2.5 px-3">${s.shift}</td>
         <td class="py-2.5 px-3 font-mono">${s.start} – ${s.end}</td>
-        <td class="py-2.5 px-3 text-right font-bold text-purple-300">${h} h</td>
+        <td class="py-2.5 px-3 text-right font-bold text-purple-500">${h} h</td>
       </tr>`;
     }).join("");
 
@@ -1567,6 +1711,7 @@
       <table class="w-full text-left border-collapse text-xs">
         <thead>
           <tr class="border-b border-slate-700 text-slate-400 uppercase text-[10px]">
+            <th class="py-2 px-3">Depo</th>
             <th class="py-2 px-3">Datum</th>
             <th class="py-2 px-3">Pracovník / Slot</th>
             <th class="py-2 px-3">Směna</th>
@@ -1577,16 +1722,67 @@
         <tbody>${rows}</tbody>
         <tfoot>
           <tr class="bg-slate-950 font-extrabold text-white">
-            <td colspan="4" class="py-2.5 px-3">Celkem za měsíc (${slots.length} směn)</td>
-            <td class="py-2.5 px-3 text-right text-emerald-400">${totalHours} h</td>
+            <td colspan="5" class="py-2.5 px-3">Celkem za měsíc (${slots.length} směn)</td>
+            <td class="py-2.5 px-3 text-right text-emerald-500">${totalHours} h</td>
           </tr>
         </tfoot>
       </table>
     `;
   }
 
-  // ==================== ADMIN: SPRÁVA UŽIVATELŮ A ČASŮ ====================
+  // ==================== ADMIN: DEPOTS, USERS DRAFT & SHIFT TIMES ====================
+  function createNewDepot() {
+    const inp = document.getElementById("new-depot-name");
+    const name = inp.value.trim();
+    if (!name) return;
+    const newId = "depo_" + Date.now();
+    appState.depots.push({ id: newId, name });
+    inp.value = "";
+    addAudit("Nové depo", `Vytvořeno nové depo: ${name}`);
+    renderDepotsListBox();
+    renderDraftUsersTable();
+    pushToFirebase();
+    showToast(`Depo "${name}" bylo vytvořeno.`, "success");
+  }
+
+  function deleteDepot(depotId) {
+    if (appState.depots.length <= 1) {
+      showToast("V systému musí zůstat alespoň jedno depo.", "error");
+      return;
+    }
+    const target = appState.depots.find(d => d.id === depotId);
+    appState.depots = appState.depots.filter(d => d.id !== depotId);
+    draftUsers.forEach(u => {
+      u.depots = (u.depots || []).filter(id => id !== depotId);
+    });
+    appState.users.forEach(u => {
+      u.depots = (u.depots || []).filter(id => id !== depotId);
+    });
+    if (activeDepotId === depotId) activeDepotId = appState.depots[0].id;
+    addAudit("Smazání depa", `Odstraněno depo: ${target?.name}`);
+    renderDepotsListBox();
+    renderDraftUsersTable();
+    pushToFirebase();
+    showToast(`Depo "${target?.name}" bylo odstraněno.`, "info");
+  }
+
+  function renderDepotsListBox() {
+    const box = document.getElementById("depots-list-box");
+    box.innerHTML = appState.depots.map((d, idx) => `
+      <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-white">
+        <i class="fa-solid fa-warehouse text-blue-500"></i>
+        <span>${d.name}</span>
+        ${idx === 0 ? `<span class="text-[10px] text-slate-400">(výchozí)</span>` : `
+          <button type="button" onclick="deleteDepot('${d.id}')" class="ml-1 text-red-400 hover:text-red-300" title="Smazat depo">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        `}
+      </div>
+    `).join("");
+  }
+
   function renderAdminUsersTab() {
+    renderDepotsListBox();
     document.getElementById("cfg-d-start").value = appState.shiftTimes.D.start;
     document.getElementById("cfg-d-end").value = appState.shiftTimes.D.end;
     document.getElementById("cfg-n-start").value = appState.shiftTimes.N.start;
@@ -1598,10 +1794,28 @@
     renderDraftUsersTable();
   }
 
+  function toggleDraftUserDepot(userIdx, depotId, checked) {
+    if (!Array.isArray(draftUsers[userIdx].depots)) draftUsers[userIdx].depots = [];
+    if (checked) {
+      if (!draftUsers[userIdx].depots.includes(depotId)) draftUsers[userIdx].depots.push(depotId);
+    } else {
+      draftUsers[userIdx].depots = draftUsers[userIdx].depots.filter(id => id !== depotId);
+    }
+  }
+
   function renderDraftUsersTable() {
     const tbody = document.getElementById("users-draft-tbody");
-    tbody.innerHTML = draftUsers.map((u, idx) => `
-      <tr>
+    tbody.innerHTML = draftUsers.map((u, idx) => {
+      const uDepots = Array.isArray(u.depots) ? u.depots : [];
+      const depotCheckboxes = appState.depots.map(d => {
+        const isChecked = uDepots.includes(d.id);
+        return `<label class="inline-flex items-center gap-1 mr-2.5 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
+          <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${d.id}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
+          <span>${d.name.replace("Depo ", "")}</span>
+        </label>`;
+      }).join("");
+
+      return `<tr>
         <td class="py-2 px-2">
           <input type="text" value="${u.name}" onchange="draftUsers[${idx}].name = this.value"
             class="w-full min-w-[140px] bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
@@ -1615,32 +1829,35 @@
             <option value="warehouse" ${u.role === "warehouse" ? "selected" : ""}>Skladník</option>
           </select>
         </td>
+        <td class="py-2 px-2 min-w-[180px]">
+          <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
+        </td>
         <td class="py-2 px-2">
           <input type="text" value="${u.login}" onchange="draftUsers[${idx}].login = this.value.trim()"
-            class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white" />
+            class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
         </td>
         <td class="py-2 px-2">
           <input type="text" value="${u.pass}" onchange="draftUsers[${idx}].pass = this.value"
-            class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white" />
+            class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
         </td>
         <td class="py-2 px-2 text-center">
           <input type="checkbox" ${u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" ? "checked" : ""}
             onchange="draftUsers[${idx}].isScheduleable = this.checked" class="w-4 h-4 accent-blue-600" />
         </td>
         <td class="py-2 px-2 text-center">
-          <button type="button" onclick="openQrForUser('${u.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-300 border border-slate-700">
+          <button type="button" onclick="openQrForUser('${u.id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-500 border border-slate-700">
             <i class="fa-solid fa-qrcode"></i>
           </button>
         </td>
         <td class="py-2 px-2 text-right">
-          ${u.id === "u_admin" ? `<span class="text-[10px] text-slate-500">Hlavní admin</span>` : `
+          ${u.id === "u_admin" ? `<span class="text-[10px] text-slate-500">Admin</span>` : `
             <button type="button" onclick="removeDraftUser(${idx})" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400">
               <i class="fa-solid fa-trash"></i>
             </button>
           `}
         </td>
-      </tr>
-    `).join("");
+      </tr>`;
+    }).join("");
   }
 
   function updateDraftUserRole(idx, role) {
@@ -1662,7 +1879,7 @@
       pass: `heslo${n}`,
       token: "tok_" + Math.random().toString(36).slice(2, 10),
       isScheduleable: true,
-      group: "core"
+      depots: [activeDepotId]
     });
     renderDraftUsersTable();
   }
@@ -1681,12 +1898,22 @@
     appState.shiftTimes.AG.end = document.getElementById("cfg-ag-end").value || "07:00";
 
     appState.users = JSON.parse(JSON.stringify(draftUsers));
-    addAudit("Administrace uživatelů a časů", "Uloženy změny v seznamu uživatelů a časech směn.");
+    addAudit("Administrace uživatelů a dep", "Uloženy změny v seznamu uživatelů, přiřazených depech a časech směn.");
     pushToFirebase();
-    showToast("Všechny změny uživatelů a časů směn byly uloženy!", "success");
+    showToast("Všechny změny uživatelů, dep a časů byly uloženy!", "success");
   }
 
-  // ==================== POHLED ZAMĚSTNANCE A ŽÁDOSTI ====================
+  // ==================== EMPLOYEE VIEW (AGGREGATED ACROSS DEPOTS) ====================
+  function getEmployeeMergedDayEntry(mKey, userId, day) {
+    for (const dep of appState.depots) {
+      const e = appState.schedules[mKey]?.[dep.id]?.[userId]?.[day];
+      if (e && e.type) {
+        return { ...e, depotId: dep.id, depotName: dep.name };
+      }
+    }
+    return null;
+  }
+
   function renderEmployeeHome() {
     const mKey = getMonthKey();
     const days = getDaysInMonth();
@@ -1694,6 +1921,9 @@
     const m = currentDate.getMonth();
 
     document.getElementById("emp-month-label").textContent = currentDate.toLocaleDateString("cs-CZ", { month: "long", year: "numeric" });
+
+    const myDepotNames = (currentUser.depots || []).map(id => getDepotName(id)).join(", ") || "Nepřiřazeno";
+    document.getElementById("emp-assigned-depots-bar").innerHTML = `<i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Vaše přiřazená depa: <strong class="text-white">${myDepotNames}</strong>`;
 
     const rejected = appState.requests.find(r => r.userId === currentUser.id && r.status === "rejected" && !r.seenByUser);
     const rejBanner = document.getElementById("emp-rejected-banner");
@@ -1708,11 +1938,10 @@
     const hasUnread = thread.some(msg => msg.senderRole === "admin" && !msg.readByEmp);
     document.getElementById("emp-unread-badge").classList.toggle("hidden", !hasUnread);
 
-    const uSched = appState.schedules[mKey]?.[currentUser.id] || {};
     let cntD = 0, cntN = 0, cntOff = 0, totalHours = 0;
 
     for (let d = 1; d <= days; d++) {
-      const entry = uSched[d];
+      const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
       if (!entry || !entry.type) continue;
       if (entry.type === "D") cntD++;
       else if (entry.type === "N") cntN++;
@@ -1723,11 +1952,11 @@
     document.getElementById("emp-stats-grid").innerHTML = `
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
         <div class="text-[10px] uppercase text-slate-400 font-bold">Denní směny (D)</div>
-        <div class="text-xl font-extrabold text-amber-400 mt-0.5">${cntD}</div>
+        <div class="text-xl font-extrabold text-amber-500 mt-0.5">${cntD}</div>
       </div>
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
         <div class="text-[10px] uppercase text-slate-400 font-bold">Noční směny (N)</div>
-        <div class="text-xl font-extrabold text-blue-400 mt-0.5">${cntN}</div>
+        <div class="text-xl font-extrabold text-blue-500 mt-0.5">${cntN}</div>
       </div>
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
         <div class="text-[10px] uppercase text-slate-400 font-bold">Celkem směn</div>
@@ -1735,18 +1964,18 @@
       </div>
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
         <div class="text-[10px] uppercase text-slate-400 font-bold">DOV / NV / PN</div>
-        <div class="text-xl font-extrabold text-emerald-400 mt-0.5">${cntOff}</div>
+        <div class="text-xl font-extrabold text-emerald-500 mt-0.5">${cntOff}</div>
       </div>
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 col-span-2 sm:col-span-1">
         <div class="text-[10px] uppercase text-slate-400 font-bold">Fond hodin</div>
-        <div class="text-xl font-extrabold text-sky-400 mt-0.5">${totalHours} h</div>
+        <div class="text-xl font-extrabold text-sky-500 mt-0.5">${totalHours} h</div>
       </div>
     `;
 
     const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;
     let calHtml = "";
     for (let i = 0; i < firstDow; i++) {
-      calHtml += `<div class="h-20 rounded-xl bg-slate-950/40 border border-slate-800/40"></div>`;
+      calHtml += `<div class="h-24 rounded-xl bg-slate-950/40 border border-slate-800/40"></div>`;
     }
 
     const typeMeta = {
@@ -1759,13 +1988,17 @@
     };
 
     for (let d = 1; d <= days; d++) {
-      const entry = uSched[d];
+      const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
       const meta = entry?.type ? typeMeta[entry.type] : null;
       const customTime = (entry?.start && entry?.end) ? `${entry.start}–${entry.end}` : meta?.time;
+      const shortDepot = entry?.depotName ? entry.depotName.replace("Depo ", "") : "";
 
       calHtml += `
-        <div class="min-h-[82px] rounded-xl p-1.5 border flex flex-col justify-between ${meta ? "bg-slate-800/90 border-slate-700" : "bg-slate-950/60 border-slate-800/70"}">
-          <div class="text-xs font-extrabold ${meta ? "text-white" : "text-slate-500"}">${d}.</div>
+        <div class="min-h-[92px] rounded-xl p-1.5 border flex flex-col justify-between ${meta ? "bg-slate-800/90 border-slate-700" : "bg-slate-950/60 border-slate-800/70"}">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold ${meta ? "text-white" : "text-slate-500"}">${d}.</span>
+            ${shortDepot ? `<span class="text-[9px] font-bold px-1 rounded bg-slate-900/80 text-slate-300">${shortDepot}</span>` : ""}
+          </div>
           ${meta ? `
             <div class="rounded-lg px-1.5 py-1 text-center ${meta.cls}">
               <div class="text-[10px] font-extrabold leading-tight">${meta.label}</div>
@@ -1800,7 +2033,7 @@
     ["DOV", "NV", "PN"].forEach(t => {
       const btn = document.getElementById("req-type-" + t);
       if (t === type) {
-        btn.className = "req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-amber-500/20 border-amber-400 text-amber-200";
+        btn.className = "req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-amber-500/20 border-amber-400 text-amber-500";
       } else {
         btn.className = "req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300";
       }
@@ -1812,7 +2045,6 @@
     const days = getDaysInMonth();
     const y = currentDate.getFullYear();
     const m = currentDate.getMonth();
-    const uSched = appState.schedules[mKey]?.[currentUser.id] || {};
     const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;
 
     document.getElementById("emp-req-selected-count").textContent = `Vybráno: ${empReqDates.length} dnů`;
@@ -1822,12 +2054,13 @@
 
     for (let d = 1; d <= days; d++) {
       const dateStr = formatDateStr(y, m, d);
-      const shiftType = uSched[d]?.type || "";
+      const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
+      const shiftType = entry?.type || "";
       const isSelected = empReqDates.includes(dateStr);
 
       let baseCls = "bg-slate-800/70 border-slate-700 text-slate-400";
-      if (shiftType === "D") baseCls = "bg-amber-500/15 border-amber-500/40 text-amber-200";
-      if (shiftType === "N") baseCls = "bg-blue-500/15 border-blue-500/40 text-blue-200";
+      if (shiftType === "D") baseCls = "bg-amber-500/15 border-amber-500/40 text-amber-500";
+      if (shiftType === "N") baseCls = "bg-blue-500/15 border-blue-500/40 text-blue-500";
       if (isSelected) baseCls = "bg-emerald-500 border-emerald-300 text-slate-950 font-extrabold ring-2 ring-emerald-300";
 
       html += `
@@ -1887,7 +2120,7 @@
     showToast("Požadavek byl odeslán administrátorovi.", "success");
   }
 
-  // ==================== SCHVALOVÁNÍ POŽADAVKŮ ADMINEM ====================
+  // ==================== ADMIN INCOMING REQUESTS APPROVAL ====================
   function updateAdminBadges() {
     const pendingCount = appState.requests.filter(r => r.status === "pending").length;
     const bellCount = document.getElementById("admin-req-count");
@@ -1915,7 +2148,7 @@
         <div class="flex items-start justify-between gap-2">
           <div>
             <div class="font-extrabold text-sm text-white">${r.userName}</div>
-            <div class="text-xs font-bold text-amber-300">${r.typeLabel} (${r.type})</div>
+            <div class="text-xs font-bold text-amber-500">${r.typeLabel} (${r.type})</div>
           </div>
           <span class="text-[10px] text-slate-400">${r.createdAt}</span>
         </div>
@@ -1924,7 +2157,7 @@
           ${r.note ? `<div class="text-slate-400 mt-1">Poznámka: ${r.note}</div>` : ""}
         </div>
         <div class="flex justify-end gap-2">
-          <button onclick="resolveEmployeeRequest('${r.id}', 'rejected')" class="px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 text-xs font-bold">
+          <button onclick="resolveEmployeeRequest('${r.id}', 'rejected')" class="px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 text-xs font-bold">
             <i class="fa-solid fa-xmark mr-1"></i> Zamítnout
           </button>
           <button onclick="resolveEmployeeRequest('${r.id}', 'approved')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">
@@ -1943,13 +2176,25 @@
     if (!appState.chats[req.userId]) appState.chats[req.userId] = [];
 
     if (decision === "approved") {
+      const empObj = appState.users.find(u => u.id === req.userId);
+      const fallbackDepot = (empObj && empObj.depots && empObj.depots[0]) ? empObj.depots[0] : activeDepotId;
+
       req.dates.forEach(dateStr => {
         const [yStr, mStr, dStr] = dateStr.split("-");
         const mKey = `${yStr}-${mStr}`;
         const dayNum = parseInt(dStr, 10);
-        if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
-        if (!appState.schedules[mKey][req.userId]) appState.schedules[mKey][req.userId] = {};
-        appState.schedules[mKey][req.userId][dayNum] = { type: req.type };
+
+        // Find if user already has a scheduled depot on that day, otherwise use user's primary depot
+        let targetDepot = fallbackDepot;
+        for (const dep of appState.depots) {
+          if (appState.schedules[mKey]?.[dep.id]?.[req.userId]?.[dayNum]) {
+            targetDepot = dep.id;
+            break;
+          }
+        }
+        const depotSched = getDepotScheduleMap(mKey, targetDepot);
+        if (!depotSched[req.userId]) depotSched[req.userId] = {};
+        depotSched[req.userId][dayNum] = { type: req.type };
       });
 
       appState.chats[req.userId].push({
@@ -1985,7 +2230,7 @@
     pushToFirebase();
   }
 
-  // ==================== SOUKROMÝ CHAT (ZAMĚSTNANEC <-> ADMIN) ====================
+  // ==================== CHAT (EMPLOYEE <-> ADMIN) ====================
   function openEmployeeChatModal() {
     const thread = appState.chats[currentUser.id] || [];
     thread.forEach(m => { if (m.senderRole === "admin") m.readByEmp = true; });
@@ -2111,7 +2356,7 @@
     pushToFirebase();
   }
 
-  // ==================== AUDIT LOG & QR KÓDY ====================
+  // ==================== AUDIT LOG & QR CODES ====================
   function renderAuditTab() {
     const tbody = document.getElementById("audit-log-tbody");
     if (appState.auditLog.length === 0) {
@@ -2122,7 +2367,7 @@
       <tr>
         <td class="py-2 px-3 font-mono text-slate-400 whitespace-nowrap">${item.time}</td>
         <td class="py-2 px-3 font-bold text-white">${item.actor}</td>
-        <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-blue-300 font-semibold">${item.type}</span></td>
+        <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-blue-500 font-semibold">${item.type}</span></td>
         <td class="py-2 px-3 text-slate-300">${item.detail}</td>
       </tr>
     `).join("");
@@ -2161,24 +2406,20 @@
 
   function copyQrLink() {
     const txt = document.getElementById("qr-link-text").textContent;
-    const temp = document.createElement("textarea");
-    temp.value = txt;
-    document.body.appendChild(temp);
-    temp.select();
-    document.execCommand("copy");
-    document.body.removeChild(temp);
+    navigator.clipboard?.writeText(txt);
     showToast("Přihlašovací odkaz zkopírován do schránky.", "success");
   }
 
-  // ==================== INICIALIZACE ====================
+  // ==================== INITIALIZATION ====================
   async function initApp() {
-    const savedTheme = safeStorage.get("depotshift_theme");
-    applyTheme(savedTheme || "dark");
+    const savedTheme = safeStorage.get("depotshift_theme") || "dark";
+    applyTheme(savedTheme);
 
     const cached = safeStorage.get("depotshift_cache");
     if (cached) {
       try { mergeRemoteState(JSON.parse(cached)); } catch (e) {}
     }
+    ensureMultiDepotConsistency();
 
     await pullFromFirebase(true);
 
