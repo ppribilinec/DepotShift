@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DepotShift – Warehouse Roster &amp; Agency Planner</title>
+  <title>DepotShift v0.8b – Warehouse Roster &amp; Agency Planner</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -53,7 +53,8 @@
     [data-theme="light"] .bg-purple-600.text-white,
     [data-theme="light"] .bg-red-600.text-white,
     [data-theme="light"] .bg-red-500.text-white,
-    [data-theme="light"] .bg-sky-600.text-white { color: #ffffff !important; }
+    [data-theme="light"] .bg-sky-600.text-white,
+    [data-theme="light"] .bg-indigo-600.text-white { color: #ffffff !important; }
     [data-theme="light"] .bg-blue-600 .text-white,
     [data-theme="light"] .bg-blue-600 i { color: #ffffff !important; }
     [data-theme="light"] .sticky-col { position: sticky; left: 0; z-index: 20; background: #f8fafc; border-right: 1px solid #cbd5e1; }
@@ -61,7 +62,11 @@
     [data-theme="light"] .sticky-corner { position: sticky; left: 0; top: 0; z-index: 40; background: #e2e8f0; border-right: 1px solid #cbd5e1; }
     [data-theme="light"] #login-screen { background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 50%, #dbeafe 100%) !important; }
 
-    .shift-cell { min-width: 58px; height: 48px; transition: transform 0.1s, filter 0.1s; user-select: none; }
+    /* Responsive Full-Month Fit vs Biweekly/Weekly */
+    .mode-month .shift-cell { min-width: 31px; height: 42px; padding: 1px; }
+    .mode-biweek .shift-cell { min-width: 66px; height: 48px; padding: 2px; }
+    .mode-week .shift-cell { min-width: 110px; height: 52px; padding: 3px; }
+    .shift-cell { transition: transform 0.1s, filter 0.1s; user-select: none; }
     .shift-cell:hover { filter: brightness(1.12); }
     .drag-over { outline: 2px dashed #38bdf8 !important; outline-offset: -2px; background: rgba(56, 189, 248, 0.2) !important; }
     .row-drag-over td { border-top: 2px solid #38bdf8 !important; background: rgba(56, 189, 248, 0.12) !important; }
@@ -88,7 +93,10 @@
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
         <i class="fa-solid fa-calendar-check text-2xl text-white"></i>
       </div>
-      <h1 class="text-2xl font-extrabold tracking-tight text-white">DepotShift</h1>
+      <div class="inline-flex items-center justify-center gap-2">
+        <h1 class="text-2xl font-extrabold tracking-tight text-white">DepotShift</h1>
+        <span class="px-2 py-0.5 rounded-md bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[11px] font-extrabold">v0.8b</span>
+      </div>
       <p id="lbl-login-sub" class="text-xs text-slate-400 mt-1">Warehouse Roster &amp; Agency Planner • Více dep</p>
       <div id="login-sync-badge" class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Připojování k databázi...
@@ -147,8 +155,8 @@
 
 <!-- ==================== MAIN APPLICATION ==================== -->
 <div id="main-app" class="hidden flex-col min-h-screen">
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-3 sm:px-6 py-3">
-    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-3 sm:px-6 py-2.5">
+    <div class="max-w-[1850px] mx-auto flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow">
           <i class="fa-solid fa-calendar-check"></i>
@@ -156,15 +164,21 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">DepotShift</span>
+            <span class="px-1.5 py-0.5 rounded bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[10px] font-extrabold">v0.8b</span>
             <button onclick="manualSyncNow()" id="header-sync-badge" title="Synchronizace" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Sync...
             </button>
           </div>
-          <p class="text-[11px] text-slate-400 hidden sm:block">Warehouse Roster &amp; Agency Planner</p>
+          <p class="text-[10px] text-slate-400 hidden sm:block">Warehouse Roster &amp; Agency Planner</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-2.5">
+      <!-- Top Right Controls: Settings (Admin), Language, Theme, Requests, User, Logout -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-header-settings" type="button" onclick="switchAdminTab('settings')" class="hidden px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition items-center gap-1.5">
+          <i class="fa-solid fa-gear text-blue-400"></i> <span id="lbl-btn-settings">Nastavení</span>
+        </button>
+
         <button type="button" onclick="toggleLanguage()" class="lang-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5">
           <i class="fa-solid fa-globe text-blue-400"></i> <span>EN</span>
         </button>
@@ -179,9 +193,9 @@
           <span id="admin-req-count" class="px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold">0</span>
         </button>
 
-        <div class="text-right">
-          <div id="current-user-name" class="text-xs sm:text-sm font-bold text-white"></div>
-          <div id="current-user-role" class="text-[10px] uppercase tracking-wider font-semibold text-blue-500"></div>
+        <div class="text-right pl-1">
+          <div id="current-user-name" class="text-xs sm:text-sm font-bold text-white leading-tight"></div>
+          <div id="current-user-role" class="text-[10px] uppercase tracking-wider font-semibold text-blue-500 leading-tight"></div>
         </div>
 
         <button onclick="logout()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 hover:text-red-400 border border-slate-700 text-slate-300 text-xs font-bold transition flex items-center gap-1.5">
@@ -191,17 +205,17 @@
       </div>
     </div>
 
-    <nav id="nav-tabs" class="max-w-[1600px] mx-auto mt-3 pt-2.5 border-t border-slate-800/80 flex gap-1.5 overflow-x-auto pb-1"></nav>
+    <nav id="nav-tabs" class="max-w-[1850px] mx-auto mt-2.5 pt-2 border-t border-slate-800/80 flex gap-1.5 overflow-x-auto pb-0.5"></nav>
   </header>
 
   <div id="toast-box" class="fixed bottom-4 right-4 z-50 hidden max-w-sm px-4 py-3 rounded-xl shadow-2xl text-xs font-bold border"></div>
 
-  <main class="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-6">
+  <main class="flex-1 max-w-[1850px] w-full mx-auto p-2.5 sm:p-5">
 
     <!-- ==================== ADMIN VIEW: SCHEDULE ==================== -->
-    <section id="view-admin-schedule" class="hidden space-y-4">
+    <section id="view-admin-schedule" class="hidden space-y-3">
       <!-- Depot Selector & Show Terminated Toggle -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mr-1">
             <i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> <span id="lbl-active-depot">Aktivní depo:</span>
@@ -214,51 +228,57 @@
             <input id="chk-show-terminated" type="checkbox" onchange="toggleShowTerminated(this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
             <span id="lbl-show-terminated">Zobrazit ukončené pracovníky</span>
           </label>
-          <button onclick="switchAdminTab('users')" class="text-xs font-bold text-blue-500 hover:underline">
-            <i class="fa-solid fa-sliders mr-1"></i> <span id="lbl-manage-depots">Nastavení dep &amp; směn</span>
-          </button>
         </div>
       </div>
 
-      <!-- Month Navigation & Actions -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
-          <h2 id="admin-month-label" class="text-base sm:text-lg font-extrabold text-white min-w-[160px] text-center capitalize"></h2>
-          <button onclick="changeMonth(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
+      <!-- Period Navigation, View Mode (Month / Biweek / Week) & Actions -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex items-center gap-1.5">
+            <button onclick="stepRosterPeriod(-1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
+            <h2 id="admin-period-label" class="text-sm sm:text-base font-extrabold text-white min-w-[165px] text-center capitalize"></h2>
+            <button onclick="stepRosterPeriod(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+
+          <!-- View Granularity Switcher -->
+          <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-slate-800 text-[11px] font-bold">
+            <button type="button" onclick="setRosterViewMode('month')" id="vmode-month" class="px-2.5 py-1 rounded-lg transition bg-blue-600 text-white">Měsíční</button>
+            <button type="button" onclick="setRosterViewMode('biweek')" id="vmode-biweek" class="px-2.5 py-1 rounded-lg transition text-slate-400 hover:text-white">Dvoutýdenní</button>
+            <button type="button" onclick="setRosterViewMode('week')" id="vmode-week" class="px-2.5 py-1 rounded-lg transition text-slate-400 hover:text-white">Týdenní</button>
+          </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <button onclick="runAutoSchedule()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button onclick="runAutoSchedule()" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="lbl-btn-auto">Autoplánování</span> (<span id="auto-depot-name"></span>)
           </button>
-          <button onclick="applySmartSortToActiveDepot()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow flex items-center gap-1.5" title="Seřadí zaměstnance podle směny (D/N), pozice (Předák, Specialista, Skladník), data přidání a abecedy">
-            <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="lbl-btn-sort">Seřadit dle směn a pozic</span>
+          <button onclick="applySmartSortToActiveDepot()" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow flex items-center gap-1.5" title="Seřadí: Předák → Specialista → Skladník">
+            <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="lbl-btn-sort">Seřadit dle pozic</span>
           </button>
-          <button onclick="openAgRequestModal()" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-user-plus"></i> <span id="lbl-btn-add-ag">Přidat požadavek AG</span>
+          <button onclick="openAgRequestModal()" class="px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-user-plus"></i> <span id="lbl-btn-add-ag">Požadavek AG</span>
           </button>
-          <button onclick="openModal('modal-export-roster')" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
+          <button onclick="openModal('modal-export-roster')" class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-file-export"></i> <span id="lbl-btn-export">Export docházky</span>
           </button>
-          <button onclick="clearCurrentMonth()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-slate-700 text-xs font-bold">
-            <i class="fa-solid fa-eraser"></i> <span id="lbl-btn-clear">Vyčistit depo</span>
+          <button onclick="clearCurrentMonth()" class="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-slate-700 text-xs font-bold">
+            <i class="fa-solid fa-eraser"></i> <span id="lbl-btn-clear">Vyčistit</span>
           </button>
         </div>
       </div>
 
       <!-- Legend & Drag info -->
-      <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+      <div class="bg-slate-900/70 border border-slate-800 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px]">
         <div id="admin-legend-items" class="flex flex-wrap items-center gap-2"></div>
         <div id="lbl-drag-hint" class="text-slate-400">
-          <i class="fa-solid fa-grip-vertical text-sky-400"></i> Přetažením jména změníte pořadí řádků • Přetažením buňky přesunete směnu
+          <i class="fa-solid fa-grip-vertical text-sky-400"></i> Přetažením jména změníte pořadí • Kliknutím upravíte směnu
         </div>
       </div>
 
       <!-- Matrix Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-        <div class="overflow-x-auto max-h-[72vh]">
-          <table class="w-full border-collapse text-xs">
+        <div class="overflow-x-auto max-h-[75vh]">
+          <table id="admin-matrix-table" class="w-full border-collapse text-xs mode-month">
             <thead id="admin-matrix-head"></thead>
             <tbody id="admin-matrix-body" class="divide-y divide-slate-800"></tbody>
             <tfoot id="admin-matrix-foot" class="bg-slate-950 border-t-2 border-slate-700 font-bold"></tfoot>
@@ -267,98 +287,139 @@
       </div>
     </section>
 
-    <!-- ==================== ADMIN VIEW: USERS, DEPOTS & SETTINGS ==================== -->
-    <section id="view-admin-users" class="hidden space-y-5">
-      <!-- Unsaved Changes Banner -->
-      <div id="admin-unsaved-banner" class="hidden p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5 text-xs font-bold">
-          <i class="fa-solid fa-circle-info text-amber-400 text-base"></i>
-          <span id="lbl-unsaved-warning">Máte neuložené dočasné úpravy. Pro trvalý zápis do databáze klikněte na „Uložit změny“.</span>
-        </div>
+    <!-- ==================== ADMIN VIEW: NASTAVENÍ (DEPOTS, USERS & AUDIT LOG) ==================== -->
+    <section id="view-admin-settings" class="hidden space-y-5">
+      <!-- Settings Sub-Navigation -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <button type="button" onclick="discardAdminDraftChanges()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold">
-            Zrušit změny
+          <button type="button" onclick="setSettingsSubTab('main')" id="subtab-settings-main" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-sliders"></i> <span id="lbl-subtab-config">Depa, Uživatelé &amp; Časy</span>
           </button>
-          <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">
-            <i class="fa-solid fa-floppy-disk mr-1"></i> Uložit změny
+          <button type="button" onclick="setSettingsSubTab('audit')" id="subtab-settings-audit" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> <span>Audit Log</span>
           </button>
         </div>
+        <button type="button" onclick="switchAdminTab('schedule')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-roster">Zpět na plánování směn</span>
+        </button>
       </div>
 
-      <!-- Depots & Per-Depot Shift Settings -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
-            </h3>
-            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte plánovací kalendář (Krátký / Dlouhý: Po, Út, Pá, So, Ne vs. St, Čt, nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem <strong>Uložit změny</strong>.</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
-            <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
-              <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
-            </button>
-            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
-              <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
-            </button>
-          </div>
-        </div>
-
-        <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
-      </div>
-
-      <!-- Users Management -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div>
-            <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Správa uživatelů, rolí, kalendáře a přiřazení k depům</span>
-            </h3>
-            <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5">Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem <strong>Uložit změny</strong>.</p>
+      <!-- SUB-PANEL 1: DEPOTS & USERS -->
+      <div id="settings-panel-main" class="space-y-5">
+        <!-- Unsaved Changes Banner -->
+        <div id="admin-unsaved-banner" class="hidden p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5 text-xs font-bold">
+            <i class="fa-solid fa-circle-info text-amber-400 text-base"></i>
+            <span id="lbl-unsaved-warning">Máte neuložené dočasné úpravy. Pro trvalý zápis do databáze klikněte na „Uložit změny“.</span>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="addDraftUser()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
-              <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-user">Přidat uživatele</span>
+            <button type="button" onclick="discardAdminDraftChanges()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold">
+              Zrušit změny
             </button>
-            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
-              <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-users">Uložit změny</span>
+            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">
+              <i class="fa-solid fa-floppy-disk mr-1"></i> Uložit změny
             </button>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Depots & Per-Depot Shift Settings -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
+              </h3>
+              <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte plánovací kalendář (Krátký / Dlouhý nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem <strong>Uložit změny</strong>.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
+              <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
+              </button>
+              <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Users Management -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Správa uživatelů, rolí, kalendáře a přiřazení k depům</span>
+              </h3>
+              <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5">Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem <strong>Uložit změny</strong>.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow">
+                <i class="fa-solid fa-user-plus"></i> <span id="lbl-btn-add-user">Vytvořit uživatele</span>
+              </button>
+              <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-users">Uložit změny</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
+                  <th class="py-2.5 px-2">Jméno / Name</th>
+                  <th class="py-2.5 px-2">Telefon</th>
+                  <th class="py-2.5 px-2">Typ / Role</th>
+                  <th class="py-2.5 px-2">Kalendář</th>
+                  <th class="py-2.5 px-2">Depa</th>
+                  <th class="py-2.5 px-2">Login</th>
+                  <th class="py-2.5 px-2">Heslo</th>
+                  <th class="py-2.5 px-2 text-center">V plánu</th>
+                  <th class="py-2.5 px-2 text-center">QR</th>
+                  <th class="py-2.5 px-2 text-right">Akce</th>
+                </tr>
+              </thead>
+              <tbody id="users-draft-tbody" class="divide-y divide-slate-800/80"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Danger Zone: Reset Database -->
+        <div class="bg-red-950/20 border border-red-500/40 rounded-2xl p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="text-sm font-extrabold text-red-400 flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation"></i> <span id="lbl-danger-title">Nebezpečná zóna – Vymazání databáze</span>
+            </h3>
+            <p id="lbl-danger-sub" class="text-xs text-slate-400 mt-1">Trvale vymaže všechny naplánované směny, požadavky AG, žádosti zaměstnanců i historii zpráv z databáze.</p>
+          </div>
+          <button type="button" onclick="openResetDbModal()" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-extrabold shadow-lg flex items-center gap-1.5">
+            <i class="fa-solid fa-trash-can"></i> <span id="lbl-btn-reset-db">Vymazat databázi</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 2: AUDIT LOG (INSIDE SETTINGS) -->
+      <div id="settings-panel-audit" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-extrabold text-white"><i class="fa-solid fa-clock-rotate-left text-amber-500 mr-2"></i>Audit Log provedených změn</h3>
+          <button onclick="exportAuditCSV()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200">
+            <i class="fa-solid fa-file-csv mr-1"></i> Export CSV
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[68vh]">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
-                <th class="py-2.5 px-2">Jméno / Name</th>
-                <th class="py-2.5 px-2">Pozice / Role</th>
-                <th class="py-2.5 px-2">Plánovací kalendář</th>
-                <th class="py-2.5 px-2">Depa / Depots</th>
-                <th class="py-2.5 px-2">Login</th>
-                <th class="py-2.5 px-2">Heslo</th>
-                <th class="py-2.5 px-2">Přidán</th>
-                <th class="py-2.5 px-2 text-center">V plánu</th>
-                <th class="py-2.5 px-2 text-center">QR</th>
-                <th class="py-2.5 px-2 text-right">Ukončení / Akce</th>
+                <th class="py-2 px-3">Čas</th>
+                <th class="py-2 px-3">Uživatel</th>
+                <th class="py-2 px-3">Akce</th>
+                <th class="py-2 px-3">Detail</th>
               </tr>
             </thead>
-            <tbody id="users-draft-tbody" class="divide-y divide-slate-800/80"></tbody>
+            <tbody id="audit-log-tbody" class="divide-y divide-slate-800"></tbody>
           </table>
         </div>
-      </div>
-
-      <!-- Danger Zone: Reset Database -->
-      <div class="bg-red-950/20 border border-red-500/40 rounded-2xl p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h3 class="text-sm font-extrabold text-red-400 flex items-center gap-2">
-            <i class="fa-solid fa-triangle-exclamation"></i> <span id="lbl-danger-title">Nebezpečná zóna – Vymazání databáze</span>
-          </h3>
-          <p id="lbl-danger-sub" class="text-xs text-slate-400 mt-1">Trvale vymaže všechny naplánované směny, požadavky AG, žádosti zaměstnanců i historii zpráv z databáze.</p>
-        </div>
-        <button type="button" onclick="openResetDbModal()" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-extrabold shadow-lg flex items-center gap-1.5">
-          <i class="fa-solid fa-trash-can"></i> <span id="lbl-btn-reset-db">Vymazat databázi</span>
-        </button>
       </div>
     </section>
 
@@ -385,29 +446,6 @@
             <i class="fa-solid fa-paper-plane"></i>
           </button>
         </form>
-      </div>
-    </section>
-
-    <!-- ==================== ADMIN VIEW: AUDIT LOG ==================== -->
-    <section id="view-admin-audit" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-base font-extrabold text-white"><i class="fa-solid fa-clock-rotate-left text-amber-500 mr-2"></i>Audit Log</h3>
-        <button onclick="exportAuditCSV()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200">
-          <i class="fa-solid fa-file-csv mr-1"></i> Export CSV
-        </button>
-      </div>
-      <div class="overflow-x-auto max-h-[68vh]">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
-              <th class="py-2 px-3">Čas</th>
-              <th class="py-2 px-3">Uživatel</th>
-              <th class="py-2 px-3">Akce</th>
-              <th class="py-2 px-3">Detail</th>
-            </tr>
-          </thead>
-          <tbody id="audit-log-tbody" class="divide-y divide-slate-800"></tbody>
-        </table>
       </div>
     </section>
 
@@ -439,9 +477,9 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
           <h2 id="lbl-coord-sum-title" class="text-base sm:text-lg font-extrabold text-white">Přehled odpracovaných směn agenturních zaměstnanců</h2>
           <div class="flex items-center gap-2">
-            <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-slate-800 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="stepRosterPeriod(-1)" class="p-2 rounded-lg bg-slate-800 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
             <span id="coord-month-label" class="text-xs sm:text-sm font-bold text-white capitalize min-w-[130px] text-center"></span>
-            <button onclick="changeMonth(1)" class="p-2 rounded-lg bg-slate-800 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
+            <button onclick="stepRosterPeriod(1)" class="p-2 rounded-lg bg-slate-800 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
         </div>
         <div id="coord-summary-content" class="overflow-x-auto"></div>
@@ -463,9 +501,9 @@
 
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
+          <button onclick="stepRosterPeriod(-1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
           <h2 id="emp-month-label" class="text-base sm:text-lg font-extrabold text-white min-w-[150px] text-center capitalize"></h2>
-          <button onclick="changeMonth(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
+          <button onclick="stepRosterPeriod(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -495,6 +533,58 @@
   </main>
 </div>
 
+<!-- ==================== MODAL: CREATE NEW USER ==================== -->
+<div id="modal-create-user" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
+  <form onsubmit="submitCreateUserModal(event)" class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-user-plus text-blue-500 mr-1.5"></i>Vytvoření nového uživatele</h3>
+      <button type="button" onclick="closeModal('modal-create-user')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Jméno uživatele *</label>
+        <input id="new-user-name" type="text" required placeholder="Např. Jan Novák" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Telefonní číslo</label>
+        <input id="new-user-phone" type="tel" placeholder="+420 777 123 456" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">Typ (Pozice / Role)</label>
+          <select id="new-user-role" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+            <option value="warehouse">Skladník</option>
+            <option value="foreman">Předák</option>
+            <option value="specialist">Specialista</option>
+            <option value="coordinator">Koordinátor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">Typ kalendáře</label>
+          <select id="new-user-calendar" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-400 font-bold">
+            <option value="short_long">Krátký / Dlouhý</option>
+            <option value="mon_fri">Pondělí – Pátek</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1.5">Přiřazená depa</label>
+        <div id="new-user-depots-box" class="flex flex-wrap gap-2 bg-slate-800/70 p-2.5 rounded-xl border border-slate-700"></div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+      <button type="button" onclick="closeModal('modal-create-user')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Zrušit</button>
+      <button type="submit" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold shadow">Vytvořit uživatele</button>
+    </div>
+  </form>
+</div>
+
 <!-- ==================== MODAL: TERMINATE EMPLOYEE ==================== -->
 <div id="modal-terminate-emp" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
@@ -521,7 +611,7 @@
       <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-file-export text-sky-400 mr-1.5"></i>Export docházky</h3>
       <button onclick="closeModal('modal-export-roster')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-    <p class="text-xs text-slate-400">Vyberte formát pro export rozpisu směn aktuálně zvoleného depa a měsíce:</p>
+    <p class="text-xs text-slate-400">Vyberte formát pro export rozpisu směn aktuálně zvoleného depa a období:</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <button type="button" onclick="exportRosterAsImage()" class="p-4 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-left transition space-y-1">
         <div class="text-sm font-extrabold text-indigo-400"><i class="fa-solid fa-image mr-1.5"></i> Obrázek (.PNG)</div>
@@ -726,6 +816,7 @@
 </div>
 
 <script>
+  const APP_VERSION = "0.8b";
   const FIREBASE_DB_URL = "https://planovani-dochazky-default-rtdb.europe-west1.firebasedatabase.app/depotshift_v1.json";
 
   const memStore = {};
@@ -746,29 +837,32 @@
       quickAccess: "Rychlý testovací přístup (1 klik)",
       lightTheme: "Světlý motiv",
       darkTheme: "Tmavý motiv",
+      btnSettings: "Nastavení",
       bellReq: "Žádosti",
       logout: "Odhlásit",
       tabSchedule: "Plánování směn",
-      tabUsers: "Uživatelé, Depa & Časy",
       tabChat: "Zprávy & Požadavky",
-      tabAudit: "Audit Log",
       tabCoordReq: "Požadavky na AG pracovníky",
       tabCoordSum: "Odpracované směny AG",
       activeDepot: "Aktivní depo:",
       showTerminated: "Zobrazit ukončené pracovníky",
-      manageDepots: "Nastavení dep & směn",
       btnAuto: "Autoplánování",
-      btnSort: "Seřadit dle směn a pozic",
-      btnAddAg: "Přidat požadavek AG",
+      btnSort: "Seřadit dle pozic",
+      btnAddAg: "Požadavek AG",
       btnExport: "Export docházky",
-      btnClear: "Vyčistit depo",
+      btnClear: "Vyčistit",
+      vmodeMonth: "Měsíční",
+      vmodeBiweek: "Dvoutýdenní",
+      vmodeWeek: "Týdenní",
+      subtabConfig: "Depa, Uživatelé & Časy",
+      backRoster: "Zpět na plánování směn",
       depotsTitle: "Správa dep, plánovacího kalendáře a směn",
       depotsSub: "U každého depa nastavte plánovací kalendář (Krátký / Dlouhý: Po, Út, Pá, So, Ne vs. St, Čt, nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem Uložit změny.",
       btnAddDepot: "Přidat depo",
       btnSaveDepots: "Uložit změny",
       usersTitle: "Správa uživatelů, rolí, kalendáře a přiřazení k depům",
       usersSub: "Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem Uložit změny.",
-      btnAddUser: "Přidat uživatele",
+      btnAddUser: "Vytvořit uživatele",
       btnSaveUsers: "Uložit změny",
       dangerTitle: "Nebezpečná zóna – Vymazání databáze",
       dangerSub: "Trvale vymaže všechny naplánované směny, požadavky AG, žádosti zaměstnanců i historii zpráv z databáze.",
@@ -787,29 +881,32 @@
       quickAccess: "Quick Test Access (1-Click)",
       lightTheme: "Light Mode",
       darkTheme: "Dark Mode",
+      btnSettings: "Settings",
       bellReq: "Requests",
       logout: "Sign Out",
       tabSchedule: "Shift Roster",
-      tabUsers: "Users, Depots & Shifts",
       tabChat: "Messages & Requests",
-      tabAudit: "Audit Log",
       tabCoordReq: "Agency Worker Requests",
       tabCoordSum: "Agency Worked Shifts",
       activeDepot: "Active Depot:",
       showTerminated: "Show terminated employees",
-      manageDepots: "Configure depots & shifts",
       btnAuto: "Auto-Schedule",
-      btnSort: "Sort by Shift & Role",
-      btnAddAg: "Add Agency Request",
+      btnSort: "Sort by Role",
+      btnAddAg: "Agency Request",
       btnExport: "Export Roster",
-      btnClear: "Clear Depot",
+      btnClear: "Clear",
+      vmodeMonth: "Monthly",
+      vmodeBiweek: "Bi-weekly",
+      vmodeWeek: "Weekly",
+      subtabConfig: "Depots, Users & Shifts",
+      backRoster: "Back to Shift Roster",
       depotsTitle: "Depot, Schedule Calendar & Shift Configuration",
       depotsSub: "Configure each depot's schedule calendar (Short / Long or Monday – Friday), shifts and hours, then click Save Changes.",
       btnAddDepot: "Add Depot",
       btnSaveDepots: "Save Changes",
       usersTitle: "Users, Roles, Calendar & Depot Assignments",
       usersSub: "Edits remain temporarily saved until you confirm them by clicking Save Changes.",
-      btnAddUser: "Add User",
+      btnAddUser: "Create User",
       btnSaveUsers: "Save Changes",
       dangerTitle: "Danger Zone – Wipe Database",
       dangerSub: "Permanently deletes all scheduled shifts, agency requests, employee requests and chat history from the database.",
@@ -841,16 +938,21 @@
     const loginSubSpan = document.querySelector("#btn-login-submit span");
     if (loginSubSpan) loginSubSpan.textContent = t("loginSubmit");
     setTxt("lbl-quick-access", "quickAccess");
+    setTxt("lbl-btn-settings", "btnSettings");
     setTxt("lbl-bell-req", "bellReq");
     setTxt("lbl-logout", "logout");
     setTxt("lbl-active-depot", "activeDepot");
     setTxt("lbl-show-terminated", "showTerminated");
-    setTxt("lbl-manage-depots", "manageDepots");
     setTxt("lbl-btn-auto", "btnAuto");
     setTxt("lbl-btn-sort", "btnSort");
     setTxt("lbl-btn-add-ag", "btnAddAg");
     setTxt("lbl-btn-export", "btnExport");
     setTxt("lbl-btn-clear", "btnClear");
+    setTxt("vmode-month", "vmodeMonth");
+    setTxt("vmode-biweek", "vmodeBiweek");
+    setTxt("vmode-week", "vmodeWeek");
+    setTxt("lbl-subtab-config", "subtabConfig");
+    setTxt("lbl-back-roster", "backRoster");
     setTxt("lbl-depots-title", "depotsTitle");
     setTxt("lbl-depots-sub", "depotsSub");
     setTxt("lbl-btn-add-depot", "btnAddDepot");
@@ -929,27 +1031,28 @@
     }
   ];
 
-  // Default Users
+  // Default Users with phone numbers
   const DEFAULT_USERS = [
-    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", calendarMode: "mon_fri", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
-    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", calendarMode: "short_long", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
-    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-02" },
-    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-03" },
-    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-04" },
-    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", calendarMode: "short_long", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-05" },
-    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", calendarMode: "mon_fri", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-06" },
-    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-07" },
-    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-08" },
-    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-09" },
-    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-10" },
-    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-11" },
-    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-12" },
-    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-13" },
-    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-14" }
+    { id: "u_admin", name: "Peter Pribilinec", phone: "+420 777 100 001", role: "admin", roleLabel: "Admin", calendarMode: "mon_fri", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
+    { id: "u_roy", name: "Roy (Koordinátor)", phone: "+420 777 100 002", role: "coordinator", roleLabel: "Koordinátor AG", calendarMode: "short_long", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
+    { id: "u_vojtech", name: "Vojtěch Navrátil", phone: "+420 777 201 101", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-02" },
+    { id: "u_marek", name: "Marek Švejda", phone: "+420 777 201 102", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-03" },
+    { id: "u_ladislav", name: "Ladislav Hubler", phone: "+420 777 201 103", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-04" },
+    { id: "u_tomas", name: "Tomáš Butkovsky", phone: "+420 777 301 201", role: "specialist", roleLabel: "Specialista", calendarMode: "short_long", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-05" },
+    { id: "u_daniela", name: "Daniela Lodlová", phone: "+420 777 301 202", role: "specialist", roleLabel: "Specialista", calendarMode: "mon_fri", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-06" },
+    { id: "u_daniel", name: "Daniel Doležal", phone: "+420 777 401 301", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-07" },
+    { id: "u_adam", name: "Adam Doležal", phone: "+420 777 401 302", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-08" },
+    { id: "u_jan", name: "Jan Markovič", phone: "+420 777 401 303", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-09" },
+    { id: "u_josef", name: "Josef Karnold", phone: "+420 777 401 304", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-10" },
+    { id: "u_hossen", name: "Hossen Mohammad Arafat", phone: "+420 777 401 305", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-11" },
+    { id: "u_hossain", name: "Hossain Mohammad Jabed", phone: "+420 777 401 306", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-12" },
+    { id: "u_rahman", name: "Rahman Md Faisal", phone: "+420 777 401 307", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-13" },
+    { id: "u_islam", name: "Islam Kazi Raihanul", phone: "+420 777 401 308", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-14" }
   ];
 
   // Global App State
   let appState = {
+    version: APP_VERSION,
     depots: JSON.parse(JSON.stringify(DEFAULT_DEPOTS)),
     users: JSON.parse(JSON.stringify(DEFAULT_USERS)),
     shiftTimes: {
@@ -966,14 +1069,15 @@
   };
 
   let currentUser = null;
-  let currentDate = new Date(2026, 10, 1);
+  let anchorDate = new Date(2026, 10, 1);
+  let rosterViewMode = "month";
   let activeDepotId = "depo_plzen";
   let coordSelectedDepotId = "ALL";
   let activeAdminTab = "schedule";
+  let settingsSubTab = "main";
   let activeCoordTab = "requests";
   let showTerminatedWorkers = false;
 
-  // Draft buffers for Admin Users & Depots tab (protected against background sync overwrites)
   let draftDepots = [];
   let draftUsers = [];
   let hasUnsavedAdminChanges = false;
@@ -1002,6 +1106,28 @@
     activeAdminTab = tabId;
     buildNavigationForRole();
     renderActiveRoleView();
+  }
+
+  function setSettingsSubTab(sub) {
+    settingsSubTab = sub;
+    const mainBtn = document.getElementById("subtab-settings-main");
+    const auditBtn = document.getElementById("subtab-settings-audit");
+    const mainPanel = document.getElementById("settings-panel-main");
+    const auditPanel = document.getElementById("settings-panel-audit");
+
+    if (sub === "audit") {
+      mainBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5";
+      auditBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5";
+      mainPanel.classList.add("hidden");
+      auditPanel.classList.remove("hidden");
+      renderAuditTab();
+    } else {
+      mainBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5";
+      auditBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5";
+      mainPanel.classList.remove("hidden");
+      auditPanel.classList.add("hidden");
+      renderAdminSettingsMain();
+    }
   }
 
   function getCalendarModeLabel(mode) {
@@ -1045,6 +1171,10 @@
       if (!u.calendarMode) {
         const def = DEFAULT_USERS.find(x => x.id === u.id);
         u.calendarMode = def ? def.calendarMode : "short_long";
+      }
+      if (u.phone === undefined) {
+        const def = DEFAULT_USERS.find(x => x.id === u.id);
+        u.phone = def ? def.phone : "";
       }
       if (u.terminatedFrom === undefined) u.terminatedFrom = null;
       if (!u.createdAt) {
@@ -1128,6 +1258,7 @@
     if (remote.chats) appState.chats = remote.chats;
     if (remote.depotUserOrder) appState.depotUserOrder = remote.depotUserOrder;
     if (Array.isArray(remote.auditLog)) appState.auditLog = remote.auditLog;
+    appState.version = APP_VERSION;
     ensureMultiDepotConsistency();
   }
 
@@ -1142,8 +1273,7 @@
   }
 
   async function pullFromFirebase(silent = true) {
-    // Do NOT overwrite active draft edits in Admin Users/Depots tab during background sync
-    if (silent && currentUser?.role === "admin" && activeAdminTab === "users" && hasUnsavedAdminChanges) {
+    if (silent && currentUser?.role === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges) {
       return;
     }
 
@@ -1164,7 +1294,7 @@
       if (currentUser) {
         const refreshed = appState.users.find(u => u.id === currentUser.id);
         if (refreshed) currentUser = refreshed;
-        if (!(currentUser.role === "admin" && activeAdminTab === "users" && hasUnsavedAdminChanges)) {
+        if (!(currentUser.role === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges)) {
           renderActiveRoleView();
         }
       }
@@ -1176,6 +1306,7 @@
   }
 
   async function pushToFirebase(silent = false) {
+    appState.version = APP_VERSION;
     safeStorage.set("depotshift_cache", JSON.stringify(appState));
     try {
       const res = await fetchWithTimeout(FIREBASE_DB_URL, {
@@ -1192,26 +1323,104 @@
   }
 
   function manualSyncNow() {
-    if (hasUnsavedAdminChanges && activeAdminTab === "users") {
-      showToast("Nejprve uložte nebo zrušte rozpracované změny v administraci.", "warn");
+    if (hasUnsavedAdminChanges && activeAdminTab === "settings") {
+      showToast("Nejprve uložte nebo zrušte rozpracované změny v Nastavení.", "warn");
       return;
     }
     pullFromFirebase(false);
   }
 
-  // ==================== DATE & HOURS HELPERS ====================
-  function getMonthKey(dateObj = currentDate) {
+  // ==================== DATE, PERIOD & HOURS HELPERS ====================
+  function getMonthKey(dateObj = anchorDate) {
     const y = dateObj.getFullYear();
     const m = String(dateObj.getMonth() + 1).padStart(2, "0");
     return `${y}-${m}`;
   }
 
-  function getDaysInMonth(dateObj = currentDate) {
+  function getDaysInMonth(dateObj = anchorDate) {
     return new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, 0).getDate();
   }
 
   function formatDateStr(y, mZeroIndexed, d) {
     return `${y}-${String(mZeroIndexed + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  }
+
+  function parseDateStr(dateStr) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return { year: y, month: m - 1, day: d, mKey: `${y}-${String(m).padStart(2, "0")}`, dateObj: new Date(y, m - 1, d) };
+  }
+
+  function getMondayOfWeek(dateObj) {
+    const d = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    const diff = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - diff);
+    return d;
+  }
+
+  function getVisibleDatesList() {
+    const res = [];
+    if (rosterViewMode === "month") {
+      const y = anchorDate.getFullYear();
+      const m = anchorDate.getMonth();
+      const days = getDaysInMonth(anchorDate);
+      for (let d = 1; d <= days; d++) {
+        const dt = new Date(y, m, d);
+        res.push({
+          dateObj: dt,
+          year: y,
+          month: m,
+          day: d,
+          mKey: getMonthKey(dt),
+          dateStr: formatDateStr(y, m, d),
+          dow: dt.getDay()
+        });
+      }
+    } else {
+      const count = rosterViewMode === "week" ? 7 : 14;
+      const start = getMondayOfWeek(anchorDate);
+      for (let i = 0; i < count; i++) {
+        const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+        res.push({
+          dateObj: dt,
+          year: dt.getFullYear(),
+          month: dt.getMonth(),
+          day: dt.getDate(),
+          mKey: getMonthKey(dt),
+          dateStr: formatDateStr(dt.getFullYear(), dt.getMonth(), dt.getDate()),
+          dow: dt.getDay()
+        });
+      }
+    }
+    return res;
+  }
+
+  function setRosterViewMode(mode) {
+    rosterViewMode = mode;
+    ["month", "biweek", "week"].forEach(m => {
+      const btn = document.getElementById("vmode-" + m);
+      if (!btn) return;
+      if (m === mode) {
+        btn.className = "px-2.5 py-1 rounded-lg transition bg-blue-600 text-white";
+      } else {
+        btn.className = "px-2.5 py-1 rounded-lg transition text-slate-400 hover:text-white";
+      }
+    });
+    renderAdminSchedule();
+  }
+
+  function stepRosterPeriod(delta) {
+    if (activeAdminTab === "schedule" && currentUser?.role === "admin") {
+      if (rosterViewMode === "week") {
+        anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), anchorDate.getDate() + delta * 7);
+      } else if (rosterViewMode === "biweek") {
+        anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), anchorDate.getDate() + delta * 14);
+      } else {
+        anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + delta, 1);
+      }
+    } else {
+      anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + delta, 1);
+    }
+    renderActiveRoleView();
   }
 
   function calcDurationHours(startStr, endStr) {
@@ -1304,6 +1513,15 @@
     document.getElementById("current-user-name").textContent = user.name;
     document.getElementById("current-user-role").textContent = user.roleLabel || user.role;
 
+    const settingsBtn = document.getElementById("btn-header-settings");
+    if (user.role === "admin") {
+      settingsBtn.classList.remove("hidden");
+      settingsBtn.classList.add("inline-flex");
+    } else {
+      settingsBtn.classList.add("hidden");
+      settingsBtn.classList.remove("inline-flex");
+    }
+
     if (user.role === "coordinator") {
       coordSelectedDepotId = "ALL";
     }
@@ -1339,9 +1557,7 @@
       bell.classList.add("inline-flex");
       const tabs = [
         { id: "schedule", icon: "fa-calendar-days", label: t("tabSchedule") },
-        { id: "users", icon: "fa-users-gear", label: t("tabUsers") },
-        { id: "chat", icon: "fa-comments", label: t("tabChat") },
-        { id: "audit", icon: "fa-clock-rotate-left", label: t("tabAudit") }
+        { id: "chat", icon: "fa-comments", label: t("tabChat") }
       ];
       tabs.forEach(tItem => {
         const btn = document.createElement("button");
@@ -1376,7 +1592,7 @@
 
   function hideAllSections() {
     [
-      "view-admin-schedule", "view-admin-users", "view-admin-chat", "view-admin-audit",
+      "view-admin-schedule", "view-admin-settings", "view-admin-chat",
       "view-coord-requests", "view-coord-summary", "view-employee-home"
     ].forEach(id => document.getElementById(id).classList.add("hidden"));
   }
@@ -1390,15 +1606,12 @@
       if (activeAdminTab === "schedule") {
         document.getElementById("view-admin-schedule").classList.remove("hidden");
         renderAdminSchedule();
-      } else if (activeAdminTab === "users") {
-        document.getElementById("view-admin-users").classList.remove("hidden");
-        renderAdminUsersTab();
+      } else if (activeAdminTab === "settings") {
+        document.getElementById("view-admin-settings").classList.remove("hidden");
+        setSettingsSubTab(settingsSubTab);
       } else if (activeAdminTab === "chat") {
         document.getElementById("view-admin-chat").classList.remove("hidden");
         renderAdminChatTab();
-      } else if (activeAdminTab === "audit") {
-        document.getElementById("view-admin-audit").classList.remove("hidden");
-        renderAuditTab();
       }
     } else if (currentUser.role === "coordinator") {
       if (activeCoordTab === "requests") {
@@ -1414,37 +1627,16 @@
     }
   }
 
-  function changeMonth(delta) {
-    currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + delta, 1);
-    renderActiveRoleView();
-  }
-
-  // ==================== SMART SORTING & ROW REORDERING ====================
-  function getUserShiftClusterRank(userId, mKey, depotId) {
-    const uSched = appState.schedules[mKey]?.[depotId]?.[userId] || {};
-    let dCount = 0;
-    let nCount = 0;
-    Object.values(uSched).forEach(entry => {
-      if (entry?.type === "D") dCount++;
-      else if (entry?.type === "N") nCount++;
-    });
-    if (dCount === 0 && nCount === 0) return 3;
-    if (dCount >= nCount) return 1;
-    return 2;
-  }
-
+  // ==================== ROLE-FIRST SORTING (PŘEDÁK -> SPECIALISTA -> SKLADNÍK) ====================
   function getUserRoleRank(role) {
     const r = (role || "").toLowerCase();
-    if (r === "foreman" || r.includes("předák")) return 1;
-    if (r === "specialist" || r.includes("specialista")) return 2;
-    if (r === "warehouse" || r.includes("skladník")) return 3;
+    if (r === "foreman" || r.includes("předák")) return 1;      // 1. Předák
+    if (r === "specialist" || r.includes("specialista")) return 2; // 2. Specialista
+    if (r === "warehouse" || r.includes("skladník")) return 3;   // 3. Skladník
     return 4;
   }
 
-  function compareUsersByRules(a, b, mKey, depotId) {
-    const shiftDiff = getUserShiftClusterRank(a.id, mKey, depotId) - getUserShiftClusterRank(b.id, mKey, depotId);
-    if (shiftDiff !== 0) return shiftDiff;
-
+  function compareUsersByRules(a, b) {
     const roleDiff = getUserRoleRank(a.role) - getUserRoleRank(b.role);
     if (roleDiff !== 0) return roleDiff;
 
@@ -1456,7 +1648,6 @@
   }
 
   function getVisibleRosterUsers() {
-    const mKey = getMonthKey();
     const list = appState.users.filter(u =>
       u.isScheduleable !== false &&
       u.role !== "admin" &&
@@ -1473,28 +1664,27 @@
         if (idxA !== -1 && idxB !== -1) return idxA - idxB;
         if (idxA !== -1) return -1;
         if (idxB !== -1) return 1;
-        return compareUsersByRules(a, b, mKey, activeDepotId);
+        return compareUsersByRules(a, b);
       });
     }
 
-    return list.sort((a, b) => compareUsersByRules(a, b, mKey, activeDepotId));
+    return list.sort((a, b) => compareUsersByRules(a, b));
   }
 
   function applySmartSortToActiveDepot() {
-    const mKey = getMonthKey();
     const list = appState.users.filter(u =>
       u.isScheduleable !== false &&
       u.role !== "admin" &&
       u.role !== "coordinator" &&
       Array.isArray(u.depots) && u.depots.includes(activeDepotId)
     );
-    list.sort((a, b) => compareUsersByRules(a, b, mKey, activeDepotId));
+    list.sort((a, b) => compareUsersByRules(a, b));
     if (!appState.depotUserOrder) appState.depotUserOrder = {};
     appState.depotUserOrder[activeDepotId] = list.map(u => u.id);
-    addAudit("Seřazení zaměstnanců", `[${getDepotName(activeDepotId)}] Seřazeno dle směn, pozice, data přidání a abecedy.`);
+    addAudit("Seřazení zaměstnanců", `[${getDepotName(activeDepotId)}] Seřazeno dle pozice (Předák, Specialista, Skladník).`);
     renderAdminSchedule();
     pushToFirebase();
-    showToast("Zaměstnanci byli seřazeni podle směn, pozice, data přidání a abecedy.", "success");
+    showToast("Zaměstnanci seřazeni: Předák → Specialista → Skladník.", "success");
   }
 
   function onRowDragStart(e, userId) {
@@ -1543,7 +1733,7 @@
     pushToFirebase();
   }
 
-  // ==================== ADMIN: SCHEDULE MATRIX & MULTI-DEPOT ====================
+  // ==================== ADMIN: SCHEDULE MATRIX (MONTH / BIWEEK / WEEK) ====================
   function selectAdminDepot(depotId) {
     activeDepotId = depotId;
     renderAdminSchedule();
@@ -1555,14 +1745,15 @@
   }
 
   function getShiftBadgeHtml(entry, otherDepotConflictName = null, isTerminatedDay = false) {
+    const compact = rosterViewMode === "month";
     if (!entry || !entry.type) {
       if (isTerminatedDay) {
-        return `<span class="text-[9px] text-red-400/70 font-semibold">UKONČEN</span>`;
+        return `<span class="text-[8px] text-red-400/70 font-semibold">${compact ? "UK" : "UKONČEN"}</span>`;
       }
       if (otherDepotConflictName) {
-        return `<div class="px-1 py-0.5 rounded bg-slate-700/60 text-slate-300 text-[9px] font-bold leading-tight" title="Naplánováno na jiném depu">${otherDepotConflictName}</div>`;
+        return `<div class="px-0.5 py-0.5 rounded bg-slate-700/60 text-slate-300 text-[8px] font-bold leading-none truncate" title="${otherDepotConflictName}">${compact ? otherDepotConflictName.split(":")[1]?.trim() || "•" : otherDepotConflictName}</div>`;
       }
-      return `<span class="text-slate-500 font-bold">—</span>`;
+      return `<span class="text-slate-600 font-bold">—</span>`;
     }
     const map = {
       D: "bg-amber-400 text-slate-950",
@@ -1573,17 +1764,19 @@
       A: "bg-purple-600 text-white"
     };
     const cls = map[entry.type] || "bg-slate-700 text-white";
-    const timeTag = (entry.start && entry.end) ? `<div class="text-[9px] leading-none mt-0.5 opacity-90">${entry.start}-${entry.end}</div>` : "";
-    return `<div class="px-1.5 py-1 rounded-md font-extrabold text-[11px] leading-tight ${cls}">${entry.type}${timeTag}</div>`;
+    const showTime = !compact && entry.start && entry.end;
+    const timeTag = showTime ? `<div class="text-[9px] leading-none mt-0.5 opacity-90">${entry.start}-${entry.end}</div>` : "";
+    return `<div class="${compact ? "py-1 px-0.5 text-[10px]" : "px-1.5 py-1 text-[11px]"} rounded font-extrabold leading-tight ${cls}">${entry.type}${timeTag}</div>`;
   }
 
   function renderAdminSchedule() {
     ensureMultiDepotConsistency();
-    const mKey = getMonthKey();
-    const days = getDaysInMonth();
-    const y = currentDate.getFullYear();
-    const m = currentDate.getMonth();
+    const visibleDates = getVisibleDatesList();
     const depot = getDepotById(activeDepotId);
+    const locale = currentLang === "en" ? "en-US" : "cs-CZ";
+
+    const tableEl = document.getElementById("admin-matrix-table");
+    tableEl.className = `w-full border-collapse text-xs mode-${rosterViewMode}`;
 
     document.getElementById("chk-show-terminated").checked = showTerminatedWorkers;
 
@@ -1593,15 +1786,21 @@
       const shiftBadge = d.hasDay && d.hasNight ? "D+N" : (d.hasDay ? "D" : "N");
       const calShort = d.calendarMode === "mon_fri" ? "Po–Pá" : "K/D";
       return `<button onclick="selectAdminDepot('${d.id}')"
-        class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
+        class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
         <span>${d.name}</span>
         <span class="text-[9px] px-1.5 py-0.2 rounded ${isAct ? "bg-blue-800 text-blue-100" : "bg-slate-700 text-slate-300"}">${calShort} • ${shiftBadge}</span>
       </button>`;
     }).join("");
 
     document.getElementById("auto-depot-name").textContent = depot.name;
-    const locale = currentLang === "en" ? "en-US" : "cs-CZ";
-    document.getElementById("admin-month-label").textContent = currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
+
+    if (rosterViewMode === "month") {
+      document.getElementById("admin-period-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
+    } else {
+      const first = visibleDates[0];
+      const last = visibleDates[visibleDates.length - 1];
+      document.getElementById("admin-period-label").textContent = `${first.day}.${first.month + 1}. – ${last.day}.${last.month + 1}.${last.year}`;
+    }
 
     let legendHtml = `<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-sky-400 font-bold mr-1"><i class="fa-solid fa-calendar-week mr-1"></i>${getCalendarModeLabel(depot.calendarMode)}</span>`;
     if (depot.hasDay) {
@@ -1618,73 +1817,66 @@
     `;
     document.getElementById("admin-legend-items").innerHTML = legendHtml;
 
-    const dayNames = currentLang === "en" ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
-    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[215px] text-slate-300">${depot.name}</th>`;
-    for (let d = 1; d <= days; d++) {
-      const dow = new Date(y, m, d).getDay();
-      const isWknd = dow === 0 || dow === 6;
-      headHtml += `<th class="sticky-header py-2 px-1 text-center border-l border-slate-800 ${isWknd ? "bg-slate-950 text-amber-500" : "text-slate-300"}">
-        <div class="text-[11px] font-extrabold">${d}.</div>
-        <div class="text-[9px] font-normal opacity-75">${dayNames[dow]}</div>
+    const dayNames = currentLang === "en" ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
+    const nameColClass = rosterViewMode === "month" ? "min-w-[165px] max-w-[180px]" : "min-w-[195px]";
+    let headHtml = `<tr><th class="sticky-corner py-2 px-2.5 text-left ${nameColClass} text-slate-300">${depot.name}</th>`;
+    visibleDates.forEach(dt => {
+      const isWknd = dt.dow === 0 || dt.dow === 6;
+      const dateLbl = rosterViewMode === "month" ? `${dt.day}.` : `${dt.day}.${dt.month + 1}.`;
+      headHtml += `<th class="sticky-header py-1.5 px-0.5 text-center border-l border-slate-800 ${isWknd ? "bg-slate-950 text-amber-500" : "text-slate-300"}">
+        <div class="text-[10px] font-extrabold leading-tight">${dateLbl}</div>
+        <div class="text-[9px] font-normal opacity-75 leading-tight">${dayNames[dt.dow]}</div>
       </th>`;
-    }
-    headHtml += `<th class="sticky-header py-2 px-2.5 text-center border-l border-slate-700 text-emerald-500">${currentLang === "en" ? "Shifts / Hrs" : "Směn / Hod"}</th></tr>`;
+    });
+    headHtml += `<th class="sticky-header py-1.5 px-1.5 text-center border-l border-slate-700 text-emerald-500 min-w-[64px] text-[10px]">${currentLang === "en" ? "Sh / Hr" : "Sm / Hod"}</th></tr>`;
     document.getElementById("admin-matrix-head").innerHTML = headHtml;
 
     const scheduleableUsers = getVisibleRosterUsers();
-    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
-
     let bodyHtml = "";
-    const dailyDCounts = Array(days + 1).fill(0);
-    const dailyNCounts = Array(days + 1).fill(0);
+    const dailyDCounts = Array(visibleDates.length).fill(0);
+    const dailyNCounts = Array(visibleDates.length).fill(0);
 
     if (scheduleableUsers.length === 0) {
-      bodyHtml += `<tr><td colspan="${days + 2}" class="py-6 px-4 text-center text-xs text-slate-400">
+      bodyHtml += `<tr><td colspan="${visibleDates.length + 2}" class="py-6 px-4 text-center text-xs text-slate-400">
         ${currentLang === "en" ? "No active employees assigned to this depot." : `K depu <strong>${depot.name}</strong> nejsou přiřazeni žádní aktivní zaměstnanci.`}
       </td></tr>`;
     }
 
     scheduleableUsers.forEach(user => {
-      const uSched = depotSched[user.id] || {};
       let shiftCount = 0;
       let totalHours = 0;
-      const clusterRank = getUserShiftClusterRank(user.id, mKey, activeDepotId);
-      const shiftClusterDot = clusterRank === 1
-        ? `<span class="w-2 h-2 rounded-full bg-amber-400 inline-block mr-1" title="Denní skupina"></span>`
-        : (clusterRank === 2 ? `<span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1" title="Noční skupina"></span>` : "");
       const calBadge = user.calendarMode === "mon_fri"
-        ? `<span class="ml-1 px-1 py-0.2 rounded bg-teal-500/20 text-teal-400 text-[9px]">Po–Pá</span>`
-        : `<span class="ml-1 px-1 py-0.2 rounded bg-slate-700/80 text-slate-300 text-[9px]">K/D</span>`;
-      const termTag = user.terminatedFrom ? `<span class="ml-1 px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 text-[9px]">Ukončen od ${user.terminatedFrom}</span>` : "";
+        ? `<span class="ml-1 px-1 rounded bg-teal-500/20 text-teal-400 text-[8px]">Po–Pá</span>`
+        : `<span class="ml-1 px-1 rounded bg-slate-700/80 text-slate-300 text-[8px]">K/D</span>`;
+      const termTag = user.terminatedFrom ? `<span class="ml-1 px-1 rounded bg-red-500/20 text-red-400 text-[8px]">Ukončen</span>` : "";
 
       bodyHtml += `<tr class="hover:bg-slate-800/40 ${user.terminatedFrom ? "opacity-75" : ""}"
         ondragover="onRowDragOver(event)"
         ondragleave="onRowDragLeave(event)"
         ondrop="onRowDrop(event, '${user.id}')">
-        <td class="sticky-col py-2 px-2.5 cursor-grab active:cursor-grabbing"
+        <td class="sticky-col py-1.5 px-2 cursor-grab active:cursor-grabbing ${nameColClass}"
           draggable="true"
-          ondragstart="onRowDragStart(event, '${user.id}')">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-grip-vertical text-slate-500 text-xs"></i>
+          ondragstart="onRowDragStart(event, '${user.id}')"
+          title="${user.phone ? 'Tel: ' + user.phone : ''}">
+          <div class="flex items-center gap-1.5">
+            <i class="fa-solid fa-grip-vertical text-slate-500 text-[10px]"></i>
             <div class="min-w-0">
-              <div class="font-bold text-white text-xs truncate max-w-[175px]">${shiftClusterDot}${user.name}</div>
-              <div class="text-[10px] text-slate-400">${user.roleLabel || user.role}${calBadge}${termTag}</div>
+              <div class="font-bold text-white text-[11px] truncate">${user.name}</div>
+              <div class="text-[9px] text-slate-400 truncate">${user.roleLabel || user.role}${calBadge}${termTag}</div>
             </div>
           </div>
         </td>`;
 
-      for (let d = 1; d <= days; d++) {
-        const entry = uSched[d];
-        const dow = new Date(y, m, d).getDay();
-        const isWknd = dow === 0 || dow === 6;
-        const dateStr = formatDateStr(y, m, d);
-        const isTermDay = user.terminatedFrom && dateStr >= user.terminatedFrom;
+      visibleDates.forEach((dt, colIdx) => {
+        const entry = appState.schedules[dt.mKey]?.[activeDepotId]?.[user.id]?.[dt.day];
+        const isWknd = dt.dow === 0 || dt.dow === 6;
+        const isTermDay = user.terminatedFrom && dt.dateStr >= user.terminatedFrom;
 
         let otherDepotConflict = null;
         if (!entry || !entry.type) {
           for (const dep of appState.depots) {
             if (dep.id === activeDepotId) continue;
-            const otherEntry = appState.schedules[mKey]?.[dep.id]?.[user.id]?.[d];
+            const otherEntry = appState.schedules[dt.mKey]?.[dep.id]?.[user.id]?.[dt.day];
             if (otherEntry && otherEntry.type) {
               otherDepotConflict = `${dep.name.replace("Depo ", "")}: ${otherEntry.type}`;
               break;
@@ -1693,96 +1885,97 @@
         }
 
         if (entry && entry.type) {
-          if (entry.type === "D") { dailyDCounts[d]++; shiftCount++; }
-          if (entry.type === "N") { dailyNCounts[d]++; shiftCount++; }
+          if (entry.type === "D") { dailyDCounts[colIdx]++; shiftCount++; }
+          if (entry.type === "N") { dailyNCounts[colIdx]++; shiftCount++; }
           totalHours += getShiftHours(entry, activeDepotId);
         }
 
         bodyHtml += `<td
           class="shift-cell text-center border-l border-slate-800/90 cursor-pointer ${isTermDay ? "bg-red-950/20" : (isWknd ? "bg-slate-950/50" : "bg-slate-900/40")}"
           draggable="${entry && entry.type ? "true" : "false"}"
-          ondragstart="onShiftDragStart(event, '${user.id}', ${d})"
+          ondragstart="onShiftDragStart(event, '${user.id}', '${dt.dateStr}')"
           ondragover="onShiftDragOver(event)"
           ondragleave="onShiftDragLeave(event)"
-          ondrop="onShiftDrop(event, '${user.id}', ${d})"
-          onclick="openUserCellModal('${user.id}', ${d})">
+          ondrop="onShiftDrop(event, '${user.id}', '${dt.dateStr}')"
+          onclick="openUserCellModal('${user.id}', '${dt.dateStr}')">
           ${getShiftBadgeHtml(entry, otherDepotConflict, isTermDay)}
         </td>`;
-      }
+      });
 
-      bodyHtml += `<td class="py-2 px-2.5 text-center border-l border-slate-800 font-bold text-slate-200 whitespace-nowrap">
-        ${shiftCount} <span class="text-slate-500">/</span> <span class="text-emerald-500">${totalHours}h</span>
+      bodyHtml += `<td class="py-1.5 px-1.5 text-center border-l border-slate-800 font-bold text-slate-200 whitespace-nowrap text-[10px]">
+        ${shiftCount}<span class="text-slate-500">/</span><span class="text-emerald-500">${totalHours}h</span>
       </td></tr>`;
     });
 
-    const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey) && s.depotId === activeDepotId);
-    if (monthAgSlots.length > 0) {
-      bodyHtml += `<tr><td colspan="${days + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1.5 px-3 text-[11px] font-extrabold text-purple-400 uppercase tracking-wider">
-        <i class="fa-solid fa-people-arrows mr-1.5"></i> AG – ${depot.name} (${monthAgSlots.length})
+    const visibleDateSet = new Set(visibleDates.map(d => d.dateStr));
+    const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
+    if (visibleAgSlots.length > 0) {
+      bodyHtml += `<tr><td colspan="${visibleDates.length + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1 px-2.5 text-[10px] font-extrabold text-purple-400 uppercase tracking-wider">
+        <i class="fa-solid fa-people-arrows mr-1"></i> AG – ${depot.name} (${visibleAgSlots.length})
       </td></tr>`;
 
-      monthAgSlots.forEach(slot => {
-        const slotDay = parseInt(slot.date.split("-")[2], 10);
+      visibleAgSlots.forEach(slot => {
         const displayName = slot.assignedName ? `${slot.assignedName} (AG)` : slot.label;
         const hrs = calcDurationHours(slot.start, slot.end);
 
         bodyHtml += `<tr class="bg-purple-950/10 hover:bg-purple-950/20">
-          <td class="sticky-col py-2 px-3">
-            <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-xs truncate max-w-[175px]">${displayName}</div>
-            <div class="text-[10px] text-purple-400">AG • ${slot.start}–${slot.end}</div>
+          <td class="sticky-col py-1.5 px-2.5 ${nameColClass}">
+            <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-[11px] truncate">${displayName}</div>
+            <div class="text-[9px] text-purple-400">AG • ${slot.start}–${slot.end}</div>
           </td>`;
 
-        for (let d = 1; d <= days; d++) {
-          if (d === slotDay) {
-            if (slot.shift === "D") dailyDCounts[d]++;
-            else dailyNCounts[d]++;
+        visibleDates.forEach((dt, colIdx) => {
+          if (dt.dateStr === slot.date) {
+            if (slot.shift === "D") dailyDCounts[colIdx]++;
+            else dailyNCounts[colIdx]++;
             bodyHtml += `<td onclick="openAgCellModal('${slot.id}')" class="shift-cell text-center border-l border-slate-800 cursor-pointer">
               ${getShiftBadgeHtml({ type: slot.shift, start: slot.start, end: slot.end })}
             </td>`;
           } else {
             bodyHtml += `<td class="shift-cell text-center border-l border-slate-800/60 text-slate-600">—</td>`;
           }
-        }
+        });
 
-        bodyHtml += `<td class="py-2 px-2.5 text-center border-l border-slate-800 font-bold text-purple-400">1 / ${hrs}h</td></tr>`;
+        bodyHtml += `<td class="py-1.5 px-1.5 text-center border-l border-slate-800 font-bold text-purple-400 text-[10px]">1/${hrs}h</td></tr>`;
       });
     }
 
     document.getElementById("admin-matrix-body").innerHTML = bodyHtml;
 
-    let footHtml = `<tr><td class="sticky-col py-2 px-3 text-[11px] text-slate-300">Obsazení</td>`;
-    for (let d = 1; d <= days; d++) {
-      const dOk = dailyDCounts[d] >= 3;
-      footHtml += `<td class="py-1.5 px-1 text-center border-l border-slate-800 text-[10px]">
-        ${depot.hasDay ? `<div class="${dOk ? "text-amber-500" : "text-red-500"}">D:${dailyDCounts[d]}</div>` : ""}
-        ${depot.hasNight ? `<div class="text-blue-500">N:${dailyNCounts[d]}</div>` : ""}
+    let footHtml = `<tr><td class="sticky-col py-1.5 px-2.5 text-[10px] text-slate-300">D / N</td>`;
+    visibleDates.forEach((dt, colIdx) => {
+      const dOk = dailyDCounts[colIdx] >= 3;
+      footHtml += `<td class="py-1 px-0.5 text-center border-l border-slate-800 text-[9px] leading-tight">
+        ${depot.hasDay ? `<div class="${dOk ? "text-amber-500" : "text-red-500"}">${dailyDCounts[colIdx]}</div>` : ""}
+        ${depot.hasNight ? `<div class="text-blue-500">${dailyNCounts[colIdx]}</div>` : ""}
       </td>`;
-    }
-    footHtml += `<td class="py-2 px-2 text-center border-l border-slate-700 text-[10px] text-slate-400">${depot.hasDay && depot.hasNight ? "D+N" : (depot.hasDay ? "Jen D" : "Jen N")}</td></tr>`;
+    });
+    footHtml += `<td class="py-1.5 px-1.5 text-center border-l border-slate-700 text-[9px] text-slate-400">${depot.hasDay && depot.hasNight ? "D+N" : (depot.hasDay ? "D" : "N")}</td></tr>`;
     document.getElementById("admin-matrix-foot").innerHTML = footHtml;
   }
 
   // ==================== EXPORT ROSTER (PNG IMAGE & XLSX) ====================
   function exportRosterAsImage() {
     closeModal("modal-export-roster");
-    const mKey = getMonthKey();
-    const days = getDaysInMonth();
-    const y = currentDate.getFullYear();
-    const m = currentDate.getMonth();
+    const visibleDates = getVisibleDatesList();
     const users = getVisibleRosterUsers();
-    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
-    const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey) && s.depotId === activeDepotId);
+    const visibleDateSet = new Set(visibleDates.map(d => d.dateStr));
+    const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
 
     const rows = [];
     users.forEach(u => {
-      rows.push({ name: u.name, role: u.roleLabel || u.role, map: depotSched[u.id] || {}, isAg: false });
+      const map = {};
+      visibleDates.forEach(dt => {
+        const e = appState.schedules[dt.mKey]?.[activeDepotId]?.[u.id]?.[dt.day];
+        if (e) map[dt.dateStr] = e;
+      });
+      rows.push({ name: u.name, role: u.roleLabel || u.role, map, isAg: false });
     });
-    monthAgSlots.forEach(s => {
-      const dNum = parseInt(s.date.split("-")[2], 10);
+    visibleAgSlots.forEach(s => {
       rows.push({
         name: s.assignedName ? `${s.assignedName} (AG)` : s.label,
         role: `${s.start}-${s.end}`,
-        map: { [dNum]: { type: s.shift } },
+        map: { [s.date]: { type: s.shift } },
         isAg: true
       });
     });
@@ -1795,17 +1988,17 @@
     const pad = 16;
 
     const canvas = document.createElement("canvas");
-    canvas.width = pad * 2 + nameColW + days * dayColW + sumColW;
+    canvas.width = pad * 2 + nameColW + visibleDates.length * dayColW + sumColW;
     canvas.height = pad * 2 + headerH + Math.max(1, rows.length) * rowH + 24;
     const ctx = canvas.getContext("2d");
 
     ctx.fillStyle = "#0f172a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const monthLabel = currentDate.toLocaleDateString(currentLang === "en" ? "en-US" : "cs-CZ", { month: "long", year: "numeric" }).toUpperCase();
+    const periodTitle = document.getElementById("admin-period-label").textContent.toUpperCase();
     ctx.fillStyle = "#f8fafc";
     ctx.font = "bold 16px sans-serif";
-    ctx.fillText(`DepotShift • ${getDepotName(activeDepotId)} • ${monthLabel}`, pad, pad + 20);
+    ctx.fillText(`DepotShift v${APP_VERSION} • ${getDepotName(activeDepotId)} • ${periodTitle}`, pad, pad + 20);
 
     const tableTop = pad + 34;
     const dayNames = currentLang === "en" ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
@@ -1819,10 +2012,9 @@
     ctx.font = "bold 12px sans-serif";
     ctx.fillText(currentLang === "en" ? "Employee" : "Jméno pracovníka", pad + 8, tableTop + 21);
 
-    for (let d = 1; d <= days; d++) {
-      const x = pad + nameColW + (d - 1) * dayColW;
-      const dow = new Date(y, m, d).getDay();
-      const isWknd = dow === 0 || dow === 6;
+    visibleDates.forEach((dt, i) => {
+      const x = pad + nameColW + i * dayColW;
+      const isWknd = dt.dow === 0 || dt.dow === 6;
       if (isWknd) {
         ctx.fillStyle = "#090d16";
         ctx.fillRect(x, tableTop, dayColW, 34);
@@ -1831,12 +2023,12 @@
       ctx.fillStyle = isWknd ? "#fbbf24" : "#f8fafc";
       ctx.font = "bold 11px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(`${d}.`, x + dayColW / 2, tableTop + 14);
+      ctx.fillText(`${dt.day}.`, x + dayColW / 2, tableTop + 14);
       ctx.font = "10px sans-serif";
-      ctx.fillText(dayNames[dow], x + dayColW / 2, tableTop + 28);
-    }
+      ctx.fillText(dayNames[dt.dow], x + dayColW / 2, tableTop + 28);
+    });
 
-    const sumX = pad + nameColW + days * dayColW;
+    const sumX = pad + nameColW + visibleDates.length * dayColW;
     ctx.strokeRect(sumX, tableTop, sumColW, 34);
     ctx.fillStyle = "#34d399";
     ctx.font = "bold 11px sans-serif";
@@ -1869,10 +2061,10 @@
       let cnt = 0;
       let hrs = 0;
 
-      for (let d = 1; d <= days; d++) {
-        const cx = pad + nameColW + (d - 1) * dayColW;
+      visibleDates.forEach((dt, i) => {
+        const cx = pad + nameColW + i * dayColW;
         ctx.strokeRect(cx, ry, dayColW, rowH);
-        const entry = r.map[d];
+        const entry = r.map[dt.dateStr];
         if (entry && entry.type) {
           if (entry.type === "D" || entry.type === "N") cnt++;
           hrs += getShiftHours(entry, activeDepotId);
@@ -1884,7 +2076,7 @@
           ctx.textAlign = "center";
           ctx.fillText(entry.type, cx + dayColW / 2, ry + 20);
         }
-      }
+      });
 
       ctx.strokeRect(sumX, ry, sumColW, rowH);
       ctx.fillStyle = "#34d399";
@@ -1894,7 +2086,7 @@
     });
 
     const link = document.createElement("a");
-    link.download = `DepotShift_${getDepotName(activeDepotId).replace(/\s+/g, "_")}_${mKey}.png`;
+    link.download = `DepotShift_v${APP_VERSION}_${getDepotName(activeDepotId).replace(/\s+/g, "_")}_${getMonthKey()}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
     showToast("Obrázek docházky (.PNG) byl stažen.", "success");
@@ -1902,38 +2094,35 @@
 
   function exportRosterAsExcel() {
     closeModal("modal-export-roster");
-    const mKey = getMonthKey();
-    const days = getDaysInMonth();
+    const visibleDates = getVisibleDatesList();
     const users = getVisibleRosterUsers();
-    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
-    const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey) && s.depotId === activeDepotId);
+    const visibleDateSet = new Set(visibleDates.map(d => d.dateStr));
+    const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
 
-    const header = ["Jméno / Name", "Pozice / Role"];
-    for (let d = 1; d <= days; d++) header.push(`${d}.${currentDate.getMonth() + 1}.`);
+    const header = ["Jméno / Name", "Pozice / Role", "Telefon"];
+    visibleDates.forEach(dt => header.push(`${dt.day}.${dt.month + 1}.`));
     header.push("Směn / Shifts", "Hodin / Hours");
 
     const aoa = [header];
 
     users.forEach(u => {
-      const uMap = depotSched[u.id] || {};
-      const row = [u.name, u.roleLabel || u.role];
+      const row = [u.name, u.roleLabel || u.role, u.phone || ""];
       let cnt = 0, hrs = 0;
-      for (let d = 1; d <= days; d++) {
-        const e = uMap[d];
+      visibleDates.forEach(dt => {
+        const e = appState.schedules[dt.mKey]?.[activeDepotId]?.[u.id]?.[dt.day];
         row.push(e && e.type ? e.type : "");
         if (e && (e.type === "D" || e.type === "N")) cnt++;
         hrs += getShiftHours(e, activeDepotId);
-      }
+      });
       row.push(cnt, hrs);
       aoa.push(row);
     });
 
-    monthAgSlots.forEach(s => {
-      const dNum = parseInt(s.date.split("-")[2], 10);
-      const row = [s.assignedName ? `${s.assignedName} (AG)` : s.label, `AG (${s.start}-${s.end})`];
-      for (let d = 1; d <= days; d++) {
-        row.push(d === dNum ? s.shift : "");
-      }
+    visibleAgSlots.forEach(s => {
+      const row = [s.assignedName ? `${s.assignedName} (AG)` : s.label, `AG (${s.start}-${s.end})`, ""];
+      visibleDates.forEach(dt => {
+        row.push(dt.dateStr === s.date ? s.shift : "");
+      });
       row.push(1, calcDurationHours(s.start, s.end));
       aoa.push(row);
     });
@@ -1941,11 +2130,68 @@
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(aoa);
     XLSX.utils.book_append_sheet(wb, ws, getDepotName(activeDepotId).slice(0, 30));
-    XLSX.writeFile(wb, `DepotShift_${getDepotName(activeDepotId).replace(/\s+/g, "_")}_${mKey}.xlsx`);
+    XLSX.writeFile(wb, `DepotShift_v${APP_VERSION}_${getDepotName(activeDepotId).replace(/\s+/g, "_")}_${getMonthKey()}.xlsx`);
     showToast("Excel soubor (.xlsx) byl stažen.", "success");
   }
 
-  // ==================== TERMINATE EMPLOYEE & DATABASE WIPE ====================
+  // ==================== CREATE USER MODAL & TERMINATION & DATABASE WIPE ====================
+  function openCreateUserModal() {
+    document.getElementById("new-user-name").value = "";
+    document.getElementById("new-user-phone").value = "";
+    document.getElementById("new-user-role").value = "warehouse";
+    const activeDep = (draftDepots.find(d => d.id === activeDepotId) || draftDepots[0] || getDepotById(activeDepotId));
+    document.getElementById("new-user-calendar").value = activeDep.calendarMode || "short_long";
+
+    const depotsSource = draftDepots.length ? draftDepots : appState.depots;
+    document.getElementById("new-user-depots-box").innerHTML = depotsSource.map(d => `
+      <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-200 cursor-pointer">
+        <input type="checkbox" value="${d.id}" ${d.id === activeDep.id ? "checked" : ""} class="new-user-depot-chk w-4 h-4 accent-blue-600 rounded" />
+        <span>${d.name}</span>
+      </label>
+    `).join("");
+
+    openModal("modal-create-user");
+  }
+
+  function submitCreateUserModal(e) {
+    e.preventDefault();
+    const name = document.getElementById("new-user-name").value.trim();
+    if (!name) return;
+    const phone = document.getElementById("new-user-phone").value.trim();
+    const role = document.getElementById("new-user-role").value;
+    const calendarMode = document.getElementById("new-user-calendar").value;
+
+    const selectedDepots = Array.from(document.querySelectorAll(".new-user-depot-chk:checked")).map(cb => cb.value);
+    const labels = { admin: "Admin", coordinator: "Koordinátor AG", foreman: "Předák", specialist: "Specialista", warehouse: "Skladník" };
+
+    const slugBase = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 10) || "user";
+    const suffix = Math.floor(10 + Math.random() * 89);
+    const login = `${slugBase}${suffix}`;
+    const pass = `${slugBase}123`;
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    draftUsers.push({
+      id: "u_" + Date.now(),
+      name,
+      phone,
+      role,
+      roleLabel: labels[role] || role,
+      calendarMode,
+      login,
+      pass,
+      token: "tok_" + Math.random().toString(36).slice(2, 10),
+      isScheduleable: !["admin", "coordinator"].includes(role),
+      depots: selectedDepots.length ? selectedDepots : [activeDepotId],
+      terminatedFrom: null,
+      createdAt: todayStr
+    });
+
+    markAdminDraftDirty();
+    closeModal("modal-create-user");
+    renderDraftUsersTable();
+    showToast(`Uživatel "${name}" vytvořen (login: ${login}). Potvrďte kliknutím na „Uložit změny“.`, "success");
+  }
+
   function openTerminateModal(draftIdx) {
     terminatingUserIdx = draftIdx;
     const u = draftUsers[draftIdx];
@@ -2030,21 +2276,24 @@
     return null;
   }
 
-  function violatesNightToDay(userId, day, newType) {
-    const mKey = getMonthKey();
-    if (newType === "D" && day > 1 && getUserShiftAcrossDepots(mKey, userId, day - 1)?.type === "N") {
+  function violatesNightToDayByDateStr(userId, dateStr, newType) {
+    const p = parseDateStr(dateStr);
+    const prevDt = new Date(p.year, p.month, p.day - 1);
+    const nextDt = new Date(p.year, p.month, p.day + 1);
+
+    if (newType === "D" && getUserShiftAcrossDepots(getMonthKey(prevDt), userId, prevDt.getDate())?.type === "N") {
       return "Nelze naplánovat Denní směnu (D) hned po Noční směně (N) z předchozího dne!";
     }
-    if (newType === "N" && getUserShiftAcrossDepots(mKey, userId, day + 1)?.type === "D") {
+    if (newType === "N" && getUserShiftAcrossDepots(getMonthKey(nextDt), userId, nextDt.getDate())?.type === "D") {
       return "Nelze naplánovat Noční směnu (N), protože následující den má pracovník Denní směnu (D)!";
     }
     return null;
   }
 
-  function onShiftDragStart(e, userId, fromDay) {
+  function onShiftDragStart(e, userId, fromDateStr) {
     e.stopPropagation();
     rowDragUserId = null;
-    dragPayload = { userId, fromDay };
+    dragPayload = { userId, fromDateStr };
     e.dataTransfer.effectAllowed = "move";
   }
   function onShiftDragOver(e) {
@@ -2055,7 +2304,7 @@
   function onShiftDragLeave(e) {
     e.currentTarget.classList.remove("drag-over");
   }
-  function onShiftDrop(e, targetUserId, targetDay) {
+  function onShiftDrop(e, targetUserId, targetDateStr) {
     e.currentTarget.classList.remove("drag-over");
     if (!dragPayload) return;
     e.stopPropagation();
@@ -2065,41 +2314,44 @@
       dragPayload = null;
       return;
     }
-    if (dragPayload.fromDay === targetDay) return;
+    if (dragPayload.fromDateStr === targetDateStr) return;
 
-    const mKey = getMonthKey();
-    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
-    if (!depotSched[targetUserId]) depotSched[targetUserId] = {};
+    const fromP = parseDateStr(dragPayload.fromDateStr);
+    const toP = parseDateStr(targetDateStr);
 
-    const uSched = depotSched[targetUserId];
-    const movingEntry = uSched[dragPayload.fromDay];
+    const fromSched = getDepotScheduleMap(fromP.mKey, activeDepotId);
+    const toSched = getDepotScheduleMap(toP.mKey, activeDepotId);
+    if (!fromSched[targetUserId]) fromSched[targetUserId] = {};
+    if (!toSched[targetUserId]) toSched[targetUserId] = {};
+
+    const movingEntry = fromSched[targetUserId][fromP.day];
     if (!movingEntry || !movingEntry.type) return;
 
-    delete uSched[dragPayload.fromDay];
-    const restErr = violatesNightToDay(targetUserId, targetDay, movingEntry.type);
+    delete fromSched[targetUserId][fromP.day];
+    const restErr = violatesNightToDayByDateStr(targetUserId, targetDateStr, movingEntry.type);
     if (restErr) {
-      uSched[dragPayload.fromDay] = movingEntry;
+      fromSched[targetUserId][fromP.day] = movingEntry;
       showToast(restErr, "error");
       dragPayload = null;
       return;
     }
 
-    uSched[targetDay] = movingEntry;
+    toSched[targetUserId][toP.day] = movingEntry;
     const emp = appState.users.find(u => u.id === targetUserId);
-    addAudit("Přesun směny (D&D)", `[${getDepotName(activeDepotId)}] ${emp?.name}: ${movingEntry.type} z ${dragPayload.fromDay}.${currentDate.getMonth()+1}. na ${targetDay}.${currentDate.getMonth()+1}.`);
+    addAudit("Přesun směny (D&D)", `[${getDepotName(activeDepotId)}] ${emp?.name}: ${movingEntry.type} z ${dragPayload.fromDateStr} na ${targetDateStr}`);
     dragPayload = null;
     renderAdminSchedule();
     pushToFirebase();
   }
 
-  function openUserCellModal(userId, day) {
+  function openUserCellModal(userId, dateStr) {
     const user = appState.users.find(u => u.id === userId);
-    const mKey = getMonthKey();
+    const p = parseDateStr(dateStr);
     const depot = getDepotById(activeDepotId);
-    const entry = getDepotScheduleMap(mKey, activeDepotId)[userId]?.[day] || {};
-    editingCell = { kind: "user", userId, day };
+    const entry = getDepotScheduleMap(p.mKey, activeDepotId)[userId]?.[p.day] || {};
+    editingCell = { kind: "user", userId, dateStr };
 
-    document.getElementById("cell-modal-title").textContent = `${user.name} – ${day}. ${currentDate.getMonth() + 1}. ${currentDate.getFullYear()}`;
+    document.getElementById("cell-modal-title").textContent = `${user.name} – ${p.day}.${p.month + 1}.${p.year}`;
     document.getElementById("cell-modal-sub").textContent = `Depo: ${depot.name} • ${user.roleLabel || user.role}`;
     document.getElementById("btn-delete-ag-slot").classList.add("hidden");
 
@@ -2133,25 +2385,25 @@
     if (!editingCell) return;
 
     if (editingCell.kind === "user") {
-      const { userId, day } = editingCell;
+      const { userId, dateStr } = editingCell;
       if (newType) {
-        const restErr = violatesNightToDay(userId, day, newType);
+        const restErr = violatesNightToDayByDateStr(userId, dateStr, newType);
         if (restErr) {
           showToast(restErr, "error");
           return;
         }
       }
-      const mKey = getMonthKey();
-      const depotSched = getDepotScheduleMap(mKey, activeDepotId);
+      const p = parseDateStr(dateStr);
+      const depotSched = getDepotScheduleMap(p.mKey, activeDepotId);
       if (!depotSched[userId]) depotSched[userId] = {};
 
       if (!newType) {
-        delete depotSched[userId][day];
+        delete depotSched[userId][p.day];
       } else {
-        depotSched[userId][day] = { type: newType };
+        depotSched[userId][p.day] = { type: newType };
       }
       const emp = appState.users.find(u => u.id === userId);
-      addAudit("Úprava směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${day}.${currentDate.getMonth()+1}.): nastaveno "${newType || "Volno"}"`);
+      addAudit("Úprava směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${dateStr}): "${newType || "Volno"}"`);
     } else if (editingCell.kind === "ag") {
       const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
       if (slot) {
@@ -2184,17 +2436,17 @@
         addAudit("Čas AG směny", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date}): ${start}–${end}`);
       }
     } else if (editingCell.kind === "user") {
-      const { userId, day } = editingCell;
-      const mKey = getMonthKey();
-      const depotSched = getDepotScheduleMap(mKey, activeDepotId);
-      if (!depotSched[userId]?.[day]) {
+      const { userId, dateStr } = editingCell;
+      const p = parseDateStr(dateStr);
+      const depotSched = getDepotScheduleMap(p.mKey, activeDepotId);
+      if (!depotSched[userId]?.[p.day]) {
         showToast("Nejprve vyberte typ směny (D nebo N).", "warn");
         return;
       }
-      depotSched[userId][day].start = start;
-      depotSched[userId][day].end = end;
+      depotSched[userId][p.day].start = start;
+      depotSched[userId][p.day].end = end;
       const emp = appState.users.find(u => u.id === userId);
-      addAudit("Vlastní čas směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${day}.${currentDate.getMonth()+1}.): ${start}–${end}`);
+      addAudit("Vlastní čas směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${dateStr}): ${start}–${end}`);
     }
 
     closeModal("modal-cell-edit");
@@ -2213,46 +2465,38 @@
   }
 
   // ==================== EXACT SHORT / LONG WEEK (MON–SUN) & MON–FRI SCHEDULER ====================
-  // Week definition: Monday (day 1) through Sunday (day 7).
-  // Long week: Mon (1), Tue (2), Fri (5), Sat (6), Sun (0)
-  // Short week: Wed (3), Thu (4)
-  // Alternates strictly week-by-week based on ISO Monday week index!
   function getIsoMondayWeekIndex(y, m, day) {
     const dt = new Date(y, m, day);
-    const jsDow = dt.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-    const mondayOffset = (jsDow + 6) % 7; // Mon=0, Tue=1, Wed=2, Thu=3, Fri=4, Sat=5, Sun=6
+    const jsDow = dt.getDay();
+    const mondayOffset = (jsDow + 6) % 7;
     const mondayDate = new Date(y, m, day - mondayOffset);
-    // Epoch Monday: Jan 5, 1970
     const epochMonday = new Date(1970, 0, 5);
     const diffDays = Math.round((mondayDate - epochMonday) / 86400000);
     return Math.floor(diffDays / 7);
   }
 
   function isWorkingDayForCalendar(calendarMode, y, m, day, isTurnusA = true) {
-    const dow = new Date(y, m, day).getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+    const dow = new Date(y, m, day).getDay();
     if (calendarMode === "mon_fri") {
       return dow >= 1 && dow <= 5;
     }
 
-    // 'short_long' (Krátký / Dlouhý týden, týden Po–Ne)
     const weekIdx = getIsoMondayWeekIndex(y, m, day);
     const isEvenWeek = (weekIdx % 2) === 0;
-    // Turnus A: even weeks = Long week (Po, Út, Pá, So, Ne), odd weeks = Short week (St, Čt)
-    // Turnus B: even weeks = Short week (St, Čt), odd weeks = Long week (Po, Út, Pá, So, Ne)
     const isLongWeek = isTurnusA ? isEvenWeek : !isEvenWeek;
 
     if (isLongWeek) {
-      return [1, 2, 5, 6, 0].includes(dow); // Pondělí, Úterý, Pátek, Sobota, Neděle
+      return [1, 2, 5, 6, 0].includes(dow); // Po, Út, Pá, So, Ne
     } else {
-      return [3, 4].includes(dow); // Středa, Čtvrtek
+      return [3, 4].includes(dow); // St, Čt
     }
   }
 
   function runAutoSchedule() {
-    const mKey = getMonthKey();
-    const days = getDaysInMonth();
-    const y = currentDate.getFullYear();
-    const m = currentDate.getMonth();
+    const mKey = getMonthKey(anchorDate);
+    const days = getDaysInMonth(anchorDate);
+    const y = anchorDate.getFullYear();
+    const m = anchorDate.getMonth();
     const depot = getDepotById(activeDepotId);
 
     if (!depot.hasDay && !depot.hasNight) {
@@ -2291,7 +2535,6 @@
       return depot.hasDay ? "D" : "N";
     };
 
-    // 1. Foremen on Night ONLY (alternating Turnus A / Turnus B)
     const foremen = coreUsers.filter(u => u.role === "foreman");
     foremen.forEach((u, idx) => {
       const turnusA = idx % 2 === 0;
@@ -2302,7 +2545,6 @@
       }
     });
 
-    // 2. Paired teams & singles
     const pair1 = coreUsers.filter(u => u.name.includes("Doležal"));
     const pair2 = coreUsers.filter(u => u.name.includes("Hossen") || u.name.includes("Hossain"));
     const pair3 = coreUsers.filter(u => u.name.includes("Rahman") || u.name.includes("Islam"));
@@ -2329,7 +2571,6 @@
       assignUnit([u], idx % 2 === 0, true);
     });
 
-    // 3. Target 3 people on Day shift (D) if depot supports Day shift
     if (depot.hasDay) {
       for (let d = 1; d <= days; d++) {
         if (depot.calendarMode === "mon_fri") {
@@ -2353,17 +2594,17 @@
       }
     }
 
-    addAudit("Autoplánování", `[${depot.name}] Vygenerován rozpis pro kmenové zaměstnance (${mKey}, režim ${getCalendarModeLabel(depot.calendarMode)}).`);
+    addAudit("Autoplánování", `[${depot.name}] Vygenerován rozpis (${mKey}).`);
     renderAdminSchedule();
     pushToFirebase();
     showToast(`Rozpis pro ${depot.name} byl vygenerován.`, "success");
   }
 
   function clearCurrentMonth() {
-    const mKey = getMonthKey();
+    const mKey = getMonthKey(anchorDate);
     if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
     appState.schedules[mKey][activeDepotId] = {};
-    addAudit("Vyčištění depa", `[${getDepotName(activeDepotId)}] Vymazány kmenové směny pro ${mKey}.`);
+    addAudit("Vyčištění depa", `[${getDepotName(activeDepotId)}] Vymazány směny pro ${mKey}.`);
     renderAdminSchedule();
     pushToFirebase();
   }
@@ -2372,7 +2613,7 @@
   function openAgRequestModal() {
     const sel = document.getElementById("ag-req-depot");
     sel.innerHTML = appState.depots.map(d => `<option value="${d.id}" ${d.id === activeDepotId ? "selected" : ""}>${d.name}</option>`).join("");
-    const defaultDate = formatDateStr(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const defaultDate = formatDateStr(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
     document.getElementById("ag-req-date").value = defaultDate;
     onAgModalDepotChange();
     openModal("modal-ag-request");
@@ -2414,7 +2655,7 @@
       });
     }
 
-    addAudit("Požadavek AG", `[${getDepotName(depotId)}] Vytvořeno ${count}× požadavek AG na datum ${dateVal} (${start}–${end}).`);
+    addAudit("Požadavek AG", `[${getDepotName(depotId)}] Vytvořeno ${count}× požadavek AG na ${dateVal}.`);
     closeModal("modal-ag-request");
     renderAdminSchedule();
     pushToFirebase();
@@ -2501,10 +2742,10 @@
   }
 
   function renderCoordinatorSummary() {
-    const mKey = getMonthKey();
+    const mKey = getMonthKey(anchorDate);
     const allowedIds = getAllowedCoordinatorDepots().map(d => d.id);
     const locale = currentLang === "en" ? "en-US" : "cs-CZ";
-    document.getElementById("coord-month-label").textContent = currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
+    document.getElementById("coord-month-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
     const slots = appState.agSlots.filter(s => s.date.startsWith(mKey) && allowedIds.includes(s.depotId));
 
     if (slots.length === 0) {
@@ -2549,9 +2790,8 @@
     `;
   }
 
-  // ==================== ADMIN: DEPOTS & USERS DRAFT MANAGEMENT ====================
-  function renderAdminUsersTab() {
-    // Only reload from appState if there are no unsaved temporary edits
+  // ==================== ADMIN: SETTINGS (DEPOTS & USERS DRAFT MANAGEMENT) ====================
+  function renderAdminSettingsMain() {
     if (!hasUnsavedAdminChanges || draftDepots.length === 0 || draftUsers.length === 0) {
       draftDepots = JSON.parse(JSON.stringify(appState.depots));
       draftUsers = JSON.parse(JSON.stringify(appState.users));
@@ -2590,7 +2830,7 @@
     appState.users = JSON.parse(JSON.stringify(draftUsers));
     clearAdminDraftDirty();
 
-    addAudit("Administrace uživatelů a dep", "Uloženy změny v nastavení dep, plánovacích kalendářů, uživatelů a časů směn.");
+    addAudit("Nastavení dep a uživatelů", "Uloženy změny v nastavení dep, plánovacích kalendářů, uživatelů a časů směn.");
     renderDepotsConfigGrid();
     renderDraftUsersTable();
     pushToFirebase();
@@ -2664,7 +2904,6 @@
           </div>
         </div>
 
-        <!-- Planning Calendar Selector -->
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/70">
           <span class="font-bold text-sky-400"><i class="fa-solid fa-calendar-week mr-1"></i> Plánovací kalendář</span>
           <select onchange="updateDepotField(${idx}, 'calendarMode', this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-white">
@@ -2673,7 +2912,6 @@
           </select>
         </div>
 
-        <!-- Day Shift toggle & times -->
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
           <label class="inline-flex items-center gap-2 font-bold text-amber-500 cursor-pointer">
             <input type="checkbox" ${d.hasDay ? "checked" : ""} onchange="updateDepotField(${idx}, 'hasDay', this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
@@ -2686,7 +2924,6 @@
           </div>
         </div>
 
-        <!-- Night Shift toggle & times -->
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
           <label class="inline-flex items-center gap-2 font-bold text-blue-500 cursor-pointer">
             <input type="checkbox" ${d.hasNight ? "checked" : ""} onchange="updateDepotField(${idx}, 'hasNight', this.checked)" class="w-4 h-4 accent-blue-600 rounded" />
@@ -2699,7 +2936,6 @@
           </div>
         </div>
 
-        <!-- Default Agency time -->
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1 border-t border-slate-700/60">
           <span class="font-bold text-purple-400"><i class="fa-solid fa-people-arrows mr-1"></i> Výchozí čas AG</span>
           <div class="flex items-center gap-1.5">
@@ -2735,14 +2971,14 @@
       const uDepots = Array.isArray(u.depots) ? u.depots : [];
       const depotCheckboxes = depotsSource.map(d => {
         const isChecked = uDepots.includes(d.id);
-        return `<label class="inline-flex items-center gap-1 mr-2.5 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
+        return `<label class="inline-flex items-center gap-1 mr-2 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
           <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${d.id}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
           <span>${(d.name || "").replace("Depo ", "")}</span>
         </label>`;
       }).join("");
 
       const termControls = u.id === "u_admin" ? `<span class="text-[10px] text-slate-500">Admin</span>` : `
-        <div class="inline-flex items-center gap-1.5">
+        <div class="inline-flex items-center gap-1">
           ${u.terminatedFrom
             ? `<button type="button" onclick="restoreTerminatedUser(${idx})" class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold" title="Ukončen od ${u.terminatedFrom}">Obnovit (${u.terminatedFrom})</button>`
             : `<button type="button" onclick="openTerminateModal(${idx})" class="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 text-[10px] font-bold">Ukončit</button>`
@@ -2754,11 +2990,15 @@
       `;
 
       return `<tr class="${u.terminatedFrom ? "opacity-65" : ""}">
-        <td class="py-2 px-2">
+        <td class="py-2 px-1.5">
           <input type="text" value="${u.name}" oninput="updateDraftUserField(${idx}, 'name', this.value)"
-            class="w-full min-w-[140px] bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
+            class="w-full min-w-[135px] bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white" />
         </td>
-        <td class="py-2 px-2">
+        <td class="py-2 px-1.5">
+          <input type="tel" value="${u.phone || ""}" oninput="updateDraftUserField(${idx}, 'phone', this.value)" placeholder="+420..."
+            class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 font-mono" />
+        </td>
+        <td class="py-2 px-1.5">
           <select onchange="updateDraftUserRole(${idx}, this.value)" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
             <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
             <option value="coordinator" ${u.role === "coordinator" ? "selected" : ""}>Koordinátor</option>
@@ -2767,37 +3007,33 @@
             <option value="warehouse" ${u.role === "warehouse" ? "selected" : ""}>Skladník</option>
           </select>
         </td>
-        <td class="py-2 px-2">
+        <td class="py-2 px-1.5">
           <select onchange="updateDraftUserField(${idx}, 'calendarMode', this.value)" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-sky-400 font-bold">
             <option value="short_long" ${(u.calendarMode || "short_long") === "short_long" ? "selected" : ""}>Krátký / Dlouhý</option>
             <option value="mon_fri" ${u.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
           </select>
         </td>
-        <td class="py-2 px-2 min-w-[155px]">
+        <td class="py-2 px-1.5 min-w-[140px]">
           <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
         </td>
-        <td class="py-2 px-2">
+        <td class="py-2 px-1.5">
           <input type="text" value="${u.login}" oninput="updateDraftUserField(${idx}, 'login', this.value.trim())"
-            class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
+            class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
         </td>
-        <td class="py-2 px-2">
+        <td class="py-2 px-1.5">
           <input type="text" value="${u.pass}" oninput="updateDraftUserField(${idx}, 'pass', this.value)"
-            class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
+            class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
         </td>
-        <td class="py-2 px-2">
-          <input type="date" value="${u.createdAt || "2026-09-01"}" onchange="updateDraftUserField(${idx}, 'createdAt', this.value)"
-            class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300" />
-        </td>
-        <td class="py-2 px-2 text-center">
+        <td class="py-2 px-1.5 text-center">
           <input type="checkbox" ${u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" ? "checked" : ""}
             onchange="updateDraftUserField(${idx}, 'isScheduleable', this.checked)" class="w-4 h-4 accent-blue-600" />
         </td>
-        <td class="py-2 px-2 text-center">
+        <td class="py-2 px-1.5 text-center">
           <button type="button" onclick="openQrForUser('${u.id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-500 border border-slate-700">
             <i class="fa-solid fa-qrcode"></i>
           </button>
         </td>
-        <td class="py-2 px-2 text-right whitespace-nowrap">${termControls}</td>
+        <td class="py-2 px-1.5 text-right whitespace-nowrap">${termControls}</td>
       </tr>`;
     }).join("");
   }
@@ -2807,28 +3043,6 @@
     draftUsers[idx].role = role;
     draftUsers[idx].roleLabel = labels[role] || role;
     draftUsers[idx].isScheduleable = !["admin", "coordinator"].includes(role);
-    markAdminDraftDirty();
-    renderDraftUsersTable();
-  }
-
-  function addDraftUser() {
-    const n = draftUsers.length + 1;
-    const todayStr = new Date().toISOString().split("T")[0];
-    const activeDep = (draftDepots.find(d => d.id === activeDepotId) || draftDepots[0] || getDepotById(activeDepotId));
-    draftUsers.push({
-      id: "u_" + Date.now(),
-      name: `Nový pracovník ${n}`,
-      role: "warehouse",
-      roleLabel: "Skladník",
-      calendarMode: activeDep.calendarMode || "short_long",
-      login: `user${n}`,
-      pass: `heslo${n}`,
-      token: "tok_" + Math.random().toString(36).slice(2, 10),
-      isScheduleable: true,
-      depots: [activeDep.id],
-      terminatedFrom: null,
-      createdAt: todayStr
-    });
     markAdminDraftDirty();
     renderDraftUsersTable();
   }
@@ -2851,13 +3065,13 @@
   }
 
   function renderEmployeeHome() {
-    const mKey = getMonthKey();
-    const days = getDaysInMonth();
-    const y = currentDate.getFullYear();
-    const m = currentDate.getMonth();
+    const mKey = getMonthKey(anchorDate);
+    const days = getDaysInMonth(anchorDate);
+    const y = anchorDate.getFullYear();
+    const m = anchorDate.getMonth();
     const locale = currentLang === "en" ? "en-US" : "cs-CZ";
 
-    document.getElementById("emp-month-label").textContent = currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
+    document.getElementById("emp-month-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
 
     const myDepotNames = (currentUser.depots || []).map(id => getDepotName(id)).join(", ") || "—";
     const calLabel = getCalendarModeLabel(currentUser.calendarMode || "short_long");
@@ -2980,10 +3194,10 @@
   }
 
   function renderEmpRequestCalendar() {
-    const mKey = getMonthKey();
-    const days = getDaysInMonth();
-    const y = currentDate.getFullYear();
-    const m = currentDate.getMonth();
+    const mKey = getMonthKey(anchorDate);
+    const days = getDaysInMonth(anchorDate);
+    const y = anchorDate.getFullYear();
+    const m = anchorDate.getMonth();
     const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;
 
     document.getElementById("emp-req-selected-count").textContent = `Vybráno: ${empReqDates.length}`;
@@ -3119,20 +3333,17 @@
       const fallbackDepot = (empObj && empObj.depots && empObj.depots[0]) ? empObj.depots[0] : activeDepotId;
 
       req.dates.forEach(dateStr => {
-        const [yStr, mStr, dStr] = dateStr.split("-");
-        const mKey = `${yStr}-${mStr}`;
-        const dayNum = parseInt(dStr, 10);
-
+        const p = parseDateStr(dateStr);
         let targetDepot = fallbackDepot;
         for (const dep of appState.depots) {
-          if (appState.schedules[mKey]?.[dep.id]?.[req.userId]?.[dayNum]) {
+          if (appState.schedules[p.mKey]?.[dep.id]?.[req.userId]?.[p.day]) {
             targetDepot = dep.id;
             break;
           }
         }
-        const depotSched = getDepotScheduleMap(mKey, targetDepot);
+        const depotSched = getDepotScheduleMap(p.mKey, targetDepot);
         if (!depotSched[req.userId]) depotSched[req.userId] = {};
-        depotSched[req.userId][dayNum] = { type: req.type };
+        depotSched[req.userId][p.day] = { type: req.type };
       });
 
       appState.chats[req.userId].push({
@@ -3252,7 +3463,7 @@
     const box = document.getElementById("admin-chat-messages");
     if (!emp) return;
 
-    hdr.textContent = `${emp.name} (${emp.roleLabel || emp.role})`;
+    hdr.textContent = `${emp.name} (${emp.roleLabel || emp.role}) ${emp.phone ? "• " + emp.phone : ""}`;
     const thread = appState.chats[emp.id] || [];
     if (thread.length === 0) {
       box.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">Žádné zprávy.</div>`;
@@ -3319,7 +3530,7 @@
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "DepotShift_AuditLog.csv";
+    a.download = `DepotShift_v${APP_VERSION}_AuditLog.csv`;
     a.click();
   }
 
