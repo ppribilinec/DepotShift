@@ -274,14 +274,17 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep a nastavení směn pro každé depo</span>
+              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
             </h3>
-            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte název, zda tam běží denní a/nebo noční směna a jejich přesný časový rozsah.</p>
+            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte plánovací kalendář (Krátký / Dlouhý nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem <strong>Uložit změny</strong>.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-56 focus:outline-none focus:border-blue-500" />
-            <button type="button" onclick="createNewDepot()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
+            <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
               <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
+            </button>
+            <button type="button" onclick="saveDepotsConfig()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+              <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
             </button>
           </div>
         </div>
@@ -294,7 +297,7 @@
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Správa uživatelů, rolí a přiřazení k depům</span>
+              <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Správa uživatelů, rolí, kalendáře a přiřazení k depům</span>
             </h3>
             <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5">Provedené změny potvrďte tlačítkem <strong>Uložit změny</strong>.</p>
           </div>
@@ -314,6 +317,7 @@
               <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
                 <th class="py-2.5 px-2">Jméno / Name</th>
                 <th class="py-2.5 px-2">Pozice / Role</th>
+                <th class="py-2.5 px-2">Plánovací kalendář</th>
                 <th class="py-2.5 px-2">Depa / Depots</th>
                 <th class="py-2.5 px-2">Login</th>
                 <th class="py-2.5 px-2">Heslo</th>
@@ -742,10 +746,11 @@
       btnAddAg: "Přidat požadavek AG",
       btnExport: "Export docházky",
       btnClear: "Vyčistit depo",
-      depotsTitle: "Správa dep a nastavení směn pro každé depo",
-      depotsSub: "U každého depa nastavte název, zda tam běží denní a/nebo noční směna a jejich přesný časový rozsah.",
+      depotsTitle: "Správa dep, plánovacího kalendáře a směn",
+      depotsSub: "U každého depa nastavte plánovací kalendář (Krátký / Dlouhý nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem Uložit změny.",
       btnAddDepot: "Přidat depo",
-      usersTitle: "Správa uživatelů, rolí a přiřazení k depům",
+      btnSaveDepots: "Uložit změny",
+      usersTitle: "Správa uživatelů, rolí, kalendáře a přiřazení k depům",
       usersSub: "Provedené změny potvrďte tlačítkem Uložit změny.",
       btnAddUser: "Přidat uživatele",
       btnSaveUsers: "Uložit změny",
@@ -782,10 +787,11 @@
       btnAddAg: "Add Agency Request",
       btnExport: "Export Roster",
       btnClear: "Clear Depot",
-      depotsTitle: "Depot & Shift Configuration",
-      depotsSub: "Configure each depot independently: enable Day and/or Night shifts and set their exact hours.",
+      depotsTitle: "Depot, Schedule Calendar & Shift Configuration",
+      depotsSub: "Configure each depot's schedule calendar (Short / Long or Monday – Friday), shifts and hours, then click Save Changes.",
       btnAddDepot: "Add Depot",
-      usersTitle: "Users, Roles & Depot Assignments",
+      btnSaveDepots: "Save Changes",
+      usersTitle: "Users, Roles, Calendar & Depot Assignments",
       usersSub: "Confirm changes by clicking Save Changes.",
       btnAddUser: "Add User",
       btnSaveUsers: "Save Changes",
@@ -832,6 +838,7 @@
     setTxt("lbl-depots-title", "depotsTitle");
     setTxt("lbl-depots-sub", "depotsSub");
     setTxt("lbl-btn-add-depot", "btnAddDepot");
+    setTxt("lbl-btn-save-depots", "btnSaveDepots");
     setTxt("lbl-users-title", "usersTitle");
     setTxt("lbl-users-sub", "usersSub");
     setTxt("lbl-btn-add-user", "btnAddUser");
@@ -876,11 +883,12 @@
     applyTheme(cur === "dark" ? "light" : "dark");
   }
 
-  // Default Depots with independent shift toggles & times
+  // Default Depots with calendarMode ('short_long' | 'mon_fri')
   const DEFAULT_DEPOTS = [
     {
       id: "depo_plzen",
       name: "Depo Plzeň",
+      calendarMode: "short_long",
       hasDay: true,
       dayStart: "03:00",
       dayEnd: "15:00",
@@ -893,6 +901,7 @@
     {
       id: "depo_teplice",
       name: "Depo Teplice",
+      calendarMode: "short_long",
       hasDay: true,
       dayStart: "03:00",
       dayEnd: "15:00",
@@ -904,23 +913,23 @@
     }
   ];
 
-  // Default Users with sequential createdAt dates
+  // Default Users with calendarMode ('short_long' | 'mon_fri')
   const DEFAULT_USERS = [
-    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
-    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
-    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-02" },
-    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-03" },
-    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-04" },
-    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-05" },
-    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-06" },
-    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-07" },
-    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-08" },
-    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-09" },
-    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-10" },
-    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-11" },
-    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-12" },
-    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-13" },
-    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-14" }
+    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", calendarMode: "mon_fri", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
+    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", calendarMode: "short_long", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
+    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-02" },
+    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-03" },
+    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-04" },
+    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", calendarMode: "short_long", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-05" },
+    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", calendarMode: "mon_fri", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-06" },
+    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-07" },
+    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-08" },
+    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-09" },
+    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-10" },
+    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-11" },
+    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-12" },
+    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-13" },
+    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-14" }
   ];
 
   // Global App State
@@ -947,6 +956,7 @@
   let activeAdminTab = "schedule";
   let activeCoordTab = "requests";
   let showTerminatedWorkers = false;
+  let draftDepots = [];
   let draftUsers = [];
   let terminatingUserIdx = null;
   let selectedChatUserId = null;
@@ -955,6 +965,13 @@
   let empReqDates = [];
   let dragPayload = null;
   let rowDragUserId = null;
+
+  function getCalendarModeLabel(mode) {
+    if (mode === "mon_fri") {
+      return currentLang === "en" ? "Monday – Friday" : "Pondělí – Pátek";
+    }
+    return currentLang === "en" ? "Short / Long" : "Krátký / Dlouhý";
+  }
 
   // ==================== STATE MIGRATION & DEPOT CONFIG HELPERS ====================
   function ensureMultiDepotConsistency() {
@@ -966,6 +983,7 @@
     const fallbackAG = appState.shiftTimes?.AG || { start: "19:00", end: "07:00" };
 
     appState.depots.forEach(d => {
+      if (!d.calendarMode) d.calendarMode = "short_long";
       if (d.hasDay === undefined) d.hasDay = true;
       if (!d.dayStart) d.dayStart = fallbackD.start;
       if (!d.dayEnd) d.dayEnd = fallbackD.end;
@@ -985,6 +1003,10 @@
       if (!Array.isArray(u.depots)) {
         const def = DEFAULT_USERS.find(x => x.id === u.id);
         u.depots = def ? [...def.depots] : [defaultDepotId];
+      }
+      if (!u.calendarMode) {
+        const def = DEFAULT_USERS.find(x => x.id === u.id);
+        u.calendarMode = def ? def.calendarMode : "short_long";
       }
       if (u.terminatedFrom === undefined) u.terminatedFrom = null;
       if (!u.createdAt) {
@@ -1356,9 +1378,9 @@
       if (entry?.type === "D") dCount++;
       else if (entry?.type === "N") nCount++;
     });
-    if (dCount === 0 && nCount === 0) return 3; // Bez směn
-    if (dCount >= nCount) return 1; // Denní směna (D)
-    return 2; // Noční směna (N)
+    if (dCount === 0 && nCount === 0) return 3;
+    if (dCount >= nCount) return 1;
+    return 2;
   }
 
   function getUserRoleRank(role) {
@@ -1370,20 +1392,16 @@
   }
 
   function compareUsersByRules(a, b, mKey, depotId) {
-    // 1. Shlukování podle směn (D -> N -> Bez směn)
     const shiftDiff = getUserShiftClusterRank(a.id, mKey, depotId) - getUserShiftClusterRank(b.id, mKey, depotId);
     if (shiftDiff !== 0) return shiftDiff;
 
-    // 2. Pořadí dle pozice (Předák -> Specialista -> Skladník)
     const roleDiff = getUserRoleRank(a.role) - getUserRoleRank(b.role);
     if (roleDiff !== 0) return roleDiff;
 
-    // 3. Datum přidání uživatele (od nejstaršího)
     const dateA = a.createdAt || "9999-12-31";
     const dateB = b.createdAt || "9999-12-31";
     if (dateA !== dateB) return dateA.localeCompare(dateB);
 
-    // 4. Abecední pořadí
     return (a.name || "").localeCompare(b.name || "", "cs");
   }
 
@@ -1429,7 +1447,6 @@
     showToast("Zaměstnanci byli seřazeni podle směn, pozice, data přidání a abecedy.", "success");
   }
 
-  // Row Drag & Drop handlers
   function onRowDragStart(e, userId) {
     rowDragUserId = userId;
     dragPayload = null;
@@ -1523,11 +1540,12 @@
     const pillsBox = document.getElementById("admin-depot-pills");
     pillsBox.innerHTML = appState.depots.map(d => {
       const isAct = d.id === activeDepotId;
-      const badge = d.hasDay && d.hasNight ? "D+N" : (d.hasDay ? "D" : "N");
+      const shiftBadge = d.hasDay && d.hasNight ? "D+N" : (d.hasDay ? "D" : "N");
+      const calShort = d.calendarMode === "mon_fri" ? "Po–Pá" : "K/D";
       return `<button onclick="selectAdminDepot('${d.id}')"
         class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
         <span>${d.name}</span>
-        <span class="text-[9px] px-1.5 py-0.2 rounded ${isAct ? "bg-blue-800 text-blue-100" : "bg-slate-700 text-slate-300"}">${badge}</span>
+        <span class="text-[9px] px-1.5 py-0.2 rounded ${isAct ? "bg-blue-800 text-blue-100" : "bg-slate-700 text-slate-300"}">${calShort} • ${shiftBadge}</span>
       </button>`;
     }).join("");
 
@@ -1535,8 +1553,7 @@
     const locale = currentLang === "en" ? "en-US" : "cs-CZ";
     document.getElementById("admin-month-label").textContent = currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
 
-    // Dynamic Legend based on depot shift configuration
-    let legendHtml = "";
+    let legendHtml = `<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-sky-400 font-bold mr-1"><i class="fa-solid fa-calendar-week mr-1"></i>${getCalendarModeLabel(depot.calendarMode)}</span>`;
     if (depot.hasDay) {
       legendHtml += `<span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Day" : "Denní"} (${depot.dayStart}–${depot.dayEnd})</span>`;
     }
@@ -1552,7 +1569,7 @@
     document.getElementById("admin-legend-items").innerHTML = legendHtml;
 
     const dayNames = currentLang === "en" ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
-    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[205px] text-slate-300">${depot.name}</th>`;
+    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[215px] text-slate-300">${depot.name}</th>`;
     for (let d = 1; d <= days; d++) {
       const dow = new Date(y, m, d).getDay();
       const isWknd = dow === 0 || dow === 6;
@@ -1585,7 +1602,9 @@
       const shiftClusterDot = clusterRank === 1
         ? `<span class="w-2 h-2 rounded-full bg-amber-400 inline-block mr-1" title="Denní skupina"></span>`
         : (clusterRank === 2 ? `<span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1" title="Noční skupina"></span>` : "");
-      const multiDepotTag = user.depots.length > 1 ? `<span class="ml-1 px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 text-[9px]">${user.depots.length} depa</span>` : "";
+      const calBadge = user.calendarMode === "mon_fri"
+        ? `<span class="ml-1 px-1 py-0.2 rounded bg-teal-500/20 text-teal-400 text-[9px]">Po–Pá</span>`
+        : `<span class="ml-1 px-1 py-0.2 rounded bg-slate-700/80 text-slate-300 text-[9px]">K/D</span>`;
       const termTag = user.terminatedFrom ? `<span class="ml-1 px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 text-[9px]">Ukončen od ${user.terminatedFrom}</span>` : "";
 
       bodyHtml += `<tr class="hover:bg-slate-800/40 ${user.terminatedFrom ? "opacity-75" : ""}"
@@ -1598,8 +1617,8 @@
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-grip-vertical text-slate-500 text-xs"></i>
             <div class="min-w-0">
-              <div class="font-bold text-white text-xs truncate max-w-[165px]">${shiftClusterDot}${user.name}${multiDepotTag}</div>
-              <div class="text-[10px] text-slate-400">${user.roleLabel || user.role}${termTag}</div>
+              <div class="font-bold text-white text-xs truncate max-w-[175px]">${shiftClusterDot}${user.name}</div>
+              <div class="text-[10px] text-slate-400">${user.roleLabel || user.role}${calBadge}${termTag}</div>
             </div>
           </div>
         </td>`;
@@ -2147,7 +2166,18 @@
     pushToFirebase();
   }
 
-  // Auto-scheduler respecting depot's enabled shifts (hasDay / hasNight)
+  // ==================== AUTO-SCHEDULER (RESPECTS DEPOT & USER CALENDAR MODES) ====================
+  function isWorkingDayForCalendar(calendarMode, y, m, day, usePatternA = true) {
+    const dow = new Date(y, m, day).getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    if (calendarMode === "mon_fri") {
+      return dow >= 1 && dow <= 5;
+    }
+    // 'short_long' (2-2-3 cycle)
+    const weekNum = Math.floor((day - 1) / 7) % 2;
+    const patA = weekNum === 0 ? [2, 5, 6, 0].includes(dow) : [1, 3, 4].includes(dow);
+    return usePatternA ? patA : !patA;
+  }
+
   function runAutoSchedule() {
     const mKey = getMonthKey();
     const days = getDaysInMonth();
@@ -2162,13 +2192,6 @@
 
     const depotSched = getDepotScheduleMap(mKey, activeDepotId);
 
-    const isPatternA = (day) => {
-      const dow = new Date(y, m, day).getDay();
-      const weekNum = Math.floor((day - 1) / 7) % 2;
-      if (weekNum === 0) return [2, 5, 6, 0].includes(dow);
-      return [1, 3, 4].includes(dow);
-    };
-
     const coreUsers = appState.users.filter(u =>
       u.isScheduleable !== false &&
       u.role !== "admin" &&
@@ -2178,10 +2201,20 @@
 
     coreUsers.forEach(u => { depotSched[u.id] = {}; });
 
-    const canWorkDay = (u, d) => {
+    const canWorkDay = (u, d, usePatternA = true) => {
       const dStr = formatDateStr(y, m, d);
       if (u.terminatedFrom && dStr >= u.terminatedFrom) return false;
-      return !getUserShiftAcrossDepots(mKey, u.id, d);
+      if (getUserShiftAcrossDepots(mKey, u.id, d)) return false;
+
+      // Depot calendar constraint (e.g. if depot is mon_fri, no weekend shifts)
+      if (depot.calendarMode === "mon_fri") {
+        const dow = new Date(y, m, d).getDay();
+        if (dow === 0 || dow === 6) return false;
+      }
+
+      // User's assigned planning calendar
+      const uCal = u.calendarMode || depot.calendarMode || "short_long";
+      return isWorkingDayForCalendar(uCal, y, m, d, usePatternA);
     };
 
     const resolveAllowedShift = (preferred) => {
@@ -2190,17 +2223,18 @@
       return depot.hasDay ? "D" : "N";
     };
 
+    // 1. Foremen on Night ONLY
     const foremen = coreUsers.filter(u => u.role === "foreman");
     foremen.forEach((u, idx) => {
       const useA = idx % 2 === 0;
       for (let d = 1; d <= days; d++) {
-        const work = useA ? isPatternA(d) : !isPatternA(d);
-        if (work && canWorkDay(u, d)) {
+        if (canWorkDay(u, d, useA)) {
           depotSched[u.id][d] = { type: resolveAllowedShift("N") };
         }
       }
     });
 
+    // 2. Paired teams & singles
     const pair1 = coreUsers.filter(u => u.name.includes("Doležal"));
     const pair2 = coreUsers.filter(u => u.name.includes("Hossen") || u.name.includes("Hossain"));
     const pair3 = coreUsers.filter(u => u.name.includes("Rahman") || u.name.includes("Islam"));
@@ -2209,10 +2243,8 @@
 
     const assignUnit = (members, patternA, preferDay) => {
       for (let d = 1; d <= days; d++) {
-        const work = patternA ? isPatternA(d) : !isPatternA(d);
-        if (!work) continue;
         members.forEach(member => {
-          if (!canWorkDay(member, d)) return;
+          if (!canWorkDay(member, d, patternA)) return;
           const prev = getUserShiftAcrossDepots(mKey, member.id, d - 1)?.type;
           let type = resolveAllowedShift(preferDay ? "D" : "N");
           if (type === "D" && prev === "N" && depot.hasNight) type = "N";
@@ -2229,13 +2261,19 @@
       assignUnit([u], idx % 2 === 0, true);
     });
 
+    // 3. Target 3 people on Day shift (D) if depot supports Day shift
     if (depot.hasDay) {
       for (let d = 1; d <= days; d++) {
+        if (depot.calendarMode === "mon_fri") {
+          const dow = new Date(y, m, d).getDay();
+          if (dow === 0 || dow === 6) continue;
+        }
         let dCount = coreUsers.filter(u => depotSched[u.id]?.[d]?.type === "D").length;
         if (dCount < 3) {
-          for (const u of singles) {
+          for (let idx = 0; idx < singles.length; idx++) {
+            const u = singles[idx];
             if (dCount >= 3) break;
-            if (!canWorkDay(u, d)) continue;
+            if (!canWorkDay(u, d, idx % 2 === 0)) continue;
             const prev = getUserShiftAcrossDepots(mKey, u.id, d - 1)?.type;
             const next = getUserShiftAcrossDepots(mKey, u.id, d + 1)?.type;
             if (prev !== "N" && next !== "D") {
@@ -2247,7 +2285,7 @@
       }
     }
 
-    addAudit("Autoplánování", `[${depot.name}] Vygenerován rozpis pro kmenové zaměstnance (${mKey}).`);
+    addAudit("Autoplánování", `[${depot.name}] Vygenerován rozpis pro kmenové zaměstnance (${mKey}, režim ${getCalendarModeLabel(depot.calendarMode)}).`);
     renderAdminSchedule();
     pushToFirebase();
     showToast(`Rozpis pro ${depot.name} byl vygenerován.`, "success");
@@ -2449,9 +2487,10 @@
     const name = inp.value.trim();
     if (!name) return;
     const newId = "depo_" + Date.now();
-    appState.depots.push({
+    draftDepots.push({
       id: newId,
       name,
+      calendarMode: "short_long",
       hasDay: true,
       dayStart: "03:00",
       dayEnd: "15:00",
@@ -2462,59 +2501,63 @@
       agEnd: "07:00"
     });
     inp.value = "";
-    addAudit("Nové depo", `Vytvořeno depo: ${name}`);
     renderDepotsConfigGrid();
     renderDraftUsersTable();
-    pushToFirebase();
-    showToast(`Depo "${name}" bylo vytvořeno.`, "success");
+    showToast(`Depo "${name}" přidáno do návrhu. Pro uložení klikněte na "Uložit změny".`, "info");
   }
 
   function deleteDepot(depotId) {
-    if (appState.depots.length <= 1) {
+    if (draftDepots.length <= 1) {
       showToast("V systému musí zůstat alespoň jedno depo.", "error");
       return;
     }
-    const target = appState.depots.find(d => d.id === depotId);
-    appState.depots = appState.depots.filter(d => d.id !== depotId);
+    const target = draftDepots.find(d => d.id === depotId);
+    draftDepots = draftDepots.filter(d => d.id !== depotId);
     draftUsers.forEach(u => { u.depots = (u.depots || []).filter(id => id !== depotId); });
-    appState.users.forEach(u => { u.depots = (u.depots || []).filter(id => id !== depotId); });
-    if (activeDepotId === depotId) activeDepotId = appState.depots[0].id;
-    addAudit("Smazání depa", `Odstraněno depo: ${target?.name}`);
     renderDepotsConfigGrid();
     renderDraftUsersTable();
-    pushToFirebase();
+    showToast(`Depo "${target?.name}" odebráno z návrhu. Potvrďte kliknutím na "Uložit změny".`, "info");
   }
 
   function updateDepotField(idx, field, value) {
-    if (!appState.depots[idx]) return;
-    appState.depots[idx][field] = value;
+    if (!draftDepots[idx]) return;
+    draftDepots[idx][field] = value;
   }
 
   function saveDepotsConfig() {
-    // Ensure at least one shift type per depot
-    appState.depots.forEach(d => {
+    draftDepots.forEach(d => {
       if (!d.hasDay && !d.hasNight) d.hasDay = true;
     });
-    addAudit("Nastavení dep", "Uloženo nastavení směn a časových rozsahů pro jednotlivá depa.");
+    appState.depots = JSON.parse(JSON.stringify(draftDepots));
+    if (!appState.depots.some(d => d.id === activeDepotId)) {
+      activeDepotId = appState.depots[0].id;
+    }
+    // Sync user depot assignments if a depot was deleted
+    const validIds = new Set(appState.depots.map(d => d.id));
+    appState.users.forEach(u => {
+      u.depots = (u.depots || []).filter(id => validIds.has(id));
+    });
+
+    addAudit("Nastavení dep", "Uloženo nastavení dep, plánovacích kalendářů a časových rozsahů směn.");
     renderDepotsConfigGrid();
     renderDraftUsersTable();
     pushToFirebase();
-    showToast("Nastavení dep a jejich směn bylo uloženo!", "success");
+    showToast("Změny v nastavení dep byly uloženy do databáze!", "success");
   }
 
   function renderDepotsConfigGrid() {
     const grid = document.getElementById("depots-config-grid");
-    grid.innerHTML = appState.depots.map((d, idx) => `
+    grid.innerHTML = draftDepots.map((d, idx) => `
       <div class="p-4 rounded-2xl bg-slate-800/70 border border-slate-700 space-y-3">
         <div class="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
           <div class="flex items-center gap-2 flex-1">
             <i class="fa-solid fa-warehouse text-blue-500"></i>
-            <input type="text" value="${d.name}" onchange="updateDepotField(${idx}, 'name', this.value.trim() || '${d.name}')"
+            <input type="text" value="${d.name}" onchange="updateDepotField(${idx}, 'name', this.value.trim() || '${d.name}'); renderDraftUsersTable();"
               class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-extrabold text-white w-full max-w-[220px]" />
           </div>
           <div class="flex items-center gap-2">
             <button type="button" onclick="saveDepotsConfig()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold">
-              Uložit depo
+              Uložit změny
             </button>
             ${idx === 0 ? "" : `
               <button type="button" onclick="deleteDepot('${d.id}')" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400" title="Smazat depo">
@@ -2522,6 +2565,15 @@
               </button>
             `}
           </div>
+        </div>
+
+        <!-- Planning Calendar Selector -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/70">
+          <span class="font-bold text-sky-400"><i class="fa-solid fa-calendar-week mr-1"></i> Plánovací kalendář</span>
+          <select onchange="updateDepotField(${idx}, 'calendarMode', this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-white">
+            <option value="short_long" ${d.calendarMode === "short_long" ? "selected" : ""}>Krátký / Dlouhý</option>
+            <option value="mon_fri" ${d.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
+          </select>
         </div>
 
         <!-- Day Shift toggle & times -->
@@ -2564,8 +2616,9 @@
   }
 
   function renderAdminUsersTab() {
-    renderDepotsConfigGrid();
+    draftDepots = JSON.parse(JSON.stringify(appState.depots));
     draftUsers = JSON.parse(JSON.stringify(appState.users));
+    renderDepotsConfigGrid();
     renderDraftUsersTable();
   }
 
@@ -2580,9 +2633,10 @@
 
   function renderDraftUsersTable() {
     const tbody = document.getElementById("users-draft-tbody");
+    const depotsSource = draftDepots.length ? draftDepots : appState.depots;
     tbody.innerHTML = draftUsers.map((u, idx) => {
       const uDepots = Array.isArray(u.depots) ? u.depots : [];
-      const depotCheckboxes = appState.depots.map(d => {
+      const depotCheckboxes = depotsSource.map(d => {
         const isChecked = uDepots.includes(d.id);
         return `<label class="inline-flex items-center gap-1 mr-2.5 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
           <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${d.id}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
@@ -2616,7 +2670,13 @@
             <option value="warehouse" ${u.role === "warehouse" ? "selected" : ""}>Skladník</option>
           </select>
         </td>
-        <td class="py-2 px-2 min-w-[160px]">
+        <td class="py-2 px-2">
+          <select onchange="draftUsers[${idx}].calendarMode = this.value" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-sky-400 font-bold">
+            <option value="short_long" ${(u.calendarMode || "short_long") === "short_long" ? "selected" : ""}>Krátký / Dlouhý</option>
+            <option value="mon_fri" ${u.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
+          </select>
+        </td>
+        <td class="py-2 px-2 min-w-[155px]">
           <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
         </td>
         <td class="py-2 px-2">
@@ -2656,11 +2716,13 @@
   function addDraftUser() {
     const n = draftUsers.length + 1;
     const todayStr = new Date().toISOString().split("T")[0];
+    const activeDep = getDepotById(activeDepotId);
     draftUsers.push({
       id: "u_" + Date.now(),
       name: `Nový pracovník ${n}`,
       role: "warehouse",
       roleLabel: "Skladník",
+      calendarMode: activeDep.calendarMode || "short_long",
       login: `user${n}`,
       pass: `heslo${n}`,
       token: "tok_" + Math.random().toString(36).slice(2, 10),
@@ -2678,8 +2740,12 @@
   }
 
   function saveDraftUsers() {
+    if (draftDepots.length > 0) {
+      draftDepots.forEach(d => { if (!d.hasDay && !d.hasNight) d.hasDay = true; });
+      appState.depots = JSON.parse(JSON.stringify(draftDepots));
+    }
     appState.users = JSON.parse(JSON.stringify(draftUsers));
-    addAudit("Administrace uživatelů a dep", "Uloženy změny v seznamu uživatelů a přiřazených depech.");
+    addAudit("Administrace uživatelů a dep", "Uloženy změny v seznamu uživatelů, plánovacích kalendářích a přiřazených depech.");
     pushToFirebase();
     showToast("Všechny změny uživatelů a dep byly uloženy!", "success");
   }
@@ -2705,7 +2771,8 @@
     document.getElementById("emp-month-label").textContent = currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
 
     const myDepotNames = (currentUser.depots || []).map(id => getDepotName(id)).join(", ") || "—";
-    document.getElementById("emp-assigned-depots-bar").innerHTML = `<i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Depa: <strong class="text-white">${myDepotNames}</strong>`;
+    const calLabel = getCalendarModeLabel(currentUser.calendarMode || "short_long");
+    document.getElementById("emp-assigned-depots-bar").innerHTML = `<i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Depa: <strong class="text-white">${myDepotNames}</strong> • <i class="fa-solid fa-calendar-week text-sky-400 ml-2 mr-1"></i> Kalendář: <strong class="text-white">${calLabel}</strong>`;
 
     const rejected = appState.requests.find(r => r.userId === currentUser.id && r.status === "rejected" && !r.seenByUser);
     const rejBanner = document.getElementById("emp-rejected-banner");
