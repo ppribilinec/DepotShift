@@ -214,7 +214,7 @@
             <input id="chk-show-terminated" type="checkbox" onchange="toggleShowTerminated(this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
             <span id="lbl-show-terminated">Zobrazit ukončené pracovníky</span>
           </label>
-          <button onclick="activeAdminTab='users'; buildNavigationForRole(); renderActiveRoleView();" class="text-xs font-bold text-blue-500 hover:underline">
+          <button onclick="switchAdminTab('users')" class="text-xs font-bold text-blue-500 hover:underline">
             <i class="fa-solid fa-sliders mr-1"></i> <span id="lbl-manage-depots">Nastavení dep &amp; směn</span>
           </button>
         </div>
@@ -269,6 +269,22 @@
 
     <!-- ==================== ADMIN VIEW: USERS, DEPOTS & SETTINGS ==================== -->
     <section id="view-admin-users" class="hidden space-y-5">
+      <!-- Unsaved Changes Banner -->
+      <div id="admin-unsaved-banner" class="hidden p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 text-xs font-bold">
+          <i class="fa-solid fa-circle-info text-amber-400 text-base"></i>
+          <span id="lbl-unsaved-warning">Máte neuložené dočasné úpravy. Pro trvalý zápis do databáze klikněte na „Uložit změny“.</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="discardAdminDraftChanges()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold">
+            Zrušit změny
+          </button>
+          <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">
+            <i class="fa-solid fa-floppy-disk mr-1"></i> Uložit změny
+          </button>
+        </div>
+      </div>
+
       <!-- Depots & Per-Depot Shift Settings -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -276,14 +292,14 @@
             <h3 class="text-base font-extrabold text-white flex items-center gap-2">
               <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
             </h3>
-            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte plánovací kalendář (Krátký / Dlouhý nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem <strong>Uložit změny</strong>.</p>
+            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte plánovací kalendář (Krátký / Dlouhý: Po, Út, Pá, So, Ne vs. St, Čt, nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem <strong>Uložit změny</strong>.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
             <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
               <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
             </button>
-            <button type="button" onclick="saveDepotsConfig()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
               <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
             </button>
           </div>
@@ -299,13 +315,13 @@
             <h3 class="text-base font-extrabold text-white flex items-center gap-2">
               <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Správa uživatelů, rolí, kalendáře a přiřazení k depům</span>
             </h3>
-            <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5">Provedené změny potvrďte tlačítkem <strong>Uložit změny</strong>.</p>
+            <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5">Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem <strong>Uložit změny</strong>.</p>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="addDraftUser()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
+            <button type="button" onclick="addDraftUser()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
               <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-user">Přidat uživatele</span>
             </button>
-            <button onclick="saveDraftUsers()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
               <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-users">Uložit změny</span>
             </button>
           </div>
@@ -747,11 +763,11 @@
       btnExport: "Export docházky",
       btnClear: "Vyčistit depo",
       depotsTitle: "Správa dep, plánovacího kalendáře a směn",
-      depotsSub: "U každého depa nastavte plánovací kalendář (Krátký / Dlouhý nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem Uložit změny.",
+      depotsSub: "U každého depa nastavte plánovací kalendář (Krátký / Dlouhý: Po, Út, Pá, So, Ne vs. St, Čt, nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem Uložit změny.",
       btnAddDepot: "Přidat depo",
       btnSaveDepots: "Uložit změny",
       usersTitle: "Správa uživatelů, rolí, kalendáře a přiřazení k depům",
-      usersSub: "Provedené změny potvrďte tlačítkem Uložit změny.",
+      usersSub: "Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem Uložit změny.",
       btnAddUser: "Přidat uživatele",
       btnSaveUsers: "Uložit změny",
       dangerTitle: "Nebezpečná zóna – Vymazání databáze",
@@ -792,7 +808,7 @@
       btnAddDepot: "Add Depot",
       btnSaveDepots: "Save Changes",
       usersTitle: "Users, Roles, Calendar & Depot Assignments",
-      usersSub: "Confirm changes by clicking Save Changes.",
+      usersSub: "Edits remain temporarily saved until you confirm them by clicking Save Changes.",
       btnAddUser: "Add User",
       btnSaveUsers: "Save Changes",
       dangerTitle: "Danger Zone – Wipe Database",
@@ -883,7 +899,7 @@
     applyTheme(cur === "dark" ? "light" : "dark");
   }
 
-  // Default Depots with calendarMode ('short_long' | 'mon_fri')
+  // Default Depots
   const DEFAULT_DEPOTS = [
     {
       id: "depo_plzen",
@@ -913,7 +929,7 @@
     }
   ];
 
-  // Default Users with calendarMode ('short_long' | 'mon_fri')
+  // Default Users
   const DEFAULT_USERS = [
     { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", calendarMode: "mon_fri", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
     { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", calendarMode: "short_long", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
@@ -956,8 +972,12 @@
   let activeAdminTab = "schedule";
   let activeCoordTab = "requests";
   let showTerminatedWorkers = false;
+
+  // Draft buffers for Admin Users & Depots tab (protected against background sync overwrites)
   let draftDepots = [];
   let draftUsers = [];
+  let hasUnsavedAdminChanges = false;
+
   let terminatingUserIdx = null;
   let selectedChatUserId = null;
   let editingCell = null;
@@ -965,6 +985,24 @@
   let empReqDates = [];
   let dragPayload = null;
   let rowDragUserId = null;
+
+  function markAdminDraftDirty() {
+    hasUnsavedAdminChanges = true;
+    const banner = document.getElementById("admin-unsaved-banner");
+    if (banner) banner.classList.remove("hidden");
+  }
+
+  function clearAdminDraftDirty() {
+    hasUnsavedAdminChanges = false;
+    const banner = document.getElementById("admin-unsaved-banner");
+    if (banner) banner.classList.add("hidden");
+  }
+
+  function switchAdminTab(tabId) {
+    activeAdminTab = tabId;
+    buildNavigationForRole();
+    renderActiveRoleView();
+  }
 
   function getCalendarModeLabel(mode) {
     if (mode === "mon_fri") {
@@ -1104,6 +1142,11 @@
   }
 
   async function pullFromFirebase(silent = true) {
+    // Do NOT overwrite active draft edits in Admin Users/Depots tab during background sync
+    if (silent && currentUser?.role === "admin" && activeAdminTab === "users" && hasUnsavedAdminChanges) {
+      return;
+    }
+
     try {
       const res = await fetchWithTimeout(FIREBASE_DB_URL, {
         method: "GET",
@@ -1121,7 +1164,9 @@
       if (currentUser) {
         const refreshed = appState.users.find(u => u.id === currentUser.id);
         if (refreshed) currentUser = refreshed;
-        renderActiveRoleView();
+        if (!(currentUser.role === "admin" && activeAdminTab === "users" && hasUnsavedAdminChanges)) {
+          renderActiveRoleView();
+        }
       }
       if (!silent) showToast("Synchronizováno s databází.", "success");
     } catch (err) {
@@ -1147,6 +1192,10 @@
   }
 
   function manualSyncNow() {
+    if (hasUnsavedAdminChanges && activeAdminTab === "users") {
+      showToast("Nejprve uložte nebo zrušte rozpracované změny v administraci.", "warn");
+      return;
+    }
     pullFromFirebase(false);
   }
 
@@ -1272,6 +1321,7 @@
 
   function logout() {
     currentUser = null;
+    clearAdminDraftDirty();
     safeStorage.set("depotshift_session_uid", "");
     document.getElementById("main-app").classList.add("hidden");
     document.getElementById("main-app").classList.remove("flex");
@@ -1298,7 +1348,7 @@
         const active = activeAdminTab === tItem.id;
         btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${active ? "bg-blue-600 text-white shadow" : "bg-slate-800/70 text-slate-300 hover:bg-slate-800"}`;
         btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${tItem.label}`;
-        btn.onclick = () => { activeAdminTab = tItem.id; buildNavigationForRole(); renderActiveRoleView(); };
+        btn.onclick = () => switchAdminTab(tItem.id);
         nav.appendChild(btn);
       });
     } else if (currentUser.role === "coordinator") {
@@ -1913,6 +1963,7 @@
     }
     const u = draftUsers[terminatingUserIdx];
     u.terminatedFrom = dateVal;
+    markAdminDraftDirty();
 
     Object.keys(appState.schedules || {}).forEach(mKey => {
       const [yStr, mStr] = mKey.split("-");
@@ -1931,22 +1982,17 @@
       });
     });
 
-    appState.users = JSON.parse(JSON.stringify(draftUsers));
-    addAudit("Ukončení zaměstnance", `${u.name} – ukončen od ${dateVal}, navazující směny zrušeny.`);
     closeModal("modal-terminate-emp");
     renderDraftUsersTable();
-    pushToFirebase();
-    showToast(`Zaměstnanec ${u.name} byl ukončen od ${dateVal} a budoucí směny byly zrušeny.`, "success");
+    showToast(`Ukončení pro ${u.name} od ${dateVal} nastaveno. Potvrďte kliknutím na „Uložit změny“.`, "info");
   }
 
   function restoreTerminatedUser(draftIdx) {
     const u = draftUsers[draftIdx];
     u.terminatedFrom = null;
-    appState.users = JSON.parse(JSON.stringify(draftUsers));
-    addAudit("Obnovení zaměstnance", `${u.name} byl znovu aktivován v plánu.`);
+    markAdminDraftDirty();
     renderDraftUsersTable();
-    pushToFirebase();
-    showToast(`Zaměstnanec ${u.name} byl obnoven.`, "info");
+    showToast(`Zaměstnanec ${u.name} obnoven v návrhu. Klikněte na „Uložit změny“.`, "info");
   }
 
   function openResetDbModal() {
@@ -2166,16 +2212,40 @@
     pushToFirebase();
   }
 
-  // ==================== AUTO-SCHEDULER (RESPECTS DEPOT & USER CALENDAR MODES) ====================
-  function isWorkingDayForCalendar(calendarMode, y, m, day, usePatternA = true) {
-    const dow = new Date(y, m, day).getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+  // ==================== EXACT SHORT / LONG WEEK (MON–SUN) & MON–FRI SCHEDULER ====================
+  // Week definition: Monday (day 1) through Sunday (day 7).
+  // Long week: Mon (1), Tue (2), Fri (5), Sat (6), Sun (0)
+  // Short week: Wed (3), Thu (4)
+  // Alternates strictly week-by-week based on ISO Monday week index!
+  function getIsoMondayWeekIndex(y, m, day) {
+    const dt = new Date(y, m, day);
+    const jsDow = dt.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const mondayOffset = (jsDow + 6) % 7; // Mon=0, Tue=1, Wed=2, Thu=3, Fri=4, Sat=5, Sun=6
+    const mondayDate = new Date(y, m, day - mondayOffset);
+    // Epoch Monday: Jan 5, 1970
+    const epochMonday = new Date(1970, 0, 5);
+    const diffDays = Math.round((mondayDate - epochMonday) / 86400000);
+    return Math.floor(diffDays / 7);
+  }
+
+  function isWorkingDayForCalendar(calendarMode, y, m, day, isTurnusA = true) {
+    const dow = new Date(y, m, day).getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
     if (calendarMode === "mon_fri") {
       return dow >= 1 && dow <= 5;
     }
-    // 'short_long' (2-2-3 cycle)
-    const weekNum = Math.floor((day - 1) / 7) % 2;
-    const patA = weekNum === 0 ? [2, 5, 6, 0].includes(dow) : [1, 3, 4].includes(dow);
-    return usePatternA ? patA : !patA;
+
+    // 'short_long' (Krátký / Dlouhý týden, týden Po–Ne)
+    const weekIdx = getIsoMondayWeekIndex(y, m, day);
+    const isEvenWeek = (weekIdx % 2) === 0;
+    // Turnus A: even weeks = Long week (Po, Út, Pá, So, Ne), odd weeks = Short week (St, Čt)
+    // Turnus B: even weeks = Short week (St, Čt), odd weeks = Long week (Po, Út, Pá, So, Ne)
+    const isLongWeek = isTurnusA ? isEvenWeek : !isEvenWeek;
+
+    if (isLongWeek) {
+      return [1, 2, 5, 6, 0].includes(dow); // Pondělí, Úterý, Pátek, Sobota, Neděle
+    } else {
+      return [3, 4].includes(dow); // Středa, Čtvrtek
+    }
   }
 
   function runAutoSchedule() {
@@ -2201,20 +2271,18 @@
 
     coreUsers.forEach(u => { depotSched[u.id] = {}; });
 
-    const canWorkDay = (u, d, usePatternA = true) => {
+    const canWorkDay = (u, d, isTurnusA = true) => {
       const dStr = formatDateStr(y, m, d);
       if (u.terminatedFrom && dStr >= u.terminatedFrom) return false;
       if (getUserShiftAcrossDepots(mKey, u.id, d)) return false;
 
-      // Depot calendar constraint (e.g. if depot is mon_fri, no weekend shifts)
       if (depot.calendarMode === "mon_fri") {
         const dow = new Date(y, m, d).getDay();
         if (dow === 0 || dow === 6) return false;
       }
 
-      // User's assigned planning calendar
       const uCal = u.calendarMode || depot.calendarMode || "short_long";
-      return isWorkingDayForCalendar(uCal, y, m, d, usePatternA);
+      return isWorkingDayForCalendar(uCal, y, m, d, isTurnusA);
     };
 
     const resolveAllowedShift = (preferred) => {
@@ -2223,12 +2291,12 @@
       return depot.hasDay ? "D" : "N";
     };
 
-    // 1. Foremen on Night ONLY
+    // 1. Foremen on Night ONLY (alternating Turnus A / Turnus B)
     const foremen = coreUsers.filter(u => u.role === "foreman");
     foremen.forEach((u, idx) => {
-      const useA = idx % 2 === 0;
+      const turnusA = idx % 2 === 0;
       for (let d = 1; d <= days; d++) {
-        if (canWorkDay(u, d, useA)) {
+        if (canWorkDay(u, d, turnusA)) {
           depotSched[u.id][d] = { type: resolveAllowedShift("N") };
         }
       }
@@ -2241,10 +2309,10 @@
     const pairedIds = new Set([...pair1, ...pair2, ...pair3].map(u => u.id));
     const singles = coreUsers.filter(u => u.role !== "foreman" && !pairedIds.has(u.id));
 
-    const assignUnit = (members, patternA, preferDay) => {
+    const assignUnit = (members, turnusA, preferDay) => {
       for (let d = 1; d <= days; d++) {
         members.forEach(member => {
-          if (!canWorkDay(member, d, patternA)) return;
+          if (!canWorkDay(member, d, turnusA)) return;
           const prev = getUserShiftAcrossDepots(mKey, member.id, d - 1)?.type;
           let type = resolveAllowedShift(preferDay ? "D" : "N");
           if (type === "D" && prev === "N" && depot.hasNight) type = "N";
@@ -2481,7 +2549,54 @@
     `;
   }
 
-  // ==================== ADMIN: DEPOTS CONFIG & USERS DRAFT ====================
+  // ==================== ADMIN: DEPOTS & USERS DRAFT MANAGEMENT ====================
+  function renderAdminUsersTab() {
+    // Only reload from appState if there are no unsaved temporary edits
+    if (!hasUnsavedAdminChanges || draftDepots.length === 0 || draftUsers.length === 0) {
+      draftDepots = JSON.parse(JSON.stringify(appState.depots));
+      draftUsers = JSON.parse(JSON.stringify(appState.users));
+      clearAdminDraftDirty();
+    }
+    renderDepotsConfigGrid();
+    renderDraftUsersTable();
+  }
+
+  function discardAdminDraftChanges() {
+    draftDepots = JSON.parse(JSON.stringify(appState.depots));
+    draftUsers = JSON.parse(JSON.stringify(appState.users));
+    clearAdminDraftDirty();
+    renderDepotsConfigGrid();
+    renderDraftUsersTable();
+    showToast("Dočasné změny byly vráceny zpět.", "info");
+  }
+
+  function saveAllAdminChanges() {
+    if (draftDepots.length > 0) {
+      draftDepots.forEach(d => {
+        if (!d.hasDay && !d.hasNight) d.hasDay = true;
+      });
+      appState.depots = JSON.parse(JSON.stringify(draftDepots));
+    }
+
+    if (!appState.depots.some(d => d.id === activeDepotId)) {
+      activeDepotId = appState.depots[0].id;
+    }
+
+    const validDepotIds = new Set(appState.depots.map(d => d.id));
+    draftUsers.forEach(u => {
+      u.depots = (u.depots || []).filter(id => validDepotIds.has(id));
+    });
+
+    appState.users = JSON.parse(JSON.stringify(draftUsers));
+    clearAdminDraftDirty();
+
+    addAudit("Administrace uživatelů a dep", "Uloženy změny v nastavení dep, plánovacích kalendářů, uživatelů a časů směn.");
+    renderDepotsConfigGrid();
+    renderDraftUsersTable();
+    pushToFirebase();
+    showToast("Všechny změny byly trvale uloženy do databáze!", "success");
+  }
+
   function createNewDepot() {
     const inp = document.getElementById("new-depot-name");
     const name = inp.value.trim();
@@ -2501,9 +2616,10 @@
       agEnd: "07:00"
     });
     inp.value = "";
+    markAdminDraftDirty();
     renderDepotsConfigGrid();
     renderDraftUsersTable();
-    showToast(`Depo "${name}" přidáno do návrhu. Pro uložení klikněte na "Uložit změny".`, "info");
+    showToast(`Depo "${name}" přidáno do návrhu. Potvrďte kliknutím na „Uložit změny“.`, "info");
   }
 
   function deleteDepot(depotId) {
@@ -2514,35 +2630,16 @@
     const target = draftDepots.find(d => d.id === depotId);
     draftDepots = draftDepots.filter(d => d.id !== depotId);
     draftUsers.forEach(u => { u.depots = (u.depots || []).filter(id => id !== depotId); });
+    markAdminDraftDirty();
     renderDepotsConfigGrid();
     renderDraftUsersTable();
-    showToast(`Depo "${target?.name}" odebráno z návrhu. Potvrďte kliknutím na "Uložit změny".`, "info");
+    showToast(`Depo "${target?.name}" odebráno z návrhu. Klikněte na „Uložit změny“.`, "info");
   }
 
   function updateDepotField(idx, field, value) {
     if (!draftDepots[idx]) return;
     draftDepots[idx][field] = value;
-  }
-
-  function saveDepotsConfig() {
-    draftDepots.forEach(d => {
-      if (!d.hasDay && !d.hasNight) d.hasDay = true;
-    });
-    appState.depots = JSON.parse(JSON.stringify(draftDepots));
-    if (!appState.depots.some(d => d.id === activeDepotId)) {
-      activeDepotId = appState.depots[0].id;
-    }
-    // Sync user depot assignments if a depot was deleted
-    const validIds = new Set(appState.depots.map(d => d.id));
-    appState.users.forEach(u => {
-      u.depots = (u.depots || []).filter(id => validIds.has(id));
-    });
-
-    addAudit("Nastavení dep", "Uloženo nastavení dep, plánovacích kalendářů a časových rozsahů směn.");
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
-    pushToFirebase();
-    showToast("Změny v nastavení dep byly uloženy do databáze!", "success");
+    markAdminDraftDirty();
   }
 
   function renderDepotsConfigGrid() {
@@ -2552,11 +2649,11 @@
         <div class="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
           <div class="flex items-center gap-2 flex-1">
             <i class="fa-solid fa-warehouse text-blue-500"></i>
-            <input type="text" value="${d.name}" onchange="updateDepotField(${idx}, 'name', this.value.trim() || '${d.name}'); renderDraftUsersTable();"
+            <input type="text" value="${d.name}" oninput="updateDepotField(${idx}, 'name', this.value)" onchange="renderDraftUsersTable()"
               class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-extrabold text-white w-full max-w-[220px]" />
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="saveDepotsConfig()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold">
+            <button type="button" onclick="saveAllAdminChanges()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold">
               Uložit změny
             </button>
             ${idx === 0 ? "" : `
@@ -2571,7 +2668,7 @@
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/70">
           <span class="font-bold text-sky-400"><i class="fa-solid fa-calendar-week mr-1"></i> Plánovací kalendář</span>
           <select onchange="updateDepotField(${idx}, 'calendarMode', this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-white">
-            <option value="short_long" ${d.calendarMode === "short_long" ? "selected" : ""}>Krátký / Dlouhý</option>
+            <option value="short_long" ${d.calendarMode === "short_long" ? "selected" : ""}>Krátký / Dlouhý (Po–Ne)</option>
             <option value="mon_fri" ${d.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
           </select>
         </div>
@@ -2615,11 +2712,10 @@
     `).join("");
   }
 
-  function renderAdminUsersTab() {
-    draftDepots = JSON.parse(JSON.stringify(appState.depots));
-    draftUsers = JSON.parse(JSON.stringify(appState.users));
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
+  function updateDraftUserField(userIdx, field, value) {
+    if (!draftUsers[userIdx]) return;
+    draftUsers[userIdx][field] = value;
+    markAdminDraftDirty();
   }
 
   function toggleDraftUserDepot(userIdx, depotId, checked) {
@@ -2629,6 +2725,7 @@
     } else {
       draftUsers[userIdx].depots = draftUsers[userIdx].depots.filter(id => id !== depotId);
     }
+    markAdminDraftDirty();
   }
 
   function renderDraftUsersTable() {
@@ -2640,7 +2737,7 @@
         const isChecked = uDepots.includes(d.id);
         return `<label class="inline-flex items-center gap-1 mr-2.5 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
           <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${d.id}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
-          <span>${d.name.replace("Depo ", "")}</span>
+          <span>${(d.name || "").replace("Depo ", "")}</span>
         </label>`;
       }).join("");
 
@@ -2658,7 +2755,7 @@
 
       return `<tr class="${u.terminatedFrom ? "opacity-65" : ""}">
         <td class="py-2 px-2">
-          <input type="text" value="${u.name}" onchange="draftUsers[${idx}].name = this.value"
+          <input type="text" value="${u.name}" oninput="updateDraftUserField(${idx}, 'name', this.value)"
             class="w-full min-w-[140px] bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
         </td>
         <td class="py-2 px-2">
@@ -2671,7 +2768,7 @@
           </select>
         </td>
         <td class="py-2 px-2">
-          <select onchange="draftUsers[${idx}].calendarMode = this.value" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-sky-400 font-bold">
+          <select onchange="updateDraftUserField(${idx}, 'calendarMode', this.value)" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-sky-400 font-bold">
             <option value="short_long" ${(u.calendarMode || "short_long") === "short_long" ? "selected" : ""}>Krátký / Dlouhý</option>
             <option value="mon_fri" ${u.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
           </select>
@@ -2680,20 +2777,20 @@
           <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
         </td>
         <td class="py-2 px-2">
-          <input type="text" value="${u.login}" onchange="draftUsers[${idx}].login = this.value.trim()"
+          <input type="text" value="${u.login}" oninput="updateDraftUserField(${idx}, 'login', this.value.trim())"
             class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
         </td>
         <td class="py-2 px-2">
-          <input type="text" value="${u.pass}" onchange="draftUsers[${idx}].pass = this.value"
+          <input type="text" value="${u.pass}" oninput="updateDraftUserField(${idx}, 'pass', this.value)"
             class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
         </td>
         <td class="py-2 px-2">
-          <input type="date" value="${u.createdAt || "2026-09-01"}" onchange="draftUsers[${idx}].createdAt = this.value"
+          <input type="date" value="${u.createdAt || "2026-09-01"}" onchange="updateDraftUserField(${idx}, 'createdAt', this.value)"
             class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300" />
         </td>
         <td class="py-2 px-2 text-center">
           <input type="checkbox" ${u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" ? "checked" : ""}
-            onchange="draftUsers[${idx}].isScheduleable = this.checked" class="w-4 h-4 accent-blue-600" />
+            onchange="updateDraftUserField(${idx}, 'isScheduleable', this.checked)" class="w-4 h-4 accent-blue-600" />
         </td>
         <td class="py-2 px-2 text-center">
           <button type="button" onclick="openQrForUser('${u.id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-500 border border-slate-700">
@@ -2710,13 +2807,14 @@
     draftUsers[idx].role = role;
     draftUsers[idx].roleLabel = labels[role] || role;
     draftUsers[idx].isScheduleable = !["admin", "coordinator"].includes(role);
+    markAdminDraftDirty();
     renderDraftUsersTable();
   }
 
   function addDraftUser() {
     const n = draftUsers.length + 1;
     const todayStr = new Date().toISOString().split("T")[0];
-    const activeDep = getDepotById(activeDepotId);
+    const activeDep = (draftDepots.find(d => d.id === activeDepotId) || draftDepots[0] || getDepotById(activeDepotId));
     draftUsers.push({
       id: "u_" + Date.now(),
       name: `Nový pracovník ${n}`,
@@ -2727,27 +2825,18 @@
       pass: `heslo${n}`,
       token: "tok_" + Math.random().toString(36).slice(2, 10),
       isScheduleable: true,
-      depots: [activeDepotId],
+      depots: [activeDep.id],
       terminatedFrom: null,
       createdAt: todayStr
     });
+    markAdminDraftDirty();
     renderDraftUsersTable();
   }
 
   function removeDraftUser(idx) {
     draftUsers.splice(idx, 1);
+    markAdminDraftDirty();
     renderDraftUsersTable();
-  }
-
-  function saveDraftUsers() {
-    if (draftDepots.length > 0) {
-      draftDepots.forEach(d => { if (!d.hasDay && !d.hasNight) d.hasDay = true; });
-      appState.depots = JSON.parse(JSON.stringify(draftDepots));
-    }
-    appState.users = JSON.parse(JSON.stringify(draftUsers));
-    addAudit("Administrace uživatelů a dep", "Uloženy změny v seznamu uživatelů, plánovacích kalendářích a přiřazených depech.");
-    pushToFirebase();
-    showToast("Všechny změny uživatelů a dep byly uloženy!", "success");
   }
 
   // ==================== EMPLOYEE VIEW ====================
