@@ -52,7 +52,8 @@
     [data-theme="light"] .bg-emerald-600.text-white,
     [data-theme="light"] .bg-purple-600.text-white,
     [data-theme="light"] .bg-red-600.text-white,
-    [data-theme="light"] .bg-red-500.text-white { color: #ffffff !important; }
+    [data-theme="light"] .bg-red-500.text-white,
+    [data-theme="light"] .bg-sky-600.text-white { color: #ffffff !important; }
     [data-theme="light"] .bg-blue-600 .text-white,
     [data-theme="light"] .bg-blue-600 i { color: #ffffff !important; }
     [data-theme="light"] .sticky-col { position: sticky; left: 0; z-index: 20; background: #f8fafc; border-right: 1px solid #cbd5e1; }
@@ -63,6 +64,7 @@
     .shift-cell { min-width: 58px; height: 48px; transition: transform 0.1s, filter 0.1s; user-select: none; }
     .shift-cell:hover { filter: brightness(1.12); }
     .drag-over { outline: 2px dashed #38bdf8 !important; outline-offset: -2px; background: rgba(56, 189, 248, 0.2) !important; }
+    .row-drag-over td { border-top: 2px solid #38bdf8 !important; background: rgba(56, 189, 248, 0.12) !important; }
     ::-webkit-scrollbar { height: 7px; width: 7px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
@@ -163,17 +165,14 @@
       </div>
 
       <div class="flex items-center gap-2 sm:gap-2.5">
-        <!-- Language Toggle Button -->
         <button type="button" onclick="toggleLanguage()" class="lang-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5">
           <i class="fa-solid fa-globe text-blue-400"></i> <span>EN</span>
         </button>
 
-        <!-- Theme Toggle Button -->
         <button type="button" onclick="toggleTheme()" class="theme-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5">
           <i class="fa-solid fa-sun text-amber-400"></i> <span class="hidden md:inline">Světlý motiv</span>
         </button>
 
-        <!-- Admin pending requests bell -->
         <button id="admin-req-bell" onclick="openAdminRequestsModal()" class="hidden relative px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 text-xs font-bold items-center gap-1.5">
           <i class="fa-solid fa-bell"></i>
           <span id="lbl-bell-req" class="hidden sm:inline">Žádosti</span>
@@ -216,7 +215,7 @@
             <span id="lbl-show-terminated">Zobrazit ukončené pracovníky</span>
           </label>
           <button onclick="activeAdminTab='users'; buildNavigationForRole(); renderActiveRoleView();" class="text-xs font-bold text-blue-500 hover:underline">
-            <i class="fa-solid fa-plus-circle mr-1"></i> <span id="lbl-manage-depots">Spravovat / přidat depo</span>
+            <i class="fa-solid fa-sliders mr-1"></i> <span id="lbl-manage-depots">Nastavení dep &amp; směn</span>
           </button>
         </div>
       </div>
@@ -233,6 +232,9 @@
           <button onclick="runAutoSchedule()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="lbl-btn-auto">Autoplánování</span> (<span id="auto-depot-name"></span>)
           </button>
+          <button onclick="applySmartSortToActiveDepot()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow flex items-center gap-1.5" title="Seřadí zaměstnance podle směny (D/N), pozice (Předák, Specialista, Skladník), data přidání a abecedy">
+            <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="lbl-btn-sort">Seřadit dle směn a pozic</span>
+          </button>
           <button onclick="openAgRequestModal()" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-user-plus"></i> <span id="lbl-btn-add-ag">Přidat požadavek AG</span>
           </button>
@@ -247,16 +249,9 @@
 
       <!-- Legend & Drag info -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2"><span id="lbl-leg-d">Denní</span> (<span id="lbl-d-time"></span>)</span>
-          <span class="px-2 py-0.5 rounded bg-blue-600 text-white font-extrabold">N</span> <span class="text-slate-300 mr-2"><span id="lbl-leg-n">Noční</span> (<span id="lbl-n-time"></span>)</span>
-          <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold">DOV</span> <span id="lbl-leg-dov" class="text-slate-300 mr-2">Dovolená</span>
-          <span class="px-2 py-0.5 rounded bg-teal-500 text-slate-950 font-extrabold">NV</span> <span id="lbl-leg-nv" class="text-slate-300 mr-2">Náhradní volno</span>
-          <span class="px-2 py-0.5 rounded bg-red-500 text-white font-extrabold">PN</span> <span id="lbl-leg-pn" class="text-slate-300 mr-2">Nemoc / Lékař</span>
-          <span class="px-2 py-0.5 rounded bg-purple-600 text-white font-extrabold">A</span> <span id="lbl-leg-a" class="text-slate-300">Absence</span>
-        </div>
+        <div id="admin-legend-items" class="flex flex-wrap items-center gap-2"></div>
         <div id="lbl-drag-hint" class="text-slate-400">
-          <i class="fa-solid fa-arrows-left-right text-sky-400"></i> Přetažením v řádku zaměstnance přesunete směnu • Kliknutím upravíte
+          <i class="fa-solid fa-grip-vertical text-sky-400"></i> Přetažením jména změníte pořadí řádků • Přetažením buňky přesunete směnu
         </div>
       </div>
 
@@ -274,14 +269,14 @@
 
     <!-- ==================== ADMIN VIEW: USERS, DEPOTS & SETTINGS ==================== -->
     <section id="view-admin-users" class="hidden space-y-5">
-      <!-- Depots Management -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <!-- Depots & Per-Depot Shift Settings -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep (poboček)</span>
+              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep a nastavení směn pro každé depo</span>
             </h3>
-            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">Vytvořte nová depa a níže zaškrtněte zaměstnancům i koordinátorovi, na kterých depech působí.</p>
+            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte název, zda tam běží denní a/nebo noční směna a jejich přesný časový rozsah.</p>
           </div>
           <div class="flex items-center gap-2">
             <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-56 focus:outline-none focus:border-blue-500" />
@@ -290,40 +285,8 @@
             </button>
           </div>
         </div>
-        <div id="depots-list-box" class="flex flex-wrap gap-2.5"></div>
-      </div>
 
-      <!-- Shift Times Config -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
-        <h3 class="text-base font-extrabold text-white mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-clock text-blue-400"></i> <span id="lbl-times-title">Administrace časů směn</span>
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-            <div id="lbl-time-d" class="text-xs font-bold text-amber-500 mb-2">Denní směna (Kmenoví)</div>
-            <div class="flex items-center gap-2">
-              <input id="cfg-d-start" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-              <span class="text-slate-400">–</span>
-              <input id="cfg-d-end" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-            </div>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-            <div id="lbl-time-n" class="text-xs font-bold text-blue-500 mb-2">Noční směna (Kmenoví)</div>
-            <div class="flex items-center gap-2">
-              <input id="cfg-n-start" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-              <span class="text-slate-400">–</span>
-              <input id="cfg-n-end" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-            </div>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
-            <div id="lbl-time-ag" class="text-xs font-bold text-purple-500 mb-2">Noční směna (Agenturní výchozí)</div>
-            <div class="flex items-center gap-2">
-              <input id="cfg-ag-start" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-              <span class="text-slate-400">–</span>
-              <input id="cfg-ag-end" type="time" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-            </div>
-          </div>
-        </div>
+        <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
       </div>
 
       <!-- Users Management -->
@@ -350,10 +313,11 @@
             <thead>
               <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
                 <th class="py-2.5 px-2">Jméno / Name</th>
-                <th class="py-2.5 px-2">Role</th>
+                <th class="py-2.5 px-2">Pozice / Role</th>
                 <th class="py-2.5 px-2">Depa / Depots</th>
                 <th class="py-2.5 px-2">Login</th>
-                <th class="py-2.5 px-2">Heslo / Pass</th>
+                <th class="py-2.5 px-2">Heslo</th>
+                <th class="py-2.5 px-2">Přidán</th>
                 <th class="py-2.5 px-2 text-center">V plánu</th>
                 <th class="py-2.5 px-2 text-center">QR</th>
                 <th class="py-2.5 px-2 text-right">Ukončení / Akce</th>
@@ -581,8 +545,8 @@
     </div>
 
     <div class="grid grid-cols-3 gap-2">
-      <button onclick="applyCellShift('D')" class="p-2.5 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-xs">D – Denní</button>
-      <button onclick="applyCellShift('N')" class="p-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs">N – Noční</button>
+      <button id="btn-cell-shift-D" onclick="applyCellShift('D')" class="p-2.5 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-xs">D – Denní</button>
+      <button id="btn-cell-shift-N" onclick="applyCellShift('N')" class="p-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs">N – Noční</button>
       <button onclick="applyCellShift('')" class="p-2.5 rounded-xl bg-slate-700 text-slate-200 font-bold text-xs">— Volno</button>
       <button onclick="applyCellShift('DOV')" class="p-2.5 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs">DOV – Dovolená</button>
       <button onclick="applyCellShift('NV')" class="p-2.5 rounded-xl bg-teal-500 text-slate-950 font-extrabold text-xs">NV – Náhr. volno</button>
@@ -617,7 +581,7 @@
     <div class="space-y-3">
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1">Cílové depo</label>
-        <select id="ag-req-depot" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select>
+        <select id="ag-req-depot" onchange="onAgModalDepotChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select>
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1">Datum směny</label>
@@ -772,25 +736,15 @@
       tabCoordSum: "Odpracované směny AG",
       activeDepot: "Aktivní depo:",
       showTerminated: "Zobrazit ukončené pracovníky",
-      manageDepots: "Spravovat / přidat depo",
+      manageDepots: "Nastavení dep & směn",
       btnAuto: "Autoplánování",
+      btnSort: "Seřadit dle směn a pozic",
       btnAddAg: "Přidat požadavek AG",
       btnExport: "Export docházky",
       btnClear: "Vyčistit depo",
-      legD: "Denní",
-      legN: "Noční",
-      legDov: "Dovolená",
-      legNv: "Náhradní volno",
-      legPn: "Nemoc / Lékař",
-      legA: "Absence",
-      dragHint: "Přetažením v řádku zaměstnance přesunete směnu • Kliknutím upravíte",
-      depotsTitle: "Správa dep (poboček)",
-      depotsSub: "Vytvořte nová depa a níže zaškrtněte zaměstnancům i koordinátorovi, na kterých depech působí.",
+      depotsTitle: "Správa dep a nastavení směn pro každé depo",
+      depotsSub: "U každého depa nastavte název, zda tam běží denní a/nebo noční směna a jejich přesný časový rozsah.",
       btnAddDepot: "Přidat depo",
-      timesTitle: "Administrace časů směn",
-      timeD: "Denní směna (Kmenoví)",
-      timeN: "Noční směna (Kmenoví)",
-      timeAg: "Noční směna (Agenturní výchozí)",
       usersTitle: "Správa uživatelů, rolí a přiřazení k depům",
       usersSub: "Provedené změny potvrďte tlačítkem Uložit změny.",
       btnAddUser: "Přidat uživatele",
@@ -815,32 +769,22 @@
       bellReq: "Requests",
       logout: "Sign Out",
       tabSchedule: "Shift Roster",
-      tabUsers: "Users, Depots & Times",
+      tabUsers: "Users, Depots & Shifts",
       tabChat: "Messages & Requests",
       tabAudit: "Audit Log",
       tabCoordReq: "Agency Worker Requests",
       tabCoordSum: "Agency Worked Shifts",
       activeDepot: "Active Depot:",
       showTerminated: "Show terminated employees",
-      manageDepots: "Manage / add depot",
+      manageDepots: "Configure depots & shifts",
       btnAuto: "Auto-Schedule",
+      btnSort: "Sort by Shift & Role",
       btnAddAg: "Add Agency Request",
       btnExport: "Export Roster",
       btnClear: "Clear Depot",
-      legD: "Day",
-      legN: "Night",
-      legDov: "Vacation",
-      legNv: "Comp. Leave",
-      legPn: "Sick Leave",
-      legA: "Absence",
-      dragHint: "Drag within employee row to move shift • Click cell to edit",
-      depotsTitle: "Depot Management",
-      depotsSub: "Create depots and assign employees & coordinators using checkboxes below.",
+      depotsTitle: "Depot & Shift Configuration",
+      depotsSub: "Configure each depot independently: enable Day and/or Night shifts and set their exact hours.",
       btnAddDepot: "Add Depot",
-      timesTitle: "Shift Hours Configuration",
-      timeD: "Day Shift (Core Staff)",
-      timeN: "Night Shift (Core Staff)",
-      timeAg: "Night Shift (Agency Default)",
       usersTitle: "Users, Roles & Depot Assignments",
       usersSub: "Confirm changes by clicking Save Changes.",
       btnAddUser: "Add User",
@@ -881,22 +825,13 @@
     setTxt("lbl-show-terminated", "showTerminated");
     setTxt("lbl-manage-depots", "manageDepots");
     setTxt("lbl-btn-auto", "btnAuto");
+    setTxt("lbl-btn-sort", "btnSort");
     setTxt("lbl-btn-add-ag", "btnAddAg");
     setTxt("lbl-btn-export", "btnExport");
     setTxt("lbl-btn-clear", "btnClear");
-    setTxt("lbl-leg-d", "legD");
-    setTxt("lbl-leg-n", "legN");
-    setTxt("lbl-leg-dov", "legDov");
-    setTxt("lbl-leg-nv", "legNv");
-    setTxt("lbl-leg-pn", "legPn");
-    setTxt("lbl-leg-a", "legA");
     setTxt("lbl-depots-title", "depotsTitle");
     setTxt("lbl-depots-sub", "depotsSub");
     setTxt("lbl-btn-add-depot", "btnAddDepot");
-    setTxt("lbl-times-title", "timesTitle");
-    setTxt("lbl-time-d", "timeD");
-    setTxt("lbl-time-n", "timeN");
-    setTxt("lbl-time-ag", "timeAg");
     setTxt("lbl-users-title", "usersTitle");
     setTxt("lbl-users-sub", "usersSub");
     setTxt("lbl-btn-add-user", "btnAddUser");
@@ -941,29 +876,51 @@
     applyTheme(cur === "dark" ? "light" : "dark");
   }
 
-  // Default Depots
+  // Default Depots with independent shift toggles & times
   const DEFAULT_DEPOTS = [
-    { id: "depo_plzen", name: "Depo Plzeň" },
-    { id: "depo_teplice", name: "Depo Teplice" }
+    {
+      id: "depo_plzen",
+      name: "Depo Plzeň",
+      hasDay: true,
+      dayStart: "03:00",
+      dayEnd: "15:00",
+      hasNight: true,
+      nightStart: "18:30",
+      nightEnd: "06:30",
+      agStart: "19:00",
+      agEnd: "07:00"
+    },
+    {
+      id: "depo_teplice",
+      name: "Depo Teplice",
+      hasDay: true,
+      dayStart: "03:00",
+      dayEnd: "15:00",
+      hasNight: true,
+      nightStart: "21:00",
+      nightEnd: "09:00",
+      agStart: "21:00",
+      agEnd: "09:00"
+    }
   ];
 
-  // Default Users
+  // Default Users with sequential createdAt dates
   const DEFAULT_USERS = [
-    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null },
-    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null },
-    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null },
-    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null },
-    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null },
-    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null },
-    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null },
-    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null }
+    { id: "u_admin", name: "Peter Pribilinec", role: "admin", roleLabel: "Admin", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
+    { id: "u_roy", name: "Roy (Koordinátor)", role: "coordinator", roleLabel: "Koordinátor AG", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
+    { id: "u_vojtech", name: "Vojtěch Navrátil", role: "foreman", roleLabel: "Předák", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-02" },
+    { id: "u_marek", name: "Marek Švejda", role: "foreman", roleLabel: "Předák", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-03" },
+    { id: "u_ladislav", name: "Ladislav Hubler", role: "foreman", roleLabel: "Předák", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-04" },
+    { id: "u_tomas", name: "Tomáš Butkovsky", role: "specialist", roleLabel: "Specialista", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-05" },
+    { id: "u_daniela", name: "Daniela Lodlová", role: "specialist", roleLabel: "Specialista", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-06" },
+    { id: "u_daniel", name: "Daniel Doležal", role: "warehouse", roleLabel: "Skladník", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-07" },
+    { id: "u_adam", name: "Adam Doležal", role: "warehouse", roleLabel: "Skladník", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-08" },
+    { id: "u_jan", name: "Jan Markovič", role: "warehouse", roleLabel: "Skladník", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-09" },
+    { id: "u_josef", name: "Josef Karnold", role: "warehouse", roleLabel: "Skladník", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-10" },
+    { id: "u_hossen", name: "Hossen Mohammad Arafat", role: "warehouse", roleLabel: "Skladník", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-11" },
+    { id: "u_hossain", name: "Hossain Mohammad Jabed", role: "warehouse", roleLabel: "Skladník", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-12" },
+    { id: "u_rahman", name: "Rahman Md Faisal", role: "warehouse", roleLabel: "Skladník", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-13" },
+    { id: "u_islam", name: "Islam Kazi Raihanul", role: "warehouse", roleLabel: "Skladník", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-14" }
   ];
 
   // Global App State
@@ -979,6 +936,7 @@
     agSlots: [],
     requests: [],
     chats: {},
+    depotUserOrder: {},
     auditLog: []
   };
 
@@ -996,24 +954,48 @@
   let empReqType = "DOV";
   let empReqDates = [];
   let dragPayload = null;
+  let rowDragUserId = null;
 
-  // ==================== STATE MIGRATION & HELPERS ====================
+  // ==================== STATE MIGRATION & DEPOT CONFIG HELPERS ====================
   function ensureMultiDepotConsistency() {
     if (!Array.isArray(appState.depots) || appState.depots.length === 0) {
       appState.depots = JSON.parse(JSON.stringify(DEFAULT_DEPOTS));
     }
+    const fallbackD = appState.shiftTimes?.D || { start: "03:00", end: "15:00" };
+    const fallbackN = appState.shiftTimes?.N || { start: "18:30", end: "06:30" };
+    const fallbackAG = appState.shiftTimes?.AG || { start: "19:00", end: "07:00" };
+
+    appState.depots.forEach(d => {
+      if (d.hasDay === undefined) d.hasDay = true;
+      if (!d.dayStart) d.dayStart = fallbackD.start;
+      if (!d.dayEnd) d.dayEnd = fallbackD.end;
+      if (d.hasNight === undefined) d.hasNight = true;
+      if (!d.nightStart) d.nightStart = fallbackN.start;
+      if (!d.nightEnd) d.nightEnd = fallbackN.end;
+      if (!d.agStart) d.agStart = fallbackAG.start;
+      if (!d.agEnd) d.agEnd = fallbackAG.end;
+    });
+
     const defaultDepotId = appState.depots[0].id;
     if (!appState.depots.some(d => d.id === activeDepotId)) {
       activeDepotId = defaultDepotId;
     }
 
-    appState.users.forEach(u => {
+    appState.users.forEach((u, i) => {
       if (!Array.isArray(u.depots)) {
         const def = DEFAULT_USERS.find(x => x.id === u.id);
         u.depots = def ? [...def.depots] : [defaultDepotId];
       }
       if (u.terminatedFrom === undefined) u.terminatedFrom = null;
+      if (!u.createdAt) {
+        const def = DEFAULT_USERS.find(x => x.id === u.id);
+        u.createdAt = def ? def.createdAt : `2026-09-${String(Math.min(28, i + 1)).padStart(2, "0")}`;
+      }
     });
+
+    if (!appState.depotUserOrder || typeof appState.depotUserOrder !== "object") {
+      appState.depotUserOrder = {};
+    }
 
     Object.keys(appState.schedules || {}).forEach(mKey => {
       const mObj = appState.schedules[mKey];
@@ -1033,6 +1015,10 @@
     appState.agSlots.forEach(s => {
       if (!s.depotId) s.depotId = defaultDepotId;
     });
+  }
+
+  function getDepotById(depotId = activeDepotId) {
+    return appState.depots.find(x => x.id === depotId) || appState.depots[0];
   }
 
   function getDepotName(depotId) {
@@ -1080,6 +1066,7 @@
     if (Array.isArray(remote.agSlots)) appState.agSlots = remote.agSlots;
     if (Array.isArray(remote.requests)) appState.requests = remote.requests;
     if (remote.chats) appState.chats = remote.chats;
+    if (remote.depotUserOrder) appState.depotUserOrder = remote.depotUserOrder;
     if (Array.isArray(remote.auditLog)) appState.auditLog = remote.auditLog;
     ensureMultiDepotConsistency();
   }
@@ -1165,11 +1152,12 @@
     return Math.round((mins / 60) * 10) / 10;
   }
 
-  function getShiftHours(entry) {
+  function getShiftHours(entry, depotId = activeDepotId) {
     if (!entry || !entry.type) return 0;
     if (entry.start && entry.end) return calcDurationHours(entry.start, entry.end);
-    if (entry.type === "D") return calcDurationHours(appState.shiftTimes.D.start, appState.shiftTimes.D.end);
-    if (entry.type === "N") return calcDurationHours(appState.shiftTimes.N.start, appState.shiftTimes.N.end);
+    const dep = getDepotById(entry.depotId || depotId);
+    if (entry.type === "D") return calcDurationHours(dep.dayStart, dep.dayEnd);
+    if (entry.type === "N") return calcDurationHours(dep.nightStart, dep.nightEnd);
     if (["DOV", "NV", "PN"].includes(entry.type)) return 12;
     return 0;
   }
@@ -1359,6 +1347,135 @@
     renderActiveRoleView();
   }
 
+  // ==================== SMART SORTING & ROW REORDERING ====================
+  function getUserShiftClusterRank(userId, mKey, depotId) {
+    const uSched = appState.schedules[mKey]?.[depotId]?.[userId] || {};
+    let dCount = 0;
+    let nCount = 0;
+    Object.values(uSched).forEach(entry => {
+      if (entry?.type === "D") dCount++;
+      else if (entry?.type === "N") nCount++;
+    });
+    if (dCount === 0 && nCount === 0) return 3; // Bez směn
+    if (dCount >= nCount) return 1; // Denní směna (D)
+    return 2; // Noční směna (N)
+  }
+
+  function getUserRoleRank(role) {
+    const r = (role || "").toLowerCase();
+    if (r === "foreman" || r.includes("předák")) return 1;
+    if (r === "specialist" || r.includes("specialista")) return 2;
+    if (r === "warehouse" || r.includes("skladník")) return 3;
+    return 4;
+  }
+
+  function compareUsersByRules(a, b, mKey, depotId) {
+    // 1. Shlukování podle směn (D -> N -> Bez směn)
+    const shiftDiff = getUserShiftClusterRank(a.id, mKey, depotId) - getUserShiftClusterRank(b.id, mKey, depotId);
+    if (shiftDiff !== 0) return shiftDiff;
+
+    // 2. Pořadí dle pozice (Předák -> Specialista -> Skladník)
+    const roleDiff = getUserRoleRank(a.role) - getUserRoleRank(b.role);
+    if (roleDiff !== 0) return roleDiff;
+
+    // 3. Datum přidání uživatele (od nejstaršího)
+    const dateA = a.createdAt || "9999-12-31";
+    const dateB = b.createdAt || "9999-12-31";
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+    // 4. Abecední pořadí
+    return (a.name || "").localeCompare(b.name || "", "cs");
+  }
+
+  function getVisibleRosterUsers() {
+    const mKey = getMonthKey();
+    const list = appState.users.filter(u =>
+      u.isScheduleable !== false &&
+      u.role !== "admin" &&
+      u.role !== "coordinator" &&
+      Array.isArray(u.depots) && u.depots.includes(activeDepotId) &&
+      (showTerminatedWorkers || !u.terminatedFrom)
+    );
+
+    const customOrder = appState.depotUserOrder?.[activeDepotId];
+    if (Array.isArray(customOrder) && customOrder.length > 0) {
+      return list.sort((a, b) => {
+        const idxA = customOrder.indexOf(a.id);
+        const idxB = customOrder.indexOf(b.id);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return compareUsersByRules(a, b, mKey, activeDepotId);
+      });
+    }
+
+    return list.sort((a, b) => compareUsersByRules(a, b, mKey, activeDepotId));
+  }
+
+  function applySmartSortToActiveDepot() {
+    const mKey = getMonthKey();
+    const list = appState.users.filter(u =>
+      u.isScheduleable !== false &&
+      u.role !== "admin" &&
+      u.role !== "coordinator" &&
+      Array.isArray(u.depots) && u.depots.includes(activeDepotId)
+    );
+    list.sort((a, b) => compareUsersByRules(a, b, mKey, activeDepotId));
+    if (!appState.depotUserOrder) appState.depotUserOrder = {};
+    appState.depotUserOrder[activeDepotId] = list.map(u => u.id);
+    addAudit("Seřazení zaměstnanců", `[${getDepotName(activeDepotId)}] Seřazeno dle směn, pozice, data přidání a abecedy.`);
+    renderAdminSchedule();
+    pushToFirebase();
+    showToast("Zaměstnanci byli seřazeni podle směn, pozice, data přidání a abecedy.", "success");
+  }
+
+  // Row Drag & Drop handlers
+  function onRowDragStart(e, userId) {
+    rowDragUserId = userId;
+    dragPayload = null;
+    e.dataTransfer.effectAllowed = "move";
+  }
+
+  function onRowDragOver(e) {
+    if (!rowDragUserId) return;
+    e.preventDefault();
+    e.currentTarget.classList.add("row-drag-over");
+  }
+
+  function onRowDragLeave(e) {
+    e.currentTarget.classList.remove("row-drag-over");
+  }
+
+  function onRowDrop(e, targetUserId) {
+    e.currentTarget.classList.remove("row-drag-over");
+    if (!rowDragUserId || rowDragUserId === targetUserId) {
+      rowDragUserId = null;
+      return;
+    }
+    e.preventDefault();
+
+    const currentVisible = getVisibleRosterUsers();
+    const ids = currentVisible.map(u => u.id);
+    const fromIdx = ids.indexOf(rowDragUserId);
+    const toIdx = ids.indexOf(targetUserId);
+    if (fromIdx === -1 || toIdx === -1) {
+      rowDragUserId = null;
+      return;
+    }
+
+    ids.splice(fromIdx, 1);
+    ids.splice(toIdx, 0, rowDragUserId);
+
+    if (!appState.depotUserOrder) appState.depotUserOrder = {};
+    appState.depotUserOrder[activeDepotId] = ids;
+
+    const movedUser = appState.users.find(u => u.id === rowDragUserId);
+    addAudit("Změna pořadí zaměstnanců", `[${getDepotName(activeDepotId)}] Přesunut řádek: ${movedUser?.name}`);
+    rowDragUserId = null;
+    renderAdminSchedule();
+    pushToFirebase();
+  }
+
   // ==================== ADMIN: SCHEDULE MATRIX & MULTI-DEPOT ====================
   function selectAdminDepot(depotId) {
     activeDepotId = depotId;
@@ -1368,16 +1485,6 @@
   function toggleShowTerminated(checked) {
     showTerminatedWorkers = checked;
     renderAdminSchedule();
-  }
-
-  function getVisibleRosterUsers() {
-    return appState.users.filter(u =>
-      u.isScheduleable !== false &&
-      u.role !== "admin" &&
-      u.role !== "coordinator" &&
-      Array.isArray(u.depots) && u.depots.includes(activeDepotId) &&
-      (showTerminatedWorkers || !u.terminatedFrom)
-    );
   }
 
   function getShiftBadgeHtml(entry, otherDepotConflictName = null, isTerminatedDay = false) {
@@ -1409,26 +1516,43 @@
     const days = getDaysInMonth();
     const y = currentDate.getFullYear();
     const m = currentDate.getMonth();
+    const depot = getDepotById(activeDepotId);
 
     document.getElementById("chk-show-terminated").checked = showTerminatedWorkers;
 
     const pillsBox = document.getElementById("admin-depot-pills");
     pillsBox.innerHTML = appState.depots.map(d => {
       const isAct = d.id === activeDepotId;
+      const badge = d.hasDay && d.hasNight ? "D+N" : (d.hasDay ? "D" : "N");
       return `<button onclick="selectAdminDepot('${d.id}')"
-        class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
-        ${d.name}
+        class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
+        <span>${d.name}</span>
+        <span class="text-[9px] px-1.5 py-0.2 rounded ${isAct ? "bg-blue-800 text-blue-100" : "bg-slate-700 text-slate-300"}">${badge}</span>
       </button>`;
     }).join("");
 
-    document.getElementById("auto-depot-name").textContent = getDepotName(activeDepotId);
+    document.getElementById("auto-depot-name").textContent = depot.name;
     const locale = currentLang === "en" ? "en-US" : "cs-CZ";
     document.getElementById("admin-month-label").textContent = currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
-    document.getElementById("lbl-d-time").textContent = `${appState.shiftTimes.D.start}–${appState.shiftTimes.D.end}`;
-    document.getElementById("lbl-n-time").textContent = `${appState.shiftTimes.N.start}–${appState.shiftTimes.N.end}`;
+
+    // Dynamic Legend based on depot shift configuration
+    let legendHtml = "";
+    if (depot.hasDay) {
+      legendHtml += `<span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Day" : "Denní"} (${depot.dayStart}–${depot.dayEnd})</span>`;
+    }
+    if (depot.hasNight) {
+      legendHtml += `<span class="px-2 py-0.5 rounded bg-blue-600 text-white font-extrabold">N</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Night" : "Noční"} (${depot.nightStart}–${depot.nightEnd})</span>`;
+    }
+    legendHtml += `
+      <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold">DOV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Vacation" : "Dovolená"}</span>
+      <span class="px-2 py-0.5 rounded bg-teal-500 text-slate-950 font-extrabold">NV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Comp. Leave" : "Náhradní volno"}</span>
+      <span class="px-2 py-0.5 rounded bg-red-500 text-white font-extrabold">PN</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Sick" : "Nemoc / Lékař"}</span>
+      <span class="px-2 py-0.5 rounded bg-purple-600 text-white font-extrabold">A</span> <span class="text-slate-300">${currentLang === "en" ? "Absence" : "Absence"}</span>
+    `;
+    document.getElementById("admin-legend-items").innerHTML = legendHtml;
 
     const dayNames = currentLang === "en" ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
-    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[185px] text-slate-300">${getDepotName(activeDepotId)}</th>`;
+    let headHtml = `<tr><th class="sticky-corner py-2.5 px-3 text-left min-w-[205px] text-slate-300">${depot.name}</th>`;
     for (let d = 1; d <= days; d++) {
       const dow = new Date(y, m, d).getDay();
       const isWknd = dow === 0 || dow === 6;
@@ -1449,7 +1573,7 @@
 
     if (scheduleableUsers.length === 0) {
       bodyHtml += `<tr><td colspan="${days + 2}" class="py-6 px-4 text-center text-xs text-slate-400">
-        ${currentLang === "en" ? "No active employees assigned to this depot." : `K depu <strong>${getDepotName(activeDepotId)}</strong> nejsou přiřazeni žádní aktivní zaměstnanci.`}
+        ${currentLang === "en" ? "No active employees assigned to this depot." : `K depu <strong>${depot.name}</strong> nejsou přiřazeni žádní aktivní zaměstnanci.`}
       </td></tr>`;
     }
 
@@ -1457,13 +1581,27 @@
       const uSched = depotSched[user.id] || {};
       let shiftCount = 0;
       let totalHours = 0;
+      const clusterRank = getUserShiftClusterRank(user.id, mKey, activeDepotId);
+      const shiftClusterDot = clusterRank === 1
+        ? `<span class="w-2 h-2 rounded-full bg-amber-400 inline-block mr-1" title="Denní skupina"></span>`
+        : (clusterRank === 2 ? `<span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1" title="Noční skupina"></span>` : "");
       const multiDepotTag = user.depots.length > 1 ? `<span class="ml-1 px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 text-[9px]">${user.depots.length} depa</span>` : "";
       const termTag = user.terminatedFrom ? `<span class="ml-1 px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 text-[9px]">Ukončen od ${user.terminatedFrom}</span>` : "";
 
-      bodyHtml += `<tr class="hover:bg-slate-800/40 ${user.terminatedFrom ? "opacity-75" : ""}">
-        <td class="sticky-col py-2 px-3">
-          <div class="font-bold text-white text-xs truncate max-w-[175px]">${user.name}${multiDepotTag}</div>
-          <div class="text-[10px] text-slate-400">${user.roleLabel || user.role}${termTag}</div>
+      bodyHtml += `<tr class="hover:bg-slate-800/40 ${user.terminatedFrom ? "opacity-75" : ""}"
+        ondragover="onRowDragOver(event)"
+        ondragleave="onRowDragLeave(event)"
+        ondrop="onRowDrop(event, '${user.id}')">
+        <td class="sticky-col py-2 px-2.5 cursor-grab active:cursor-grabbing"
+          draggable="true"
+          ondragstart="onRowDragStart(event, '${user.id}')">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-grip-vertical text-slate-500 text-xs"></i>
+            <div class="min-w-0">
+              <div class="font-bold text-white text-xs truncate max-w-[165px]">${shiftClusterDot}${user.name}${multiDepotTag}</div>
+              <div class="text-[10px] text-slate-400">${user.roleLabel || user.role}${termTag}</div>
+            </div>
+          </div>
         </td>`;
 
       for (let d = 1; d <= days; d++) {
@@ -1488,7 +1626,7 @@
         if (entry && entry.type) {
           if (entry.type === "D") { dailyDCounts[d]++; shiftCount++; }
           if (entry.type === "N") { dailyNCounts[d]++; shiftCount++; }
-          totalHours += getShiftHours(entry);
+          totalHours += getShiftHours(entry, activeDepotId);
         }
 
         bodyHtml += `<td
@@ -1511,7 +1649,7 @@
     const monthAgSlots = appState.agSlots.filter(s => s.date.startsWith(mKey) && s.depotId === activeDepotId);
     if (monthAgSlots.length > 0) {
       bodyHtml += `<tr><td colspan="${days + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1.5 px-3 text-[11px] font-extrabold text-purple-400 uppercase tracking-wider">
-        <i class="fa-solid fa-people-arrows mr-1.5"></i> AG – ${getDepotName(activeDepotId)} (${monthAgSlots.length})
+        <i class="fa-solid fa-people-arrows mr-1.5"></i> AG – ${depot.name} (${monthAgSlots.length})
       </td></tr>`;
 
       monthAgSlots.forEach(slot => {
@@ -1521,7 +1659,7 @@
 
         bodyHtml += `<tr class="bg-purple-950/10 hover:bg-purple-950/20">
           <td class="sticky-col py-2 px-3">
-            <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-xs truncate max-w-[165px]">${displayName}</div>
+            <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-xs truncate max-w-[175px]">${displayName}</div>
             <div class="text-[10px] text-purple-400">AG • ${slot.start}–${slot.end}</div>
           </td>`;
 
@@ -1543,15 +1681,15 @@
 
     document.getElementById("admin-matrix-body").innerHTML = bodyHtml;
 
-    let footHtml = `<tr><td class="sticky-col py-2 px-3 text-[11px] text-slate-300">D / N</td>`;
+    let footHtml = `<tr><td class="sticky-col py-2 px-3 text-[11px] text-slate-300">Obsazení</td>`;
     for (let d = 1; d <= days; d++) {
       const dOk = dailyDCounts[d] >= 3;
       footHtml += `<td class="py-1.5 px-1 text-center border-l border-slate-800 text-[10px]">
-        <div class="${dOk ? "text-amber-500" : "text-red-500"}">D:${dailyDCounts[d]}</div>
-        <div class="text-blue-500">N:${dailyNCounts[d]}</div>
+        ${depot.hasDay ? `<div class="${dOk ? "text-amber-500" : "text-red-500"}">D:${dailyDCounts[d]}</div>` : ""}
+        ${depot.hasNight ? `<div class="text-blue-500">N:${dailyNCounts[d]}</div>` : ""}
       </td>`;
     }
-    footHtml += `<td class="py-2 px-2 text-center border-l border-slate-700 text-[10px] text-slate-400">D: 3</td></tr>`;
+    footHtml += `<td class="py-2 px-2 text-center border-l border-slate-700 text-[10px] text-slate-400">${depot.hasDay && depot.hasNight ? "D+N" : (depot.hasDay ? "Jen D" : "Jen N")}</td></tr>`;
     document.getElementById("admin-matrix-foot").innerHTML = footHtml;
   }
 
@@ -1592,11 +1730,9 @@
     canvas.height = pad * 2 + headerH + Math.max(1, rows.length) * rowH + 24;
     const ctx = canvas.getContext("2d");
 
-    // Background
     ctx.fillStyle = "#0f172a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Title
     const monthLabel = currentDate.toLocaleDateString(currentLang === "en" ? "en-US" : "cs-CZ", { month: "long", year: "numeric" }).toUpperCase();
     ctx.fillStyle = "#f8fafc";
     ctx.font = "bold 16px sans-serif";
@@ -1605,7 +1741,6 @@
     const tableTop = pad + 34;
     const dayNames = currentLang === "en" ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
 
-    // Header row
     ctx.fillStyle = "#1e293b";
     ctx.fillRect(pad, tableTop, canvas.width - pad * 2, 34);
     ctx.strokeStyle = "#334155";
@@ -1671,7 +1806,7 @@
         const entry = r.map[d];
         if (entry && entry.type) {
           if (entry.type === "D" || entry.type === "N") cnt++;
-          hrs += getShiftHours(entry);
+          hrs += getShiftHours(entry, activeDepotId);
           const col = badgeColors[entry.type] || { bg: "#475569", fg: "#ffffff" };
           ctx.fillStyle = col.bg;
           ctx.fillRect(cx + 3, ry + 4, dayColW - 6, rowH - 8);
@@ -1718,7 +1853,7 @@
         const e = uMap[d];
         row.push(e && e.type ? e.type : "");
         if (e && (e.type === "D" || e.type === "N")) cnt++;
-        hrs += getShiftHours(e);
+        hrs += getShiftHours(e, activeDepotId);
       }
       row.push(cnt, hrs);
       aoa.push(row);
@@ -1760,7 +1895,6 @@
     const u = draftUsers[terminatingUserIdx];
     u.terminatedFrom = dateVal;
 
-    // Cancel all scheduled shifts from dateVal onward across all months and depots
     Object.keys(appState.schedules || {}).forEach(mKey => {
       const [yStr, mStr] = mKey.split("-");
       const yNum = parseInt(yStr, 10);
@@ -1812,6 +1946,7 @@
     appState.agSlots = [];
     appState.requests = [];
     appState.chats = {};
+    appState.depotUserOrder = {};
     appState.auditLog = [];
     addAudit("Vymazání databáze", "Administrátor vymazal veškerá zapsaná data z databáze.");
 
@@ -1821,7 +1956,7 @@
     showToast("Databáze byla kompletně vymazána.", "success");
   }
 
-  // ==================== REST RULE, DRAG & DROP, CELL MODALS ====================
+  // ==================== REST RULE, CELL DRAG & DROP, CELL MODALS ====================
   function getUserShiftAcrossDepots(mKey, userId, day) {
     for (const dep of appState.depots) {
       const e = appState.schedules[mKey]?.[dep.id]?.[userId]?.[day];
@@ -1842,10 +1977,13 @@
   }
 
   function onShiftDragStart(e, userId, fromDay) {
+    e.stopPropagation();
+    rowDragUserId = null;
     dragPayload = { userId, fromDay };
     e.dataTransfer.effectAllowed = "move";
   }
   function onShiftDragOver(e) {
+    if (!dragPayload) return;
     e.preventDefault();
     e.currentTarget.classList.add("drag-over");
   }
@@ -1853,9 +1991,9 @@
     e.currentTarget.classList.remove("drag-over");
   }
   function onShiftDrop(e, targetUserId, targetDay) {
-    e.preventDefault();
     e.currentTarget.classList.remove("drag-over");
     if (!dragPayload) return;
+    e.stopPropagation();
 
     if (dragPayload.userId !== targetUserId) {
       showToast("Přesun směny je povolen pouze v rámci stejného zaměstnance.", "error");
@@ -1892,27 +2030,37 @@
   function openUserCellModal(userId, day) {
     const user = appState.users.find(u => u.id === userId);
     const mKey = getMonthKey();
+    const depot = getDepotById(activeDepotId);
     const entry = getDepotScheduleMap(mKey, activeDepotId)[userId]?.[day] || {};
     editingCell = { kind: "user", userId, day };
 
     document.getElementById("cell-modal-title").textContent = `${user.name} – ${day}. ${currentDate.getMonth() + 1}. ${currentDate.getFullYear()}`;
-    document.getElementById("cell-modal-sub").textContent = `Depo: ${getDepotName(activeDepotId)} • ${user.roleLabel || user.role}`;
+    document.getElementById("cell-modal-sub").textContent = `Depo: ${depot.name} • ${user.roleLabel || user.role}`;
     document.getElementById("btn-delete-ag-slot").classList.add("hidden");
-    document.getElementById("cell-time-start").value = entry.start || (entry.type === "N" ? appState.shiftTimes.N.start : appState.shiftTimes.D.start);
-    document.getElementById("cell-time-end").value = entry.end || (entry.type === "N" ? appState.shiftTimes.N.end : appState.shiftTimes.D.end);
+
+    const btnD = document.getElementById("btn-cell-shift-D");
+    const btnN = document.getElementById("btn-cell-shift-N");
+    btnD.classList.toggle("hidden", !depot.hasDay);
+    btnN.classList.toggle("hidden", !depot.hasNight);
+
+    document.getElementById("cell-time-start").value = entry.start || (entry.type === "N" ? depot.nightStart : depot.dayStart);
+    document.getElementById("cell-time-end").value = entry.end || (entry.type === "N" ? depot.nightEnd : depot.dayEnd);
     openModal("modal-cell-edit");
   }
 
   function openAgCellModal(slotId) {
     const slot = appState.agSlots.find(s => s.id === slotId);
     if (!slot) return;
+    const depot = getDepotById(slot.depotId);
     editingCell = { kind: "ag", slotId };
 
     document.getElementById("cell-modal-title").textContent = `${slot.assignedName || slot.label} (${slot.date})`;
-    document.getElementById("cell-modal-sub").textContent = `Depo: ${getDepotName(slot.depotId)} • AG`;
+    document.getElementById("cell-modal-sub").textContent = `Depo: ${depot.name} • AG`;
     document.getElementById("btn-delete-ag-slot").classList.remove("hidden");
-    document.getElementById("cell-time-start").value = slot.start || "19:00";
-    document.getElementById("cell-time-end").value = slot.end || "07:00";
+    document.getElementById("btn-cell-shift-D").classList.toggle("hidden", !depot.hasDay);
+    document.getElementById("btn-cell-shift-N").classList.toggle("hidden", !depot.hasNight);
+    document.getElementById("cell-time-start").value = slot.start || depot.agStart;
+    document.getElementById("cell-time-end").value = slot.end || depot.agEnd;
     openModal("modal-cell-edit");
   }
 
@@ -1938,7 +2086,7 @@
         depotSched[userId][day] = { type: newType };
       }
       const emp = appState.users.find(u => u.id === userId);
-      addAudit("Úprava směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${day}.${currentDate.getMonth()+1}.): "${newType || "Volno"}"`);
+      addAudit("Úprava směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${day}.${currentDate.getMonth()+1}.): nastaveno "${newType || "Volno"}"`);
     } else if (editingCell.kind === "ag") {
       const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
       if (slot) {
@@ -1999,12 +2147,18 @@
     pushToFirebase();
   }
 
-  // Auto-scheduler for active core employees assigned to activeDepotId (respects terminatedFrom)
+  // Auto-scheduler respecting depot's enabled shifts (hasDay / hasNight)
   function runAutoSchedule() {
     const mKey = getMonthKey();
     const days = getDaysInMonth();
     const y = currentDate.getFullYear();
     const m = currentDate.getMonth();
+    const depot = getDepotById(activeDepotId);
+
+    if (!depot.hasDay && !depot.hasNight) {
+      showToast("Toto depo nemá povolenou ani denní ani noční směnu!", "error");
+      return;
+    }
 
     const depotSched = getDepotScheduleMap(mKey, activeDepotId);
 
@@ -2030,13 +2184,19 @@
       return !getUserShiftAcrossDepots(mKey, u.id, d);
     };
 
+    const resolveAllowedShift = (preferred) => {
+      if (preferred === "D" && depot.hasDay) return "D";
+      if (preferred === "N" && depot.hasNight) return "N";
+      return depot.hasDay ? "D" : "N";
+    };
+
     const foremen = coreUsers.filter(u => u.role === "foreman");
     foremen.forEach((u, idx) => {
       const useA = idx % 2 === 0;
       for (let d = 1; d <= days; d++) {
         const work = useA ? isPatternA(d) : !isPatternA(d);
         if (work && canWorkDay(u, d)) {
-          depotSched[u.id][d] = { type: "N" };
+          depotSched[u.id][d] = { type: resolveAllowedShift("N") };
         }
       }
     });
@@ -2054,8 +2214,8 @@
         members.forEach(member => {
           if (!canWorkDay(member, d)) return;
           const prev = getUserShiftAcrossDepots(mKey, member.id, d - 1)?.type;
-          let type = preferDay ? "D" : "N";
-          if (type === "D" && prev === "N") type = "N";
+          let type = resolveAllowedShift(preferDay ? "D" : "N");
+          if (type === "D" && prev === "N" && depot.hasNight) type = "N";
           depotSched[member.id][d] = { type };
         });
       }
@@ -2069,26 +2229,28 @@
       assignUnit([u], idx % 2 === 0, true);
     });
 
-    for (let d = 1; d <= days; d++) {
-      let dCount = coreUsers.filter(u => depotSched[u.id]?.[d]?.type === "D").length;
-      if (dCount < 3) {
-        for (const u of singles) {
-          if (dCount >= 3) break;
-          if (!canWorkDay(u, d)) continue;
-          const prev = getUserShiftAcrossDepots(mKey, u.id, d - 1)?.type;
-          const next = getUserShiftAcrossDepots(mKey, u.id, d + 1)?.type;
-          if (prev !== "N" && next !== "D") {
-            depotSched[u.id][d] = { type: "D" };
-            dCount++;
+    if (depot.hasDay) {
+      for (let d = 1; d <= days; d++) {
+        let dCount = coreUsers.filter(u => depotSched[u.id]?.[d]?.type === "D").length;
+        if (dCount < 3) {
+          for (const u of singles) {
+            if (dCount >= 3) break;
+            if (!canWorkDay(u, d)) continue;
+            const prev = getUserShiftAcrossDepots(mKey, u.id, d - 1)?.type;
+            const next = getUserShiftAcrossDepots(mKey, u.id, d + 1)?.type;
+            if (prev !== "N" && next !== "D") {
+              depotSched[u.id][d] = { type: "D" };
+              dCount++;
+            }
           }
         }
       }
     }
 
-    addAudit("Autoplánování", `[${getDepotName(activeDepotId)}] Vygenerován rozpis pro kmenové zaměstnance (${mKey}).`);
+    addAudit("Autoplánování", `[${depot.name}] Vygenerován rozpis pro kmenové zaměstnance (${mKey}).`);
     renderAdminSchedule();
     pushToFirebase();
-    showToast(`Rozpis pro ${getDepotName(activeDepotId)} byl vygenerován.`, "success");
+    showToast(`Rozpis pro ${depot.name} byl vygenerován.`, "success");
   }
 
   function clearCurrentMonth() {
@@ -2104,12 +2266,23 @@
   function openAgRequestModal() {
     const sel = document.getElementById("ag-req-depot");
     sel.innerHTML = appState.depots.map(d => `<option value="${d.id}" ${d.id === activeDepotId ? "selected" : ""}>${d.name}</option>`).join("");
-
     const defaultDate = formatDateStr(currentDate.getFullYear(), currentDate.getMonth(), 1);
     document.getElementById("ag-req-date").value = defaultDate;
-    document.getElementById("ag-req-start").value = appState.shiftTimes.AG.start;
-    document.getElementById("ag-req-end").value = appState.shiftTimes.AG.end;
+    onAgModalDepotChange();
     openModal("modal-ag-request");
+  }
+
+  function onAgModalDepotChange() {
+    const depotId = document.getElementById("ag-req-depot").value || activeDepotId;
+    const depot = getDepotById(depotId);
+    const shiftSel = document.getElementById("ag-req-shift");
+    let opts = "";
+    if (depot.hasNight) opts += `<option value="N">Noční směna (N)</option>`;
+    if (depot.hasDay) opts += `<option value="D">Denní směna (D)</option>`;
+    if (!opts) opts = `<option value="N">Noční směna (N)</option>`;
+    shiftSel.innerHTML = opts;
+    document.getElementById("ag-req-start").value = depot.agStart || "19:00";
+    document.getElementById("ag-req-end").value = depot.agEnd || "07:00";
   }
 
   function createAgRequests() {
@@ -2270,16 +2443,27 @@
     `;
   }
 
-  // ==================== ADMIN: DEPOTS, USERS DRAFT & SHIFT TIMES ====================
+  // ==================== ADMIN: DEPOTS CONFIG & USERS DRAFT ====================
   function createNewDepot() {
     const inp = document.getElementById("new-depot-name");
     const name = inp.value.trim();
     if (!name) return;
     const newId = "depo_" + Date.now();
-    appState.depots.push({ id: newId, name });
+    appState.depots.push({
+      id: newId,
+      name,
+      hasDay: true,
+      dayStart: "03:00",
+      dayEnd: "15:00",
+      hasNight: true,
+      nightStart: "18:30",
+      nightEnd: "06:30",
+      agStart: "19:00",
+      agEnd: "07:00"
+    });
     inp.value = "";
     addAudit("Nové depo", `Vytvořeno depo: ${name}`);
-    renderDepotsListBox();
+    renderDepotsConfigGrid();
     renderDraftUsersTable();
     pushToFirebase();
     showToast(`Depo "${name}" bylo vytvořeno.`, "success");
@@ -2296,35 +2480,91 @@
     appState.users.forEach(u => { u.depots = (u.depots || []).filter(id => id !== depotId); });
     if (activeDepotId === depotId) activeDepotId = appState.depots[0].id;
     addAudit("Smazání depa", `Odstraněno depo: ${target?.name}`);
-    renderDepotsListBox();
+    renderDepotsConfigGrid();
     renderDraftUsersTable();
     pushToFirebase();
   }
 
-  function renderDepotsListBox() {
-    const box = document.getElementById("depots-list-box");
-    box.innerHTML = appState.depots.map((d, idx) => `
-      <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-white">
-        <i class="fa-solid fa-warehouse text-blue-500"></i>
-        <span>${d.name}</span>
-        ${idx === 0 ? `<span class="text-[10px] text-slate-400">(výchozí)</span>` : `
-          <button type="button" onclick="deleteDepot('${d.id}')" class="ml-1 text-red-400 hover:text-red-300">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        `}
+  function updateDepotField(idx, field, value) {
+    if (!appState.depots[idx]) return;
+    appState.depots[idx][field] = value;
+  }
+
+  function saveDepotsConfig() {
+    // Ensure at least one shift type per depot
+    appState.depots.forEach(d => {
+      if (!d.hasDay && !d.hasNight) d.hasDay = true;
+    });
+    addAudit("Nastavení dep", "Uloženo nastavení směn a časových rozsahů pro jednotlivá depa.");
+    renderDepotsConfigGrid();
+    renderDraftUsersTable();
+    pushToFirebase();
+    showToast("Nastavení dep a jejich směn bylo uloženo!", "success");
+  }
+
+  function renderDepotsConfigGrid() {
+    const grid = document.getElementById("depots-config-grid");
+    grid.innerHTML = appState.depots.map((d, idx) => `
+      <div class="p-4 rounded-2xl bg-slate-800/70 border border-slate-700 space-y-3">
+        <div class="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
+          <div class="flex items-center gap-2 flex-1">
+            <i class="fa-solid fa-warehouse text-blue-500"></i>
+            <input type="text" value="${d.name}" onchange="updateDepotField(${idx}, 'name', this.value.trim() || '${d.name}')"
+              class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-extrabold text-white w-full max-w-[220px]" />
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="saveDepotsConfig()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold">
+              Uložit depo
+            </button>
+            ${idx === 0 ? "" : `
+              <button type="button" onclick="deleteDepot('${d.id}')" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400" title="Smazat depo">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            `}
+          </div>
+        </div>
+
+        <!-- Day Shift toggle & times -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <label class="inline-flex items-center gap-2 font-bold text-amber-500 cursor-pointer">
+            <input type="checkbox" ${d.hasDay ? "checked" : ""} onchange="updateDepotField(${idx}, 'hasDay', this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
+            <span>Denní směna (D)</span>
+          </label>
+          <div class="flex items-center gap-1.5">
+            <input type="time" value="${d.dayStart}" onchange="updateDepotField(${idx}, 'dayStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+            <span class="text-slate-400">–</span>
+            <input type="time" value="${d.dayEnd}" onchange="updateDepotField(${idx}, 'dayEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          </div>
+        </div>
+
+        <!-- Night Shift toggle & times -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <label class="inline-flex items-center gap-2 font-bold text-blue-500 cursor-pointer">
+            <input type="checkbox" ${d.hasNight ? "checked" : ""} onchange="updateDepotField(${idx}, 'hasNight', this.checked)" class="w-4 h-4 accent-blue-600 rounded" />
+            <span>Noční směna (N)</span>
+          </label>
+          <div class="flex items-center gap-1.5">
+            <input type="time" value="${d.nightStart}" onchange="updateDepotField(${idx}, 'nightStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+            <span class="text-slate-400">–</span>
+            <input type="time" value="${d.nightEnd}" onchange="updateDepotField(${idx}, 'nightEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          </div>
+        </div>
+
+        <!-- Default Agency time -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1 border-t border-slate-700/60">
+          <span class="font-bold text-purple-400"><i class="fa-solid fa-people-arrows mr-1"></i> Výchozí čas AG</span>
+          <div class="flex items-center gap-1.5">
+            <input type="time" value="${d.agStart}" onchange="updateDepotField(${idx}, 'agStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+            <span class="text-slate-400">–</span>
+            <input type="time" value="${d.agEnd}" onchange="updateDepotField(${idx}, 'agEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          </div>
+        </div>
       </div>
     `).join("");
   }
 
   function renderAdminUsersTab() {
-    renderDepotsListBox();
-    document.getElementById("cfg-d-start").value = appState.shiftTimes.D.start;
-    document.getElementById("cfg-d-end").value = appState.shiftTimes.D.end;
-    document.getElementById("cfg-n-start").value = appState.shiftTimes.N.start;
-    document.getElementById("cfg-n-end").value = appState.shiftTimes.N.end;
-    document.getElementById("cfg-ag-start").value = appState.shiftTimes.AG.start;
-    document.getElementById("cfg-ag-end").value = appState.shiftTimes.AG.end;
-
+    renderDepotsConfigGrid();
     draftUsers = JSON.parse(JSON.stringify(appState.users));
     renderDraftUsersTable();
   }
@@ -2376,7 +2616,7 @@
             <option value="warehouse" ${u.role === "warehouse" ? "selected" : ""}>Skladník</option>
           </select>
         </td>
-        <td class="py-2 px-2 min-w-[170px]">
+        <td class="py-2 px-2 min-w-[160px]">
           <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
         </td>
         <td class="py-2 px-2">
@@ -2386,6 +2626,10 @@
         <td class="py-2 px-2">
           <input type="text" value="${u.pass}" onchange="draftUsers[${idx}].pass = this.value"
             class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
+        </td>
+        <td class="py-2 px-2">
+          <input type="date" value="${u.createdAt || "2026-09-01"}" onchange="draftUsers[${idx}].createdAt = this.value"
+            class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300" />
         </td>
         <td class="py-2 px-2 text-center">
           <input type="checkbox" ${u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" ? "checked" : ""}
@@ -2411,6 +2655,7 @@
 
   function addDraftUser() {
     const n = draftUsers.length + 1;
+    const todayStr = new Date().toISOString().split("T")[0];
     draftUsers.push({
       id: "u_" + Date.now(),
       name: `Nový pracovník ${n}`,
@@ -2421,7 +2666,8 @@
       token: "tok_" + Math.random().toString(36).slice(2, 10),
       isScheduleable: true,
       depots: [activeDepotId],
-      terminatedFrom: null
+      terminatedFrom: null,
+      createdAt: todayStr
     });
     renderDraftUsersTable();
   }
@@ -2432,17 +2678,10 @@
   }
 
   function saveDraftUsers() {
-    appState.shiftTimes.D.start = document.getElementById("cfg-d-start").value || "03:00";
-    appState.shiftTimes.D.end = document.getElementById("cfg-d-end").value || "15:00";
-    appState.shiftTimes.N.start = document.getElementById("cfg-n-start").value || "18:30";
-    appState.shiftTimes.N.end = document.getElementById("cfg-n-end").value || "06:30";
-    appState.shiftTimes.AG.start = document.getElementById("cfg-ag-start").value || "19:00";
-    appState.shiftTimes.AG.end = document.getElementById("cfg-ag-end").value || "07:00";
-
     appState.users = JSON.parse(JSON.stringify(draftUsers));
-    addAudit("Administrace uživatelů a dep", "Uloženy změny v seznamu uživatelů, přiřazených depech a časech směn.");
+    addAudit("Administrace uživatelů a dep", "Uloženy změny v seznamu uživatelů a přiřazených depech.");
     pushToFirebase();
-    showToast("Všechny změny byly uloženy!", "success");
+    showToast("Všechny změny uživatelů a dep byly uloženy!", "success");
   }
 
   // ==================== EMPLOYEE VIEW ====================
@@ -2450,7 +2689,7 @@
     for (const dep of appState.depots) {
       const e = appState.schedules[mKey]?.[dep.id]?.[userId]?.[day];
       if (e && e.type) {
-        return { ...e, depotId: dep.id, depotName: dep.name };
+        return { ...e, depotId: dep.id, depotName: dep.name, depotObj: dep };
       }
     }
     return null;
@@ -2489,7 +2728,7 @@
       if (entry.type === "D") cntD++;
       else if (entry.type === "N") cntN++;
       else cntOff++;
-      totalHours += getShiftHours(entry);
+      totalHours += getShiftHours(entry, entry.depotId);
     }
 
     document.getElementById("emp-stats-grid").innerHTML = `
@@ -2521,17 +2760,18 @@
       calHtml += `<div class="h-24 rounded-xl bg-slate-950/40 border border-slate-800/40"></div>`;
     }
 
-    const typeMeta = {
-      D: { label: "DENNÍ", cls: "bg-amber-400 text-slate-950", time: `${appState.shiftTimes.D.start}–${appState.shiftTimes.D.end}` },
-      N: { label: "NOČNÍ", cls: "bg-blue-600 text-white", time: `${appState.shiftTimes.N.start}–${appState.shiftTimes.N.end}` },
-      DOV: { label: "DOVOLENÁ", cls: "bg-emerald-500 text-slate-950", time: "Celý den" },
-      NV: { label: "NÁHR. VOLNO", cls: "bg-teal-500 text-slate-950", time: "Celý den" },
-      PN: { label: "NEMOC / PN", cls: "bg-red-500 text-white", time: "Celý den" },
-      A: { label: "ABSENCE", cls: "bg-purple-600 text-white", time: "—" }
-    };
-
     for (let d = 1; d <= days; d++) {
       const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
+      const dep = entry?.depotObj || getDepotById(activeDepotId);
+      const typeMeta = {
+        D: { label: "DENNÍ", cls: "bg-amber-400 text-slate-950", time: `${dep.dayStart}–${dep.dayEnd}` },
+        N: { label: "NOČNÍ", cls: "bg-blue-600 text-white", time: `${dep.nightStart}–${dep.nightEnd}` },
+        DOV: { label: "DOVOLENÁ", cls: "bg-emerald-500 text-slate-950", time: "Celý den" },
+        NV: { label: "NÁHR. VOLNO", cls: "bg-teal-500 text-slate-950", time: "Celý den" },
+        PN: { label: "NEMOC / PN", cls: "bg-red-500 text-white", time: "Celý den" },
+        A: { label: "ABSENCE", cls: "bg-purple-600 text-white", time: "—" }
+      };
+
       const meta = entry?.type ? typeMeta[entry.type] : null;
       const customTime = (entry?.start && entry?.end) ? `${entry.start}–${entry.end}` : meta?.time;
       const shortDepot = entry?.depotName ? entry.depotName.replace("Depo ", "") : "";
