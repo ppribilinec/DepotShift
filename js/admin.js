@@ -12,18 +12,21 @@ function clearAdminDraftDirty() {
 
 function switchAdminTab(tabId) {
   activeAdminTab = tabId;
+  if (tabId === "settings" && !settingsSubTab) {
+    settingsSubTab = "depots";
+  }
   buildNavigationForRole();
   renderActiveRoleView();
 }
 
 function setSettingsSubTab(sub) {
-  settingsSubTab = sub;
+  settingsSubTab = sub || "depots";
   const tabs = ["depots", "users", "calendars", "audit"];
   tabs.forEach(key => {
     const btn = document.getElementById("subtab-settings-" + key);
     const panel = document.getElementById("settings-panel-" + key);
     if (!btn || !panel) return;
-    if (key === sub) {
+    if (key === settingsSubTab) {
       btn.className = "px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5";
       panel.classList.remove("hidden");
     } else {
@@ -32,8 +35,8 @@ function setSettingsSubTab(sub) {
     }
   });
 
-  if (sub === "audit") renderAuditTab();
-  else if (sub === "calendars") renderCalendarsManager();
+  if (settingsSubTab === "audit") renderAuditTab();
+  else if (settingsSubTab === "calendars") renderCalendarsManager();
   else renderAdminSettingsMain();
 }
 
@@ -70,6 +73,7 @@ function saveAllAdminChanges() {
 
   const validDepotIds = new Set(appState.depots.map(d => d.id));
   draftUsers.forEach(u => {
+    u.role = normalizeUserRole(u);
     u.depots = (u.depots || []).filter(id => validDepotIds.has(id));
   });
 
@@ -229,6 +233,7 @@ function renderDraftUsersTable() {
   const depotsSource = draftDepots.length ? draftDepots : appState.depots;
 
   tbody.innerHTML = draftUsers.map((u, idx) => {
+    const uRole = normalizeUserRole(u);
     const uDepots = Array.isArray(u.depots) ? u.depots : [];
     const depotCheckboxes = depotsSource.map(d => {
       const isChecked = uDepots.includes(d.id);
@@ -239,7 +244,7 @@ function renderDraftUsersTable() {
     }).join("");
 
     const p = u.perms || {};
-    const permsBox = u.role === "admin"
+    const permsBox = uRole === "admin"
       ? `<span class="text-[10px] font-bold text-emerald-400">Plná práva Admin</span>`
       : `<div class="space-y-0.5 text-[10px] text-slate-300">
           <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" ${p.requestAg ? "checked" : ""} onchange="updateDraftUserPerm(${idx}, 'requestAg', this.checked)" class="accent-purple-500" /><span>Požadavek AG</span></label>
@@ -270,11 +275,11 @@ function renderDraftUsersTable() {
       </td>
       <td class="py-2 px-1.5">
         <select onchange="updateDraftUserRole(${idx}, this.value)" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
-          <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
-          <option value="coordinator" ${u.role === "coordinator" ? "selected" : ""}>Koordinátor</option>
-          <option value="foreman" ${u.role === "foreman" ? "selected" : ""}>Předák</option>
-          <option value="specialist" ${u.role === "specialist" ? "selected" : ""}>Specialista</option>
-          <option value="warehouse" ${u.role === "warehouse" ? "selected" : ""}>Skladník</option>
+          <option value="admin" ${uRole === "admin" ? "selected" : ""}>Admin</option>
+          <option value="coordinator" ${uRole === "coordinator" ? "selected" : ""}>Koordinátor</option>
+          <option value="foreman" ${uRole === "foreman" ? "selected" : ""}>Předák</option>
+          <option value="specialist" ${uRole === "specialist" ? "selected" : ""}>Specialista</option>
+          <option value="warehouse" ${uRole === "warehouse" ? "selected" : ""}>Skladník</option>
         </select>
       </td>
       <td class="py-2 px-1.5">
@@ -295,7 +300,7 @@ function renderDraftUsersTable() {
           class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
       </td>
       <td class="py-2 px-1.5 text-center">
-        <input type="checkbox" ${u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" ? "checked" : ""}
+        <input type="checkbox" ${u.isScheduleable !== false && uRole !== "admin" && uRole !== "coordinator" ? "checked" : ""}
           onchange="updateDraftUserField(${idx}, 'isScheduleable', this.checked)" class="w-4 h-4 accent-blue-600" />
       </td>
       <td class="py-2 px-1.5 text-center">

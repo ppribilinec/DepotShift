@@ -71,8 +71,8 @@ function runAutoSchedule() {
   const depotSched = getDepotScheduleMap(mKey, activeDepotId);
   const coreUsers = appState.users.filter(u =>
     u.isScheduleable !== false &&
-    u.role !== "admin" &&
-    u.role !== "coordinator" &&
+    normalizeUserRole(u) !== "admin" &&
+    normalizeUserRole(u) !== "coordinator" &&
     Array.isArray(u.depots) && u.depots.includes(activeDepotId)
   );
 
@@ -98,7 +98,7 @@ function runAutoSchedule() {
     return depot.hasDay ? "D" : "N";
   };
 
-  const foremen = coreUsers.filter(u => u.role === "foreman");
+  const foremen = coreUsers.filter(u => normalizeUserRole(u) === "foreman");
   foremen.forEach((u, idx) => {
     const turnusA = idx % 2 === 0;
     for (let d = 1; d <= days; d++) {
@@ -112,7 +112,7 @@ function runAutoSchedule() {
   const pair2 = coreUsers.filter(u => u.name.includes("Hossen") || u.name.includes("Hossain"));
   const pair3 = coreUsers.filter(u => u.name.includes("Rahman") || u.name.includes("Islam"));
   const pairedIds = new Set([...pair1, ...pair2, ...pair3].map(u => u.id));
-  const singles = coreUsers.filter(u => u.role !== "foreman" && !pairedIds.has(u.id));
+  const singles = coreUsers.filter(u => normalizeUserRole(u) !== "foreman" && !pairedIds.has(u.id));
 
   const assignUnit = (members, turnusA, preferDay) => {
     for (let d = 1; d <= days; d++) {
@@ -177,7 +177,7 @@ function getUserRoleRank(role) {
 }
 
 function compareUsersByRules(a, b) {
-  const roleDiff = getUserRoleRank(a.role) - getUserRoleRank(b.role);
+  const roleDiff = getUserRoleRank(normalizeUserRole(a)) - getUserRoleRank(normalizeUserRole(b));
   if (roleDiff !== 0) return roleDiff;
 
   const dateA = a.createdAt || "9999-12-31";
@@ -188,13 +188,14 @@ function compareUsersByRules(a, b) {
 }
 
 function getVisibleRosterUsers() {
-  const list = appState.users.filter(u =>
-    u.isScheduleable !== false &&
-    u.role !== "admin" &&
-    u.role !== "coordinator" &&
-    Array.isArray(u.depots) && u.depots.includes(activeDepotId) &&
-    (showTerminatedWorkers || !u.terminatedFrom)
-  );
+  const list = appState.users.filter(u => {
+    const r = normalizeUserRole(u);
+    return u.isScheduleable !== false &&
+      r !== "admin" &&
+      r !== "coordinator" &&
+      Array.isArray(u.depots) && u.depots.includes(activeDepotId) &&
+      (showTerminatedWorkers || !u.terminatedFrom);
+  });
 
   const customOrder = appState.depotUserOrder?.[activeDepotId];
   if (Array.isArray(customOrder) && customOrder.length > 0) {
@@ -212,12 +213,13 @@ function getVisibleRosterUsers() {
 }
 
 function applySmartSortToActiveDepot() {
-  const list = appState.users.filter(u =>
-    u.isScheduleable !== false &&
-    u.role !== "admin" &&
-    u.role !== "coordinator" &&
-    Array.isArray(u.depots) && u.depots.includes(activeDepotId)
-  );
+  const list = appState.users.filter(u => {
+    const r = normalizeUserRole(u);
+    return u.isScheduleable !== false &&
+      r !== "admin" &&
+      r !== "coordinator" &&
+      Array.isArray(u.depots) && u.depots.includes(activeDepotId);
+  });
   list.sort((a, b) => compareUsersByRules(a, b));
   if (!appState.depotUserOrder) appState.depotUserOrder = {};
   appState.depotUserOrder[activeDepotId] = list.map(u => u.id);

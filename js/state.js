@@ -55,7 +55,12 @@ const I18N = {
     empChatBtn: "Zpráva pro Admina",
     coordTitle: "Požadavky na agenturní zaměstnance",
     coordSub: "Doplňte jména agenturních pracovníků a potvrďte tlačítkem Uložit změny.",
-    coordSumTitle: "Přehled odpracovaných směn agenturních zaměstnanců"
+    coordSumTitle: "Přehled odpracovaných směn agenturních zaměstnanců",
+    calTitle: "Administrace kalendářů směn",
+    calSub: "Režimy Krátký / Dlouhý a Pondělí – Pátek nebo vlastní vzor vytvořený v měsíčním kalendáři.",
+    btnAddCal: "Přidat Kalendář",
+    chatList: "Konverzace",
+    dragHint: "Přetažením jména změníte pořadí • Kliknutím upravíte směnu"
   },
   en: {
     loginSub: "Warehouse Roster & Agency Planner • Multi-Depot",
@@ -102,9 +107,29 @@ const I18N = {
     empChatBtn: "Message Admin",
     coordTitle: "Agency Worker Requests",
     coordSub: "Assign agency worker names and confirm with Save Changes.",
-    coordSumTitle: "Agency Worked Shifts Summary"
+    coordSumTitle: "Agency Worked Shifts Summary",
+    calTitle: "Shift Calendars Administration",
+    calSub: "Short / Long and Monday – Friday schedules or custom monthly roster templates.",
+    btnAddCal: "Add Calendar",
+    chatList: "Conversations",
+    dragHint: "Drag employee name to reorder • Click cell to edit shift"
   }
 };
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || I18N.cs[key] || key;
+}
+
+function normalizeUserRole(u) {
+  if (!u) return "warehouse";
+  const r = (u.role || "").toString().trim().toLowerCase();
+  const lbl = (u.roleLabel || "").toString().trim().toLowerCase();
+  if (r === "admin" || r === "administrátor") return "admin";
+  if (r === "coordinator" || r === "koordinator" || r === "koordinátor" || lbl.includes("koordin") || u.id === "u_roy") return "coordinator";
+  if (r === "foreman" || r === "predak" || r === "předák" || lbl.includes("předák")) return "foreman";
+  if (r === "specialist" || r === "specialista" || lbl.includes("specialista")) return "specialist";
+  return "warehouse";
+}
 
 const DEFAULT_DEPOTS = [
   {
@@ -203,13 +228,13 @@ let dragPayload = null;
 let rowDragUserId = null;
 
 function canUserRequestAg(u = currentUser) {
-  return !!u && (u.role === "admin" || !!u.perms?.requestAg);
+  return !!u && (normalizeUserRole(u) === "admin" || !!u.perms?.requestAg);
 }
 function canUserApproveRequests(u = currentUser) {
-  return !!u && (u.role === "admin" || !!u.perms?.approveRequests);
+  return !!u && (normalizeUserRole(u) === "admin" || !!u.perms?.approveRequests);
 }
 function canUserEditShifts(u = currentUser) {
-  return !!u && (u.role === "admin" || !!u.perms?.editShifts);
+  return !!u && (normalizeUserRole(u) === "admin" || !!u.perms?.editShifts);
 }
 
 function getCalendarModeLabel(mode) {
@@ -250,6 +275,7 @@ function ensureMultiDepotConsistency() {
   }
 
   appState.users.forEach((u, i) => {
+    u.role = normalizeUserRole(u);
     if (!Array.isArray(u.depots)) {
       const def = DEFAULT_USERS.find(x => x.id === u.id);
       u.depots = def ? [...def.depots] : [defaultDepotId];
@@ -363,6 +389,7 @@ function addAudit(type, detail) {
 
 function showToast(msg, kind = "info") {
   const box = document.getElementById("toast-box");
+  if (!box) return;
   const styles = {
     success: "bg-emerald-950/95 border-emerald-500 text-emerald-200",
     error: "bg-red-950/95 border-red-500 text-red-200",

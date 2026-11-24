@@ -49,7 +49,8 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 6000) {
 }
 
 async function pullFromFirebase(silent = true) {
-  if (silent && currentUser?.role === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges) {
+  const curRole = normalizeUserRole(currentUser);
+  if (silent && curRole === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges) {
     return;
   }
 
@@ -69,8 +70,11 @@ async function pullFromFirebase(silent = true) {
     updateSyncBadges(true, "Firebase Online");
     if (currentUser) {
       const refreshed = appState.users.find(u => u.id === currentUser.id);
-      if (refreshed) currentUser = refreshed;
-      if (!(currentUser.role === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges)) {
+      if (refreshed) {
+        refreshed.role = normalizeUserRole(refreshed);
+        currentUser = refreshed;
+      }
+      if (!(normalizeUserRole(currentUser) === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges)) {
         renderActiveRoleView();
       }
     }
@@ -156,6 +160,11 @@ function applyLanguage(lang) {
   setTxt("lbl-coord-sub", "coordSub");
   setTxt("lbl-coord-save", "btnSaveUsers");
   setTxt("lbl-coord-sum-title", "coordSumTitle");
+  setTxt("lbl-cal-title", "calTitle");
+  setTxt("lbl-cal-sub", "calSub");
+  setTxt("lbl-btn-add-cal", "btnAddCal");
+  setTxt("lbl-chat-list", "chatList");
+  setTxt("lbl-drag-hint", "dragHint");
 
   applyTheme(document.documentElement.getAttribute("data-theme") || "dark");
   if (currentUser) {
@@ -212,6 +221,7 @@ function attemptLogin(loginVal, passVal) {
 }
 
 function completeLogin(user) {
+  user.role = normalizeUserRole(user);
   currentUser = user;
   safeStorage.set("depotshift_session_uid", user.id);
   document.getElementById("login-screen").classList.add("hidden");
@@ -231,7 +241,10 @@ function completeLogin(user) {
     settingsBtn.classList.remove("inline-flex");
   }
 
-  if (user.role === "coordinator") coordSelectedDepotId = "ALL";
+  if (user.role === "coordinator") {
+    coordSelectedDepotId = "ALL";
+    activeCoordTab = "requests";
+  }
 
   buildNavigationForRole();
   renderActiveRoleView();
@@ -255,8 +268,9 @@ function buildNavigationForRole() {
   const nav = document.getElementById("nav-tabs");
   nav.innerHTML = "";
   const bell = document.getElementById("admin-req-bell");
+  const role = normalizeUserRole(currentUser);
 
-  if (currentUser.role === "admin") {
+  if (role === "admin") {
     bell.classList.remove("hidden");
     bell.classList.add("inline-flex");
     const tabs = [
@@ -271,7 +285,7 @@ function buildNavigationForRole() {
       btn.onclick = () => switchAdminTab(tItem.id);
       nav.appendChild(btn);
     });
-  } else if (currentUser.role === "coordinator") {
+  } else if (role === "coordinator") {
     bell.classList.add("hidden");
     const tabs = [
       { id: "requests", icon: "fa-clipboard-list", label: t("tabCoordReq") },
@@ -303,14 +317,18 @@ function hideAllSections() {
   [
     "view-admin-schedule", "view-admin-settings", "view-admin-chat",
     "view-coord-requests", "view-coord-summary", "view-employee-home"
-  ].forEach(id => document.getElementById(id).classList.add("hidden"));
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
 }
 
 function renderActiveRoleView() {
   if (!currentUser) return;
   hideAllSections();
+  const role = normalizeUserRole(currentUser);
 
-  if (currentUser.role === "admin") {
+  if (role === "admin") {
     updateAdminBadges();
     if (activeAdminTab === "schedule") {
       document.getElementById("view-admin-schedule").classList.remove("hidden");
@@ -322,7 +340,7 @@ function renderActiveRoleView() {
       document.getElementById("view-admin-chat").classList.remove("hidden");
       renderAdminChatTab();
     }
-  } else if (currentUser.role === "coordinator") {
+  } else if (role === "coordinator") {
     if (activeCoordTab === "requests") {
       document.getElementById("view-coord-requests").classList.remove("hidden");
       renderCoordinatorRequests();
@@ -331,6 +349,7 @@ function renderActiveRoleView() {
       renderCoordinatorSummary();
     }
   } else {
+    updateAdminBadges();
     document.getElementById("view-employee-home").classList.remove("hidden");
     renderEmployeeHome();
   }
@@ -377,7 +396,7 @@ function setRosterViewMode(mode) {
 }
 
 function stepRosterPeriod(delta) {
-  if (activeAdminTab === "schedule" && currentUser?.role === "admin") {
+  if (activeAdminTab === "schedule" && normalizeUserRole(currentUser) === "admin") {
     if (rosterViewMode === "week") anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), anchorDate.getDate() + delta * 7);
     else if (rosterViewMode === "biweek") anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), anchorDate.getDate() + delta * 14);
     else anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + delta, 1);
@@ -451,8 +470,8 @@ function renderAdminSchedule() {
   if (depot.hasDay) legendHtml += `<span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">(${depot.dayStart}–${depot.dayEnd})</span>`;
   if (depot.hasNight) legendHtml += `<span class="px-2 py-0.5 rounded bg-blue-600 text-white font-extrabold">N</span> <span class="text-slate-300 mr-2">(${depot.nightStart}–${depot.nightEnd})</span>`;
   legendHtml += `
-    <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold">DOV</span> <span class="text-slate-300 mr-2">Dovolená</span>
-    <span class="px-2 py-0.5 rounded bg-teal-500 text-slate-950 font-extrabold">NV</span> <span class="text-slate-300 mr-2">Náhr. volno</span>
+    <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold">DOV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Vacation" : "Dovolená"}</span>
+    <span class="px-2 py-0.5 rounded bg-teal-500 text-slate-950 font-extrabold">NV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Comp." : "Náhr. volno"}</span>
     <span class="px-2 py-0.5 rounded bg-red-500 text-white font-extrabold">PN</span> <span class="text-slate-300 mr-2">PN</span>
     <span class="px-2 py-0.5 rounded bg-purple-600 text-white font-extrabold">A</span> <span class="text-slate-300">Absence</span>
   `;
@@ -1126,7 +1145,7 @@ function renderCoordinatorSummary() {
       <td class="py-2.5 px-3 text-right font-bold text-purple-500">${h} h</td>
     </tr>`;
   }).join("");
-  document.getElementById("coord-summary-content").innerHTML = `<table class="w-full text-left border-collapse text-xs"><tbody>${rows}</tbody><tfoot><tr class="bg-slate-950 font-extrabold text-white"><td colspan="5" class="py-2.5 px-3">Celkem</td><td class="py-2.5 px-3 text-right text-emerald-500">${totalHours} h</td></tr></tfoot></table>`;
+  document.getElementById("coord-summary-content").innerHTML = `<table class="w-full text-left border-collapse text-xs"><thead><tr class="border-b border-slate-700 text-slate-400 uppercase text-[10px]"><th class="py-2 px-3">Depo</th><th class="py-2 px-3">Datum</th><th class="py-2 px-3">Pracovník</th><th class="py-2 px-3">Směna</th><th class="py-2 px-3">Čas</th><th class="py-2 px-3 text-right">Hodin</th></tr></thead><tbody>${rows}</tbody><tfoot><tr class="bg-slate-950 font-extrabold text-white"><td colspan="5" class="py-2.5 px-3">Celkem</td><td class="py-2.5 px-3 text-right text-emerald-500">${totalHours} h</td></tr></tfoot></table>`;
 }
 
 function getEmployeeMergedDayEntry(mKey, userId, day) {
@@ -1355,7 +1374,10 @@ function sendEmployeeChatMessage(e) {
 }
 
 function renderAdminChatTab() {
-  const employees = appState.users.filter(u => u.role !== "admin" && u.role !== "coordinator");
+  const employees = appState.users.filter(u => {
+    const r = normalizeUserRole(u);
+    return r !== "admin" && r !== "coordinator";
+  });
   if (!selectedChatUserId && employees.length > 0) selectedChatUserId = employees[0].id;
   document.getElementById("admin-chat-threads").innerHTML = employees.map(u => {
     const thread = appState.chats[u.id] || [];
