@@ -8,72 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-  <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; transition: background-color 0.2s, color 0.2s; }
-
-    /* Dark Theme */
-    [data-theme="dark"] body { background: #0f172a; color: #f8fafc; }
-    [data-theme="dark"] .sticky-col { position: sticky; left: 0; z-index: 20; background: #1e293b; border-right: 1px solid #334155; }
-    [data-theme="dark"] .sticky-header { position: sticky; top: 0; z-index: 30; background: #1e293b; }
-    [data-theme="dark"] .sticky-corner { position: sticky; left: 0; top: 0; z-index: 40; background: #0f172a; border-right: 1px solid #334155; }
-
-    /* Light Theme */
-    [data-theme="light"] body { background: #f1f5f9; color: #0f172a; }
-    [data-theme="light"] .bg-slate-950,
-    [data-theme="light"] .bg-slate-950\/90,
-    [data-theme="light"] .bg-slate-950\/60,
-    [data-theme="light"] .bg-slate-950\/50,
-    [data-theme="light"] .bg-slate-950\/40 { background-color: #e2e8f0 !important; }
-    [data-theme="light"] .bg-slate-900,
-    [data-theme="light"] .bg-slate-900\/90,
-    [data-theme="light"] .bg-slate-900\/70,
-    [data-theme="light"] .bg-slate-900\/40 { background-color: #ffffff !important; }
-    [data-theme="light"] .bg-slate-800,
-    [data-theme="light"] .bg-slate-800\/90,
-    [data-theme="light"] .bg-slate-800\/80,
-    [data-theme="light"] .bg-slate-800\/70,
-    [data-theme="light"] .bg-slate-800\/60 { background-color: #f8fafc !important; }
-    [data-theme="light"] .border-slate-800,
-    [data-theme="light"] .border-slate-800\/90,
-    [data-theme="light"] .border-slate-800\/80,
-    [data-theme="light"] .border-slate-800\/70,
-    [data-theme="light"] .border-slate-700,
-    [data-theme="light"] .border-slate-700\/80,
-    [data-theme="light"] .border-slate-600 { border-color: #cbd5e1 !important; }
-    [data-theme="light"] .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
-    [data-theme="light"] .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
-    [data-theme="light"] .text-white { color: #0f172a !important; }
-    [data-theme="light"] .text-slate-200,
-    [data-theme="light"] .text-slate-300 { color: #334155 !important; }
-    [data-theme="light"] .text-slate-400,
-    [data-theme="light"] .text-slate-500 { color: #64748b !important; }
-    [data-theme="light"] .bg-blue-600.text-white,
-    [data-theme="light"] .bg-emerald-600.text-white,
-    [data-theme="light"] .bg-purple-600.text-white,
-    [data-theme="light"] .bg-red-600.text-white,
-    [data-theme="light"] .bg-red-500.text-white,
-    [data-theme="light"] .bg-sky-600.text-white,
-    [data-theme="light"] .bg-indigo-600.text-white { color: #ffffff !important; }
-    [data-theme="light"] .bg-blue-600 .text-white,
-    [data-theme="light"] .bg-blue-600 i { color: #ffffff !important; }
-    [data-theme="light"] .sticky-col { position: sticky; left: 0; z-index: 20; background: #f8fafc; border-right: 1px solid #cbd5e1; }
-    [data-theme="light"] .sticky-header { position: sticky; top: 0; z-index: 30; background: #f1f5f9; }
-    [data-theme="light"] .sticky-corner { position: sticky; left: 0; top: 0; z-index: 40; background: #e2e8f0; border-right: 1px solid #cbd5e1; }
-    [data-theme="light"] #login-screen { background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 50%, #dbeafe 100%) !important; }
-
-    /* Responsive Full-Month Fit vs Biweekly/Weekly */
-    .mode-month .shift-cell { min-width: 31px; height: 42px; padding: 1px; }
-    .mode-biweek .shift-cell { min-width: 66px; height: 48px; padding: 2px; }
-    .mode-week .shift-cell { min-width: 110px; height: 52px; padding: 3px; }
-    .shift-cell { transition: transform 0.1s, filter 0.1s; user-select: none; }
-    .shift-cell:hover { filter: brightness(1.12); }
-    .drag-over { outline: 2px dashed #38bdf8 !important; outline-offset: -2px; background: rgba(56, 189, 248, 0.2) !important; }
-    .row-drag-over td { border-top: 2px solid #38bdf8 !important; background: rgba(56, 189, 248, 0.12) !important; }
-    ::-webkit-scrollbar { height: 7px; width: 7px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
-  </style>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -132,7 +67,7 @@
         <p id="lbl-quick-access" class="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center mb-2.5">Rychlý testovací přístup (1 klik)</p>
         <div class="grid grid-cols-2 gap-2">
           <button type="button" onclick="quickLogin('admin','admin123')" class="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-left transition">
-            <div class="text-xs font-bold text-emerald-500">Admin (Peter)</div>
+            <div class="text-xs font-bold text-emerald-500">Admin</div>
             <div class="text-[10px] text-emerald-600 font-mono">admin / admin123</div>
           </button>
           <button type="button" onclick="quickLogin('roy','roy123')" class="p-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-left transition">
@@ -173,7 +108,6 @@
         </div>
       </div>
 
-      <!-- Top Right Controls: Settings (Admin), Language, Theme, Requests, User, Logout -->
       <div class="flex flex-wrap items-center gap-2">
         <button id="btn-header-settings" type="button" onclick="switchAdminTab('settings')" class="hidden px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition items-center gap-1.5">
           <i class="fa-solid fa-gear text-blue-400"></i> <span id="lbl-btn-settings">Nastavení</span>
@@ -214,7 +148,6 @@
 
     <!-- ==================== ADMIN VIEW: SCHEDULE ==================== -->
     <section id="view-admin-schedule" class="hidden space-y-3">
-      <!-- Depot Selector & Show Terminated Toggle -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mr-1">
@@ -223,15 +156,12 @@
           <div id="admin-depot-pills" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-4">
-          <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-300 select-none">
-            <input id="chk-show-terminated" type="checkbox" onchange="toggleShowTerminated(this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
-            <span id="lbl-show-terminated">Zobrazit ukončené pracovníky</span>
-          </label>
-        </div>
+        <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-300 select-none">
+          <input id="chk-show-terminated" type="checkbox" onchange="toggleShowTerminated(this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
+          <span id="lbl-show-terminated">Zobrazit ukončené pracovníky</span>
+        </label>
       </div>
 
-      <!-- Period Navigation, View Mode (Month / Biweek / Week) & Actions -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-2">
           <div class="flex items-center gap-1.5">
@@ -240,7 +170,6 @@
             <button onclick="stepRosterPeriod(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
 
-          <!-- View Granularity Switcher -->
           <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-slate-800 text-[11px] font-bold">
             <button type="button" onclick="setRosterViewMode('month')" id="vmode-month" class="px-2.5 py-1 rounded-lg transition bg-blue-600 text-white">Měsíční</button>
             <button type="button" onclick="setRosterViewMode('biweek')" id="vmode-biweek" class="px-2.5 py-1 rounded-lg transition text-slate-400 hover:text-white">Dvoutýdenní</button>
@@ -252,7 +181,7 @@
           <button onclick="runAutoSchedule()" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="lbl-btn-auto">Autoplánování</span> (<span id="auto-depot-name"></span>)
           </button>
-          <button onclick="applySmartSortToActiveDepot()" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow flex items-center gap-1.5" title="Seřadí: Předák → Specialista → Skladník">
+          <button onclick="applySmartSortToActiveDepot()" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="lbl-btn-sort">Seřadit dle pozic</span>
           </button>
           <button onclick="openAgRequestModal()" class="px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
@@ -267,15 +196,13 @@
         </div>
       </div>
 
-      <!-- Legend & Drag info -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px]">
         <div id="admin-legend-items" class="flex flex-wrap items-center gap-2"></div>
-        <div id="lbl-drag-hint" class="text-slate-400">
+        <div class="text-slate-400">
           <i class="fa-solid fa-grip-vertical text-sky-400"></i> Přetažením jména změníte pořadí • Kliknutím upravíte směnu
         </div>
       </div>
 
-      <!-- Matrix Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
         <div class="overflow-x-auto max-h-[75vh]">
           <table id="admin-matrix-table" class="w-full border-collapse text-xs mode-month">
@@ -287,72 +214,72 @@
       </div>
     </section>
 
-    <!-- ==================== ADMIN VIEW: NASTAVENÍ (DEPOTS, USERS & AUDIT LOG) ==================== -->
+    <!-- ==================== ADMIN VIEW: NASTAVENÍ (DEPOTS, USERS, CALENDARS, AUDIT) ==================== -->
     <section id="view-admin-settings" class="hidden space-y-5">
-      <!-- Settings Sub-Navigation -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="setSettingsSubTab('main')" id="subtab-settings-main" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-sliders"></i> <span id="lbl-subtab-config">Depa, Uživatelé &amp; Časy</span>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="setSettingsSubTab('depots')" id="subtab-settings-depots" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-warehouse"></i> <span id="lbl-subtab-depots">Depa</span>
           </button>
-          <button type="button" onclick="setSettingsSubTab('audit')" id="subtab-settings-audit" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
-            <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> <span>Audit Log</span>
+          <button type="button" onclick="setSettingsSubTab('users')" id="subtab-settings-users" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-users-gear text-emerald-400"></i> <span id="lbl-subtab-users">Uživatelé</span>
+          </button>
+          <button type="button" onclick="setSettingsSubTab('calendars')" id="subtab-settings-calendars" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-week text-sky-400"></i> <span id="lbl-subtab-calendars">Kalendáře směn</span>
+          </button>
+          <button type="button" onclick="setSettingsSubTab('audit')" id="subtab-settings-audit" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> <span id="lbl-subtab-audit">Audit Log</span>
           </button>
         </div>
+
         <button type="button" onclick="switchAdminTab('schedule')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5">
           <i class="fa-solid fa-arrow-left"></i> <span id="lbl-back-roster">Zpět na plánování směn</span>
         </button>
       </div>
 
-      <!-- SUB-PANEL 1: DEPOTS & USERS -->
-      <div id="settings-panel-main" class="space-y-5">
-        <!-- Unsaved Changes Banner -->
-        <div id="admin-unsaved-banner" class="hidden p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2.5 text-xs font-bold">
-            <i class="fa-solid fa-circle-info text-amber-400 text-base"></i>
-            <span id="lbl-unsaved-warning">Máte neuložené dočasné úpravy. Pro trvalý zápis do databáze klikněte na „Uložit změny“.</span>
+      <!-- Unsaved Draft Banner -->
+      <div id="admin-unsaved-banner" class="hidden p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 text-xs font-bold">
+          <i class="fa-solid fa-circle-info text-amber-400 text-base"></i>
+          <span>Máte neuložené dočasné změny. Pro trvalé uložení klikněte na „Uložit změny“.</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="discardAdminDraftChanges()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold">Zrušit změny</button>
+          <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow"><i class="fa-solid fa-floppy-disk mr-1"></i> Uložit změny</button>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL: DEPOTS -->
+      <div id="settings-panel-depots" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
+            </h3>
+            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5"></p>
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="discardAdminDraftChanges()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold">
-              Zrušit změny
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
+            <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
             </button>
-            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">
-              <i class="fa-solid fa-floppy-disk mr-1"></i> Uložit změny
+            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+              <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
             </button>
           </div>
         </div>
+        <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+      </div>
 
-        <!-- Depots & Per-Depot Shift Settings -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-                <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
-              </h3>
-              <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5">U každého depa nastavte plánovací kalendář (Krátký / Dlouhý nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem <strong>Uložit změny</strong>.</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
-              <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
-                <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
-              </button>
-              <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
-                <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
-              </button>
-            </div>
-          </div>
-
-          <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
-        </div>
-
-        <!-- Users Management -->
+      <!-- SUB-PANEL: USERS -->
+      <div id="settings-panel-users" class="hidden space-y-5">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div>
               <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Správa uživatelů, rolí, kalendáře a přiřazení k depům</span>
+                <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Administrace uživatelů, rolí, oprávnění a dep</span>
               </h3>
-              <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5">Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem <strong>Uložit změny</strong>.</p>
+              <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5"></p>
             </div>
             <div class="flex items-center gap-2">
               <button type="button" onclick="openCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow">
@@ -368,16 +295,17 @@
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
-                  <th class="py-2.5 px-2">Jméno / Name</th>
-                  <th class="py-2.5 px-2">Telefon</th>
-                  <th class="py-2.5 px-2">Typ / Role</th>
-                  <th class="py-2.5 px-2">Kalendář</th>
-                  <th class="py-2.5 px-2">Depa</th>
-                  <th class="py-2.5 px-2">Login</th>
-                  <th class="py-2.5 px-2">Heslo</th>
-                  <th class="py-2.5 px-2 text-center">V plánu</th>
-                  <th class="py-2.5 px-2 text-center">QR</th>
-                  <th class="py-2.5 px-2 text-right">Akce</th>
+                  <th class="py-2.5 px-1.5">Jméno</th>
+                  <th class="py-2.5 px-1.5">Telefon</th>
+                  <th class="py-2.5 px-1.5">Typ / Role</th>
+                  <th class="py-2.5 px-1.5">Kalendář</th>
+                  <th class="py-2.5 px-1.5">Oprávnění</th>
+                  <th class="py-2.5 px-1.5">Depa</th>
+                  <th class="py-2.5 px-1.5">Login</th>
+                  <th class="py-2.5 px-1.5">Heslo</th>
+                  <th class="py-2.5 px-1.5 text-center">V plánu</th>
+                  <th class="py-2.5 px-1.5 text-center">QR</th>
+                  <th class="py-2.5 px-1.5 text-right">Akce</th>
                 </tr>
               </thead>
               <tbody id="users-draft-tbody" class="divide-y divide-slate-800/80"></tbody>
@@ -385,13 +313,12 @@
           </div>
         </div>
 
-        <!-- Danger Zone: Reset Database -->
         <div class="bg-red-950/20 border border-red-500/40 rounded-2xl p-4 sm:p-6 flex flex-wrap items-center justify-between gap-4">
           <div>
             <h3 class="text-sm font-extrabold text-red-400 flex items-center gap-2">
               <i class="fa-solid fa-triangle-exclamation"></i> <span id="lbl-danger-title">Nebezpečná zóna – Vymazání databáze</span>
             </h3>
-            <p id="lbl-danger-sub" class="text-xs text-slate-400 mt-1">Trvale vymaže všechny naplánované směny, požadavky AG, žádosti zaměstnanců i historii zpráv z databáze.</p>
+            <p id="lbl-danger-sub" class="text-xs text-slate-400 mt-1"></p>
           </div>
           <button type="button" onclick="openResetDbModal()" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-extrabold shadow-lg flex items-center gap-1.5">
             <i class="fa-solid fa-trash-can"></i> <span id="lbl-btn-reset-db">Vymazat databázi</span>
@@ -399,7 +326,23 @@
         </div>
       </div>
 
-      <!-- SUB-PANEL 2: AUDIT LOG (INSIDE SETTINGS) -->
+      <!-- SUB-PANEL: SHIFT CALENDARS -->
+      <div id="settings-panel-calendars" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+              <i class="fa-solid fa-calendar-week text-sky-400"></i> Administrace kalendářů směn
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Režimy <strong>Krátký / Dlouhý</strong> a <strong>Pondělí – Pátek</strong> nebo vlastní vzor vytvořený v měsíčním kalendáři.</p>
+          </div>
+          <button type="button" onclick="openCalendarBuilderModal()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-plus"></i> Přidat Kalendář
+          </button>
+        </div>
+        <div id="calendars-list-box" class="space-y-3"></div>
+      </div>
+
+      <!-- SUB-PANEL: AUDIT LOG -->
       <div id="settings-panel-audit" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-base font-extrabold text-white"><i class="fa-solid fa-clock-rotate-left text-amber-500 mr-2"></i>Audit Log provedených změn</h3>
@@ -429,53 +372,46 @@
         <h3 class="text-sm font-extrabold text-white mb-3 flex items-center justify-between">
           <span><i class="fa-solid fa-comments text-blue-500 mr-1.5"></i> <span id="lbl-chat-list">Konverzace</span></span>
           <button onclick="openAdminRequestsModal()" class="text-[11px] px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">
-            <span id="lbl-chat-reqs">Žádosti</span> (<span id="chat-tab-req-count">0</span>)
+            Žádosti (<span id="chat-tab-req-count">0</span>)
           </button>
         </h3>
         <div id="admin-chat-threads" class="space-y-1.5 max-h-[65vh] overflow-y-auto"></div>
       </div>
 
       <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col h-[72vh]">
-        <div id="admin-chat-header" class="pb-3 border-b border-slate-800 font-bold text-sm text-white">
-          Vyberte zaměstnance vlevo
-        </div>
+        <div id="admin-chat-header" class="pb-3 border-b border-slate-800 font-bold text-sm text-white">Vyberte zaměstnance vlevo</div>
         <div id="admin-chat-messages" class="flex-1 overflow-y-auto py-4 space-y-2.5"></div>
         <form onsubmit="sendAdminChatReply(event)" class="pt-3 border-t border-slate-800 flex gap-2">
           <input id="admin-chat-input" type="text" placeholder="Napište odpověď..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500" />
-          <button type="submit" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold">
-            <i class="fa-solid fa-paper-plane"></i>
-          </button>
+          <button type="submit" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
       </div>
     </section>
 
-    <!-- ==================== COORDINATOR (ROY) VIEW: AG REQUESTS ==================== -->
+    <!-- ==================== COORDINATOR VIEW ==================== -->
     <section id="view-coord-requests" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 id="lbl-coord-title" class="text-base sm:text-lg font-extrabold text-white">Požadavky na agenturní zaměstnance</h2>
-            <p id="lbl-coord-sub" class="text-xs text-slate-400">Doplňte jména agenturních pracovníků a potvrďte tlačítkem <strong>Uložit změny</strong>.</p>
+            <h2 id="lbl-coord-title" class="text-base sm:text-lg font-extrabold text-white"></h2>
+            <p id="lbl-coord-sub" class="text-xs text-slate-400"></p>
           </div>
           <button onclick="saveCoordinatorAgAssignments()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg flex items-center gap-1.5">
             <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-coord-save">Uložit změny</span>
           </button>
         </div>
-
         <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800">
           <span class="text-xs font-bold text-slate-400">Depo:</span>
           <div id="coord-depot-pills" class="flex flex-wrap gap-1.5"></div>
         </div>
-
         <div id="coord-requests-list" class="space-y-3"></div>
       </div>
     </section>
 
-    <!-- ==================== COORDINATOR (ROY) VIEW: AG SUMMARY ==================== -->
     <section id="view-coord-summary" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="lbl-coord-sum-title" class="text-base sm:text-lg font-extrabold text-white">Přehled odpracovaných směn agenturních zaměstnanců</h2>
+          <h2 id="lbl-coord-sum-title" class="text-base sm:text-lg font-extrabold text-white"></h2>
           <div class="flex items-center gap-2">
             <button onclick="stepRosterPeriod(-1)" class="p-2 rounded-lg bg-slate-800 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
             <span id="coord-month-label" class="text-xs sm:text-sm font-bold text-white capitalize min-w-[130px] text-center"></span>
@@ -486,15 +422,12 @@
       </div>
     </section>
 
-    <!-- ==================== EMPLOYEE / FOREMAN PERSONAL VIEW ==================== -->
+    <!-- ==================== EMPLOYEE / FOREMAN VIEW ==================== -->
     <section id="view-employee-home" class="hidden space-y-4">
       <div id="emp-rejected-banner" class="hidden p-4 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-400 flex items-start justify-between gap-3">
         <div class="flex items-start gap-3">
           <i class="fa-solid fa-circle-exclamation text-red-500 text-lg mt-0.5"></i>
-          <div>
-            <div class="font-extrabold text-sm">Váš požadavek byl zamítnut / zrušen</div>
-            <div id="emp-rejected-text" class="text-xs mt-1"></div>
-          </div>
+          <div><div class="font-extrabold text-sm">Váš požadavek byl zamítnut / zrušen</div><div id="emp-rejected-text" class="text-xs mt-1"></div></div>
         </div>
         <button onclick="dismissRejectedNotice()" class="px-2.5 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-xs font-bold">OK</button>
       </div>
@@ -522,7 +455,6 @@
 
       <div id="emp-assigned-depots-bar" class="text-xs text-slate-400 px-1"></div>
       <div id="emp-stats-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2.5"></div>
-
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <div class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-bold text-slate-400 mb-2">
           <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div class="text-amber-500">So</div><div class="text-amber-500">Ne</div>
@@ -533,25 +465,22 @@
   </main>
 </div>
 
-<!-- ==================== MODAL: CREATE NEW USER ==================== -->
+<!-- ==================== MODALS ==================== -->
 <div id="modal-create-user" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <form onsubmit="submitCreateUserModal(event)" class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
       <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-user-plus text-blue-500 mr-1.5"></i>Vytvoření nového uživatele</h3>
       <button type="button" onclick="closeModal('modal-create-user')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-
     <div class="space-y-3">
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1">Jméno uživatele *</label>
-        <input id="new-user-name" type="text" required placeholder="Např. Jan Novák" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+        <input id="new-user-name" type="text" required placeholder="Např. Jan Novák" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
       </div>
-
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1">Telefonní číslo</label>
-        <input id="new-user-phone" type="tel" placeholder="+420 777 123 456" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+        <input id="new-user-phone" type="tel" placeholder="+420 777 123 456" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
       </div>
-
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-bold text-slate-400 mb-1">Typ (Pozice / Role)</label>
@@ -565,19 +494,22 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-400 mb-1">Typ kalendáře</label>
-          <select id="new-user-calendar" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-400 font-bold">
-            <option value="short_long">Krátký / Dlouhý</option>
-            <option value="mon_fri">Pondělí – Pátek</option>
-          </select>
+          <select id="new-user-calendar" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-400 font-bold"></select>
         </div>
       </div>
-
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1.5">Oprávnění (jako Admin)</label>
+        <div class="space-y-1.5 bg-slate-800/70 p-2.5 rounded-xl border border-slate-700 text-xs text-slate-200">
+          <label class="flex items-center gap-2 cursor-pointer"><input id="new-perm-ag" type="checkbox" class="accent-purple-500" /><span>Poslat požadavek na agenturního zaměstnance</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><input id="new-perm-approve" type="checkbox" class="accent-emerald-500" /><span>Schválit požadavek zaměstnance</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><input id="new-perm-edit" type="checkbox" class="accent-blue-500" /><span>Měnit směny zaměstnanců</span></label>
+        </div>
+      </div>
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1.5">Přiřazená depa</label>
         <div id="new-user-depots-box" class="flex flex-wrap gap-2 bg-slate-800/70 p-2.5 rounded-xl border border-slate-700"></div>
       </div>
     </div>
-
     <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
       <button type="button" onclick="closeModal('modal-create-user')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Zrušit</button>
       <button type="submit" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold shadow">Vytvořit uživatele</button>
@@ -585,7 +517,48 @@
   </form>
 </div>
 
-<!-- ==================== MODAL: TERMINATE EMPLOYEE ==================== -->
+<div id="modal-calendar-builder" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-calendar-plus text-sky-400 mr-1.5"></i>Vytvořit vzorový kalendář směn</h3>
+      <button type="button" onclick="closeModal('modal-calendar-builder')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Název kalendáře *</label>
+        <input id="new-cal-name" type="text" placeholder="Např. Turnus 4+2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Popis vzoru</label>
+        <input id="new-cal-desc" type="text" placeholder="Krátký popis..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-800/70 p-2.5 rounded-xl border border-slate-700">
+      <div class="flex items-center gap-1.5">
+        <button type="button" onclick="stepBuilderMonth(-1)" class="p-1.5 rounded-lg bg-slate-900 text-slate-300"><i class="fa-solid fa-chevron-left"></i></button>
+        <span id="builder-month-label" class="text-xs font-extrabold text-white capitalize min-w-[120px] text-center"></span>
+        <button type="button" onclick="stepBuilderMonth(1)" class="p-1.5 rounded-lg bg-slate-900 text-slate-300"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs font-extrabold">
+        <button type="button" id="bshift-D" onclick="setBuilderShiftType('D')" class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950">D</button>
+        <button type="button" id="bshift-N" onclick="setBuilderShiftType('N')" class="px-2.5 py-1 rounded-lg bg-blue-600 text-white">N</button>
+        <button type="button" id="bshift-OFF" onclick="setBuilderShiftType('')" class="px-2.5 py-1 rounded-lg bg-slate-700 text-slate-200">Volno</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-500">
+      <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div>So</div><div>Ne</div>
+    </div>
+    <div id="builder-calendar-grid" class="grid grid-cols-7 gap-1.5"></div>
+
+    <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+      <button type="button" onclick="closeModal('modal-calendar-builder')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Zrušit</button>
+      <button type="button" onclick="saveNewCalendarPattern()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">Uložit kalendář</button>
+    </div>
+  </div>
+</div>
+
 <div id="modal-terminate-emp" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -594,7 +567,7 @@
     </div>
     <p id="term-emp-info" class="text-xs text-slate-300"></p>
     <div>
-      <label class="block text-xs font-bold text-slate-400 mb-1">Datum ukončení pracovního poměru (od tohoto data se směny ruší):</label>
+      <label class="block text-xs font-bold text-slate-400 mb-1">Datum ukončení (od tohoto data se směny ruší):</label>
       <input id="term-emp-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
     </div>
     <div class="flex justify-end gap-2 pt-2">
@@ -604,38 +577,33 @@
   </div>
 </div>
 
-<!-- ==================== MODAL: EXPORT ROSTER (PNG / XLSX) ==================== -->
 <div id="modal-export-roster" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
       <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-file-export text-sky-400 mr-1.5"></i>Export docházky</h3>
       <button onclick="closeModal('modal-export-roster')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-    <p class="text-xs text-slate-400">Vyberte formát pro export rozpisu směn aktuálně zvoleného depa a období:</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <button type="button" onclick="exportRosterAsImage()" class="p-4 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-left transition space-y-1">
         <div class="text-sm font-extrabold text-indigo-400"><i class="fa-solid fa-image mr-1.5"></i> Obrázek (.PNG)</div>
-        <div class="text-[11px] text-slate-400">Přehledná grafická tabulka se jmény, daty a rozpisem směn.</div>
+        <div class="text-[11px] text-slate-400">Jména, data a rozpis směn.</div>
       </button>
       <button type="button" onclick="exportRosterAsExcel()" class="p-4 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-left transition space-y-1">
         <div class="text-sm font-extrabold text-emerald-400"><i class="fa-solid fa-file-excel mr-1.5"></i> XLS soubor (.xlsx)</div>
-        <div class="text-[11px] text-slate-400">Kompletní tabulka do Excelu včetně součtů směn a hodin.</div>
+        <div class="text-[11px] text-slate-400">Tabulka do Excelu včetně součtů.</div>
       </button>
     </div>
   </div>
 </div>
 
-<!-- ==================== MODAL: RESET DATABASE ==================== -->
 <div id="modal-reset-db" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-red-500/50 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
       <h3 class="font-extrabold text-sm text-red-400"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Potvrzení vymazání databáze</h3>
       <button onclick="closeModal('modal-reset-db')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-    <p class="text-xs text-slate-300">Tato akce nenávratně vymaže všechny zapsané směny, požadavky AG, žádosti zaměstnanců i historii chatu. Pro potvrzení zadejte heslo administrátora:</p>
-    <div>
-      <input id="reset-db-pass" type="password" placeholder="Heslo administrátora..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500" />
-    </div>
+    <p class="text-xs text-slate-300">Zadejte heslo administrátora pro trvalé vymazání dat:</p>
+    <input id="reset-db-pass" type="password" placeholder="Heslo administrátora..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white" />
     <div class="flex justify-end gap-2 pt-2">
       <button type="button" onclick="closeModal('modal-reset-db')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Storno</button>
       <button type="button" onclick="confirmResetDatabase()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-extrabold">Vymazat vše</button>
@@ -643,164 +611,109 @@
   </div>
 </div>
 
-<!-- ==================== MODAL: CELL EDIT (ADMIN) ==================== -->
 <div id="modal-cell-edit" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <div>
-        <h3 id="cell-modal-title" class="font-extrabold text-sm text-white"></h3>
-        <p id="cell-modal-sub" class="text-xs text-slate-400"></p>
-      </div>
+      <div><h3 id="cell-modal-title" class="font-extrabold text-sm text-white"></h3><p id="cell-modal-sub" class="text-xs text-slate-400"></p></div>
       <button onclick="closeModal('modal-cell-edit')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-
     <div class="grid grid-cols-3 gap-2">
       <button id="btn-cell-shift-D" onclick="applyCellShift('D')" class="p-2.5 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-xs">D – Denní</button>
       <button id="btn-cell-shift-N" onclick="applyCellShift('N')" class="p-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs">N – Noční</button>
       <button onclick="applyCellShift('')" class="p-2.5 rounded-xl bg-slate-700 text-slate-200 font-bold text-xs">— Volno</button>
-      <button onclick="applyCellShift('DOV')" class="p-2.5 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs">DOV – Dovolená</button>
-      <button onclick="applyCellShift('NV')" class="p-2.5 rounded-xl bg-teal-500 text-slate-950 font-extrabold text-xs">NV – Náhr. volno</button>
-      <button onclick="applyCellShift('PN')" class="p-2.5 rounded-xl bg-red-500 text-white font-extrabold text-xs">PN – Nemoc</button>
+      <button onclick="applyCellShift('DOV')" class="p-2.5 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs">DOV</button>
+      <button onclick="applyCellShift('NV')" class="p-2.5 rounded-xl bg-teal-500 text-slate-950 font-extrabold text-xs">NV</button>
+      <button onclick="applyCellShift('PN')" class="p-2.5 rounded-xl bg-red-500 text-white font-extrabold text-xs">PN</button>
       <button onclick="applyCellShift('A')" class="p-2.5 rounded-xl bg-purple-600 text-white font-extrabold text-xs col-span-3">A – Absence</button>
     </div>
-
     <div id="cell-custom-time-box" class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2.5">
       <div class="text-xs font-bold text-purple-400 flex items-center justify-between">
-        <span><i class="fa-solid fa-clock mr-1"></i> Přesný čas směny (od – do)</span>
-        <button onclick="deleteAgSlotFromCell()" id="btn-delete-ag-slot" class="hidden text-[11px] text-red-400 hover:underline font-bold">
-          <i class="fa-solid fa-trash"></i> Smazat AG slot
-        </button>
+        <span><i class="fa-solid fa-clock mr-1"></i> Přesný čas směny</span>
+        <button onclick="deleteAgSlotFromCell()" id="btn-delete-ag-slot" class="hidden text-[11px] text-red-400 hover:underline font-bold">Smazat AG</button>
       </div>
       <div class="flex items-center gap-2">
         <input id="cell-time-start" type="time" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
         <span class="text-slate-400">–</span>
         <input id="cell-time-end" type="time" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-        <button onclick="saveCellCustomTime()" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold">Uložit čas</button>
+        <button onclick="saveCellCustomTime()" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold">Uložit</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ==================== MODAL: ADD AG REQUEST (ADMIN) ==================== -->
 <div id="modal-ag-request" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-user-plus text-purple-500 mr-1.5"></i>Nový požadavek na AG zaměstnance</h3>
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-user-plus text-purple-500 mr-1.5"></i>Požadavek na AG zaměstnance</h3>
       <button onclick="closeModal('modal-ag-request')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div class="space-y-3">
-      <div>
-        <label class="block text-xs font-bold text-slate-400 mb-1">Cílové depo</label>
-        <select id="ag-req-depot" onchange="onAgModalDepotChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select>
-      </div>
-      <div>
-        <label class="block text-xs font-bold text-slate-400 mb-1">Datum směny</label>
-        <input id="ag-req-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+      <div><label class="block text-xs font-bold text-slate-400 mb-1">Cílové depo</label><select id="ag-req-depot" onchange="onAgModalDepotChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select></div>
+      <div><label class="block text-xs font-bold text-slate-400 mb-1">Datum směny</label><input id="ag-req-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" /></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-xs font-bold text-slate-400 mb-1">Počet AG</label><input id="ag-req-count" type="number" min="1" max="15" value="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" /></div>
+        <div><label class="block text-xs font-bold text-slate-400 mb-1">Typ směny</label><select id="ag-req-shift" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"><option value="N">Noční (N)</option><option value="D">Denní (D)</option></select></div>
       </div>
       <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Počet pracovníků AG</label>
-          <input id="ag-req-count" type="number" min="1" max="15" value="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Typ směny</label>
-          <select id="ag-req-shift" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
-            <option value="N">Noční směna (N)</option>
-            <option value="D">Denní směna (D)</option>
-          </select>
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Čas od</label>
-          <input id="ag-req-start" type="time" value="19:00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Čas do</label>
-          <input id="ag-req-end" type="time" value="07:00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
+        <div><label class="block text-xs font-bold text-slate-400 mb-1">Od</label><input id="ag-req-start" type="time" value="19:00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" /></div>
+        <div><label class="block text-xs font-bold text-slate-400 mb-1">Do</label><input id="ag-req-end" type="time" value="07:00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" /></div>
       </div>
     </div>
     <div class="flex justify-end gap-2 pt-2">
       <button onclick="closeModal('modal-ag-request')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Zrušit</button>
-      <button onclick="createAgRequests()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold">Vytvořit požadavek</button>
+      <button onclick="createAgRequests()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold">Vytvořit</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== MODAL: EMPLOYEE REQUEST (DOV / NV / PN) ==================== -->
 <div id="modal-emp-request" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
       <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-calendar-plus text-amber-500 mr-2"></i>Nový požadavek</h3>
       <button onclick="closeModal('modal-emp-request')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-
-    <div>
-      <label class="block text-xs font-bold text-slate-400 mb-2">1. Vyberte typ požadavku:</label>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <button type="button" onclick="selectEmpReqType('DOV')" id="req-type-DOV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-emerald-500/20 border-emerald-400 text-emerald-500">
-          <i class="fa-solid fa-umbrella-beach block mb-1 text-sm"></i> Žádost o Dovolenou
-        </button>
-        <button type="button" onclick="selectEmpReqType('NV')" id="req-type-NV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300">
-          <i class="fa-solid fa-clock-rotate-left block mb-1 text-sm"></i> Žádost o Náhradní volno
-        </button>
-        <button type="button" onclick="selectEmpReqType('PN')" id="req-type-PN" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300">
-          <i class="fa-solid fa-notes-medical block mb-1 text-sm"></i> Nahlášení PN / Lékař
-        </button>
-      </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <button type="button" onclick="selectEmpReqType('DOV')" id="req-type-DOV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-emerald-500/20 border-emerald-400 text-emerald-500">Dovolená (DOV)</button>
+      <button type="button" onclick="selectEmpReqType('NV')" id="req-type-NV" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300">Náhradní volno (NV)</button>
+      <button type="button" onclick="selectEmpReqType('PN')" id="req-type-PN" class="req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300">PN / Lékař</button>
     </div>
-
     <div>
-      <div class="flex items-center justify-between mb-2">
-        <label class="text-xs font-bold text-slate-400">2. Klikněte na dny v kalendáři (lze vybrat více):</label>
-        <span id="emp-req-selected-count" class="text-xs font-bold text-amber-500">Vybráno: 0 dnů</span>
-      </div>
-      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-500 mb-1">
-        <div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div>So</div><div>Ne</div>
-      </div>
+      <div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-slate-400">Vyberte dny:</span><span id="emp-req-selected-count" class="text-xs font-bold text-amber-500">Vybráno: 0</span></div>
+      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-500 mb-1"><div>Po</div><div>Út</div><div>St</div><div>Čt</div><div>Pá</div><div>So</div><div>Ne</div></div>
       <div id="emp-req-calendar" class="grid grid-cols-7 gap-1.5"></div>
     </div>
-
-    <div>
-      <label class="block text-xs font-bold text-slate-400 mb-1">Poznámka pro Admina (volitelné):</label>
-      <input id="emp-req-note" type="text" placeholder="Např. lékař ráno..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
-    </div>
-
+    <input id="emp-req-note" type="text" placeholder="Poznámka (volitelné)..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
     <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-      <button type="button" onclick="closeModal('modal-emp-request')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">Storno</button>
-      <button type="button" onclick="submitEmployeeRequest()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg">Potvrdit požadavek</button>
+      <button type="button" onclick="closeModal('modal-emp-request')" class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Storno</button>
+      <button type="button" onclick="submitEmployeeRequest()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">Potvrdit</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== MODAL: ADMIN INCOMING REQUESTS ==================== -->
 <div id="modal-admin-requests" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-5 space-y-4 shadow-2xl max-h-[88vh] overflow-y-auto">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-inbox text-amber-500 mr-2"></i>Přehled požadavků zaměstnanců</h3>
+      <h3 class="font-extrabold text-base text-white"><i class="fa-solid fa-inbox text-amber-500 mr-2"></i>Požadavky zaměstnanců</h3>
       <button onclick="closeModal('modal-admin-requests')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div id="admin-requests-list" class="space-y-3"></div>
   </div>
 </div>
 
-<!-- ==================== MODAL: EMPLOYEE CHAT ==================== -->
 <div id="modal-emp-chat" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-4 flex flex-col h-[75vh] shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-comments text-blue-500 mr-1.5"></i>Soukromá zpráva pro Admina</h3>
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-comments text-blue-500 mr-1.5"></i>Zpráva pro Admina</h3>
       <button onclick="closeModal('modal-emp-chat')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div id="emp-chat-messages" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
     <form onsubmit="sendEmployeeChatMessage(event)" class="pt-3 border-t border-slate-800 flex gap-2">
-      <input id="emp-chat-input" type="text" placeholder="Napište zprávu..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+      <input id="emp-chat-input" type="text" placeholder="Napište zprávu..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
       <button type="submit" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold">Odeslat</button>
     </form>
   </div>
 </div>
 
-<!-- ==================== MODAL: QR CODE ==================== -->
 <div id="modal-qr" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 text-center space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -809,2791 +722,13 @@
     </div>
     <div id="qr-code-box" class="bg-white p-4 rounded-xl inline-block mx-auto"></div>
     <p id="qr-link-text" class="text-[10px] text-slate-400 break-all font-mono bg-slate-950 p-2 rounded-lg"></p>
-    <button onclick="copyQrLink()" class="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold">
-      <i class="fa-solid fa-copy mr-1"></i> Kopírovat přihlašovací odkaz
-    </button>
+    <button onclick="copyQrLink()" class="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"><i class="fa-solid fa-copy mr-1"></i> Kopírovat odkaz</button>
   </div>
 </div>
 
-<script>
-  const APP_VERSION = "0.8b";
-  const FIREBASE_DB_URL = "https://planovani-dochazky-default-rtdb.europe-west1.firebasedatabase.app/depotshift_v1.json";
-
-  const memStore = {};
-  const safeStorage = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; } }
-  };
-
-  // ==================== LANGUAGE ENGINE (CZ / EN) ====================
-  let currentLang = "cs";
-
-  const I18N = {
-    cs: {
-      loginSub: "Warehouse Roster & Agency Planner • Více dep",
-      loginUser: "Uživatelské jméno",
-      loginPass: "Heslo",
-      loginSubmit: "Přihlásit se do systému",
-      quickAccess: "Rychlý testovací přístup (1 klik)",
-      lightTheme: "Světlý motiv",
-      darkTheme: "Tmavý motiv",
-      btnSettings: "Nastavení",
-      bellReq: "Žádosti",
-      logout: "Odhlásit",
-      tabSchedule: "Plánování směn",
-      tabChat: "Zprávy & Požadavky",
-      tabCoordReq: "Požadavky na AG pracovníky",
-      tabCoordSum: "Odpracované směny AG",
-      activeDepot: "Aktivní depo:",
-      showTerminated: "Zobrazit ukončené pracovníky",
-      btnAuto: "Autoplánování",
-      btnSort: "Seřadit dle pozic",
-      btnAddAg: "Požadavek AG",
-      btnExport: "Export docházky",
-      btnClear: "Vyčistit",
-      vmodeMonth: "Měsíční",
-      vmodeBiweek: "Dvoutýdenní",
-      vmodeWeek: "Týdenní",
-      subtabConfig: "Depa, Uživatelé & Časy",
-      backRoster: "Zpět na plánování směn",
-      depotsTitle: "Správa dep, plánovacího kalendáře a směn",
-      depotsSub: "U každého depa nastavte plánovací kalendář (Krátký / Dlouhý: Po, Út, Pá, So, Ne vs. St, Čt, nebo Pondělí – Pátek), směny a časy. Změny uložte tlačítkem Uložit změny.",
-      btnAddDepot: "Přidat depo",
-      btnSaveDepots: "Uložit změny",
-      usersTitle: "Správa uživatelů, rolí, kalendáře a přiřazení k depům",
-      usersSub: "Úpravy zůstávají dočasně zachovány, dokud je nepotvrdíte tlačítkem Uložit změny.",
-      btnAddUser: "Vytvořit uživatele",
-      btnSaveUsers: "Uložit změny",
-      dangerTitle: "Nebezpečná zóna – Vymazání databáze",
-      dangerSub: "Trvale vymaže všechny naplánované směny, požadavky AG, žádosti zaměstnanců i historii zpráv z databáze.",
-      btnResetDb: "Vymazat databázi",
-      empReqBtn: "Požadavek",
-      empChatBtn: "Zpráva pro Admina",
-      coordTitle: "Požadavky na agenturní zaměstnance",
-      coordSub: "Doplňte jména agenturních pracovníků a potvrďte tlačítkem Uložit změny.",
-      coordSumTitle: "Přehled odpracovaných směn agenturních zaměstnanců"
-    },
-    en: {
-      loginSub: "Warehouse Roster & Agency Planner • Multi-Depot",
-      loginUser: "Username",
-      loginPass: "Password",
-      loginSubmit: "Sign In",
-      quickAccess: "Quick Test Access (1-Click)",
-      lightTheme: "Light Mode",
-      darkTheme: "Dark Mode",
-      btnSettings: "Settings",
-      bellReq: "Requests",
-      logout: "Sign Out",
-      tabSchedule: "Shift Roster",
-      tabChat: "Messages & Requests",
-      tabCoordReq: "Agency Worker Requests",
-      tabCoordSum: "Agency Worked Shifts",
-      activeDepot: "Active Depot:",
-      showTerminated: "Show terminated employees",
-      btnAuto: "Auto-Schedule",
-      btnSort: "Sort by Role",
-      btnAddAg: "Agency Request",
-      btnExport: "Export Roster",
-      btnClear: "Clear",
-      vmodeMonth: "Monthly",
-      vmodeBiweek: "Bi-weekly",
-      vmodeWeek: "Weekly",
-      subtabConfig: "Depots, Users & Shifts",
-      backRoster: "Back to Shift Roster",
-      depotsTitle: "Depot, Schedule Calendar & Shift Configuration",
-      depotsSub: "Configure each depot's schedule calendar (Short / Long or Monday – Friday), shifts and hours, then click Save Changes.",
-      btnAddDepot: "Add Depot",
-      btnSaveDepots: "Save Changes",
-      usersTitle: "Users, Roles, Calendar & Depot Assignments",
-      usersSub: "Edits remain temporarily saved until you confirm them by clicking Save Changes.",
-      btnAddUser: "Create User",
-      btnSaveUsers: "Save Changes",
-      dangerTitle: "Danger Zone – Wipe Database",
-      dangerSub: "Permanently deletes all scheduled shifts, agency requests, employee requests and chat history from the database.",
-      btnResetDb: "Wipe Database",
-      empReqBtn: "Request",
-      empChatBtn: "Message Admin",
-      coordTitle: "Agency Worker Requests",
-      coordSub: "Assign agency worker names and confirm with Save Changes.",
-      coordSumTitle: "Agency Worked Shifts Summary"
-    }
-  };
-
-  function t(key) {
-    return (I18N[currentLang] && I18N[currentLang][key]) || I18N.cs[key] || key;
-  }
-
-  function applyLanguage(lang) {
-    currentLang = lang === "en" ? "en" : "cs";
-    safeStorage.set("depotshift_lang", currentLang);
-
-    document.querySelectorAll(".lang-toggle-btn").forEach(btn => {
-      btn.innerHTML = `<i class="fa-solid fa-globe text-blue-400"></i> <span>${currentLang === "cs" ? "EN" : "CZ"}</span>`;
-    });
-
-    const setTxt = (id, key) => { const el = document.getElementById(id); if (el) el.textContent = t(key); };
-    setTxt("lbl-login-sub", "loginSub");
-    setTxt("lbl-login-user", "loginUser");
-    setTxt("lbl-login-pass", "loginPass");
-    const loginSubSpan = document.querySelector("#btn-login-submit span");
-    if (loginSubSpan) loginSubSpan.textContent = t("loginSubmit");
-    setTxt("lbl-quick-access", "quickAccess");
-    setTxt("lbl-btn-settings", "btnSettings");
-    setTxt("lbl-bell-req", "bellReq");
-    setTxt("lbl-logout", "logout");
-    setTxt("lbl-active-depot", "activeDepot");
-    setTxt("lbl-show-terminated", "showTerminated");
-    setTxt("lbl-btn-auto", "btnAuto");
-    setTxt("lbl-btn-sort", "btnSort");
-    setTxt("lbl-btn-add-ag", "btnAddAg");
-    setTxt("lbl-btn-export", "btnExport");
-    setTxt("lbl-btn-clear", "btnClear");
-    setTxt("vmode-month", "vmodeMonth");
-    setTxt("vmode-biweek", "vmodeBiweek");
-    setTxt("vmode-week", "vmodeWeek");
-    setTxt("lbl-subtab-config", "subtabConfig");
-    setTxt("lbl-back-roster", "backRoster");
-    setTxt("lbl-depots-title", "depotsTitle");
-    setTxt("lbl-depots-sub", "depotsSub");
-    setTxt("lbl-btn-add-depot", "btnAddDepot");
-    setTxt("lbl-btn-save-depots", "btnSaveDepots");
-    setTxt("lbl-users-title", "usersTitle");
-    setTxt("lbl-users-sub", "usersSub");
-    setTxt("lbl-btn-add-user", "btnAddUser");
-    setTxt("lbl-btn-save-users", "btnSaveUsers");
-    setTxt("lbl-danger-title", "dangerTitle");
-    setTxt("lbl-danger-sub", "dangerSub");
-    setTxt("lbl-btn-reset-db", "btnResetDb");
-    setTxt("lbl-emp-req-btn", "empReqBtn");
-    setTxt("lbl-emp-chat-btn", "empChatBtn");
-    setTxt("lbl-coord-title", "coordTitle");
-    setTxt("lbl-coord-sub", "coordSub");
-    setTxt("lbl-coord-save", "btnSaveUsers");
-    setTxt("lbl-coord-sum-title", "coordSumTitle");
-
-    applyTheme(document.documentElement.getAttribute("data-theme") || "dark");
-    if (currentUser) {
-      buildNavigationForRole();
-      renderActiveRoleView();
-    }
-  }
-
-  function toggleLanguage() {
-    applyLanguage(currentLang === "cs" ? "en" : "cs");
-  }
-
-  // ==================== THEME ENGINE (DARK / LIGHT) ====================
-  function applyTheme(theme) {
-    const tMode = theme === "light" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", tMode);
-    safeStorage.set("depotshift_theme", tMode);
-    document.querySelectorAll(".theme-toggle-btn").forEach(btn => {
-      if (tMode === "light") {
-        btn.innerHTML = `<i class="fa-solid fa-moon text-indigo-600"></i> <span class="hidden md:inline">${t("darkTheme")}</span>`;
-      } else {
-        btn.innerHTML = `<i class="fa-solid fa-sun text-amber-400"></i> <span class="hidden md:inline">${t("lightTheme")}</span>`;
-      }
-    });
-  }
-
-  function toggleTheme() {
-    const cur = document.documentElement.getAttribute("data-theme") || "dark";
-    applyTheme(cur === "dark" ? "light" : "dark");
-  }
-
-  // Default Depots
-  const DEFAULT_DEPOTS = [
-    {
-      id: "depo_plzen",
-      name: "Depo Plzeň",
-      calendarMode: "short_long",
-      hasDay: true,
-      dayStart: "03:00",
-      dayEnd: "15:00",
-      hasNight: true,
-      nightStart: "18:30",
-      nightEnd: "06:30",
-      agStart: "19:00",
-      agEnd: "07:00"
-    },
-    {
-      id: "depo_teplice",
-      name: "Depo Teplice",
-      calendarMode: "short_long",
-      hasDay: true,
-      dayStart: "03:00",
-      dayEnd: "15:00",
-      hasNight: true,
-      nightStart: "21:00",
-      nightEnd: "09:00",
-      agStart: "21:00",
-      agEnd: "09:00"
-    }
-  ];
-
-  // Default Users with phone numbers
-  const DEFAULT_USERS = [
-    { id: "u_admin", name: "Peter Pribilinec", phone: "+420 777 100 001", role: "admin", roleLabel: "Admin", calendarMode: "mon_fri", login: "admin", pass: "admin123", token: "tok_admin_peter", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
-    { id: "u_roy", name: "Roy (Koordinátor)", phone: "+420 777 100 002", role: "coordinator", roleLabel: "Koordinátor AG", calendarMode: "short_long", login: "roy", pass: "roy123", token: "tok_coord_roy", isScheduleable: false, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-01" },
-    { id: "u_vojtech", name: "Vojtěch Navrátil", phone: "+420 777 201 101", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "vojtech", pass: "vojtech123", token: "tok_vojtech", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-02" },
-    { id: "u_marek", name: "Marek Švejda", phone: "+420 777 201 102", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "marek", pass: "marek123", token: "tok_marek", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-03" },
-    { id: "u_ladislav", name: "Ladislav Hubler", phone: "+420 777 201 103", role: "foreman", roleLabel: "Předák", calendarMode: "short_long", login: "ladislav", pass: "ladislav123", token: "tok_ladislav", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-04" },
-    { id: "u_tomas", name: "Tomáš Butkovsky", phone: "+420 777 301 201", role: "specialist", roleLabel: "Specialista", calendarMode: "short_long", login: "tomas", pass: "tomas123", token: "tok_tomas", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-05" },
-    { id: "u_daniela", name: "Daniela Lodlová", phone: "+420 777 301 202", role: "specialist", roleLabel: "Specialista", calendarMode: "mon_fri", login: "daniela", pass: "daniela123", token: "tok_daniela", isScheduleable: true, depots: ["depo_plzen", "depo_teplice"], terminatedFrom: null, createdAt: "2026-09-06" },
-    { id: "u_daniel", name: "Daniel Doležal", phone: "+420 777 401 301", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "daniel", pass: "daniel123", token: "tok_daniel", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-07" },
-    { id: "u_adam", name: "Adam Doležal", phone: "+420 777 401 302", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "adam", pass: "adam123", token: "tok_adam", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-08" },
-    { id: "u_jan", name: "Jan Markovič", phone: "+420 777 401 303", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "jan", pass: "jan123", token: "tok_jan", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-09" },
-    { id: "u_josef", name: "Josef Karnold", phone: "+420 777 401 304", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "josef", pass: "josef123", token: "tok_josef", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-10" },
-    { id: "u_hossen", name: "Hossen Mohammad Arafat", phone: "+420 777 401 305", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossen", pass: "hossen123", token: "tok_hossen", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-11" },
-    { id: "u_hossain", name: "Hossain Mohammad Jabed", phone: "+420 777 401 306", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "hossain", pass: "hossain123", token: "tok_hossain", isScheduleable: true, depots: ["depo_plzen"], terminatedFrom: null, createdAt: "2026-09-12" },
-    { id: "u_rahman", name: "Rahman Md Faisal", phone: "+420 777 401 307", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "rahman", pass: "rahman123", token: "tok_rahman", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-13" },
-    { id: "u_islam", name: "Islam Kazi Raihanul", phone: "+420 777 401 308", role: "warehouse", roleLabel: "Skladník", calendarMode: "short_long", login: "islam", pass: "islam123", token: "tok_islam", isScheduleable: true, depots: ["depo_teplice"], terminatedFrom: null, createdAt: "2026-09-14" }
-  ];
-
-  // Global App State
-  let appState = {
-    version: APP_VERSION,
-    depots: JSON.parse(JSON.stringify(DEFAULT_DEPOTS)),
-    users: JSON.parse(JSON.stringify(DEFAULT_USERS)),
-    shiftTimes: {
-      D: { start: "03:00", end: "15:00" },
-      N: { start: "18:30", end: "06:30" },
-      AG: { start: "19:00", end: "07:00" }
-    },
-    schedules: {},
-    agSlots: [],
-    requests: [],
-    chats: {},
-    depotUserOrder: {},
-    auditLog: []
-  };
-
-  let currentUser = null;
-  let anchorDate = new Date(2026, 10, 1);
-  let rosterViewMode = "month";
-  let activeDepotId = "depo_plzen";
-  let coordSelectedDepotId = "ALL";
-  let activeAdminTab = "schedule";
-  let settingsSubTab = "main";
-  let activeCoordTab = "requests";
-  let showTerminatedWorkers = false;
-
-  let draftDepots = [];
-  let draftUsers = [];
-  let hasUnsavedAdminChanges = false;
-
-  let terminatingUserIdx = null;
-  let selectedChatUserId = null;
-  let editingCell = null;
-  let empReqType = "DOV";
-  let empReqDates = [];
-  let dragPayload = null;
-  let rowDragUserId = null;
-
-  function markAdminDraftDirty() {
-    hasUnsavedAdminChanges = true;
-    const banner = document.getElementById("admin-unsaved-banner");
-    if (banner) banner.classList.remove("hidden");
-  }
-
-  function clearAdminDraftDirty() {
-    hasUnsavedAdminChanges = false;
-    const banner = document.getElementById("admin-unsaved-banner");
-    if (banner) banner.classList.add("hidden");
-  }
-
-  function switchAdminTab(tabId) {
-    activeAdminTab = tabId;
-    buildNavigationForRole();
-    renderActiveRoleView();
-  }
-
-  function setSettingsSubTab(sub) {
-    settingsSubTab = sub;
-    const mainBtn = document.getElementById("subtab-settings-main");
-    const auditBtn = document.getElementById("subtab-settings-audit");
-    const mainPanel = document.getElementById("settings-panel-main");
-    const auditPanel = document.getElementById("settings-panel-audit");
-
-    if (sub === "audit") {
-      mainBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5";
-      auditBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5";
-      mainPanel.classList.add("hidden");
-      auditPanel.classList.remove("hidden");
-      renderAuditTab();
-    } else {
-      mainBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow flex items-center gap-1.5";
-      auditBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5";
-      mainPanel.classList.remove("hidden");
-      auditPanel.classList.add("hidden");
-      renderAdminSettingsMain();
-    }
-  }
-
-  function getCalendarModeLabel(mode) {
-    if (mode === "mon_fri") {
-      return currentLang === "en" ? "Monday – Friday" : "Pondělí – Pátek";
-    }
-    return currentLang === "en" ? "Short / Long" : "Krátký / Dlouhý";
-  }
-
-  // ==================== STATE MIGRATION & DEPOT CONFIG HELPERS ====================
-  function ensureMultiDepotConsistency() {
-    if (!Array.isArray(appState.depots) || appState.depots.length === 0) {
-      appState.depots = JSON.parse(JSON.stringify(DEFAULT_DEPOTS));
-    }
-    const fallbackD = appState.shiftTimes?.D || { start: "03:00", end: "15:00" };
-    const fallbackN = appState.shiftTimes?.N || { start: "18:30", end: "06:30" };
-    const fallbackAG = appState.shiftTimes?.AG || { start: "19:00", end: "07:00" };
-
-    appState.depots.forEach(d => {
-      if (!d.calendarMode) d.calendarMode = "short_long";
-      if (d.hasDay === undefined) d.hasDay = true;
-      if (!d.dayStart) d.dayStart = fallbackD.start;
-      if (!d.dayEnd) d.dayEnd = fallbackD.end;
-      if (d.hasNight === undefined) d.hasNight = true;
-      if (!d.nightStart) d.nightStart = fallbackN.start;
-      if (!d.nightEnd) d.nightEnd = fallbackN.end;
-      if (!d.agStart) d.agStart = fallbackAG.start;
-      if (!d.agEnd) d.agEnd = fallbackAG.end;
-    });
-
-    const defaultDepotId = appState.depots[0].id;
-    if (!appState.depots.some(d => d.id === activeDepotId)) {
-      activeDepotId = defaultDepotId;
-    }
-
-    appState.users.forEach((u, i) => {
-      if (!Array.isArray(u.depots)) {
-        const def = DEFAULT_USERS.find(x => x.id === u.id);
-        u.depots = def ? [...def.depots] : [defaultDepotId];
-      }
-      if (!u.calendarMode) {
-        const def = DEFAULT_USERS.find(x => x.id === u.id);
-        u.calendarMode = def ? def.calendarMode : "short_long";
-      }
-      if (u.phone === undefined) {
-        const def = DEFAULT_USERS.find(x => x.id === u.id);
-        u.phone = def ? def.phone : "";
-      }
-      if (u.terminatedFrom === undefined) u.terminatedFrom = null;
-      if (!u.createdAt) {
-        const def = DEFAULT_USERS.find(x => x.id === u.id);
-        u.createdAt = def ? def.createdAt : `2026-09-${String(Math.min(28, i + 1)).padStart(2, "0")}`;
-      }
-    });
-
-    if (!appState.depotUserOrder || typeof appState.depotUserOrder !== "object") {
-      appState.depotUserOrder = {};
-    }
-
-    Object.keys(appState.schedules || {}).forEach(mKey => {
-      const mObj = appState.schedules[mKey];
-      if (!mObj || typeof mObj !== "object") return;
-      const keys = Object.keys(mObj);
-      const isLegacyUserMap = keys.some(k => k.startsWith("u_") || appState.users.some(u => u.id === k));
-      if (isLegacyUserMap) {
-        const migrated = {};
-        appState.depots.forEach(d => { migrated[d.id] = {}; });
-        keys.forEach(uid => {
-          migrated[defaultDepotId][uid] = mObj[uid];
-        });
-        appState.schedules[mKey] = migrated;
-      }
-    });
-
-    appState.agSlots.forEach(s => {
-      if (!s.depotId) s.depotId = defaultDepotId;
-    });
-  }
-
-  function getDepotById(depotId = activeDepotId) {
-    return appState.depots.find(x => x.id === depotId) || appState.depots[0];
-  }
-
-  function getDepotName(depotId) {
-    const d = appState.depots.find(x => x.id === depotId);
-    return d ? d.name : "Hlavní depo";
-  }
-
-  function getDepotScheduleMap(mKey, depotId = activeDepotId) {
-    if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
-    if (!appState.schedules[mKey][depotId]) appState.schedules[mKey][depotId] = {};
-    return appState.schedules[mKey][depotId];
-  }
-
-  // ==================== FIREBASE SYNC ENGINE ====================
-  function updateSyncBadges(online, labelText) {
-    const loginBadge = document.getElementById("login-sync-badge");
-    const headerBadge = document.getElementById("header-sync-badge");
-    if (online) {
-      if (loginBadge) {
-        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30";
-        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${labelText || "Firebase Online"}`;
-      }
-      if (headerBadge) {
-        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30";
-        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ${labelText || "Online"}`;
-      }
-    } else {
-      if (loginBadge) {
-        loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-500 border border-amber-500/30";
-        loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> ${labelText || "Lokální režim"}`;
-      }
-      if (headerBadge) {
-        headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-500 border border-amber-500/30";
-        headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Lokální`;
-      }
-    }
-  }
-
-  function mergeRemoteState(remote) {
-    if (!remote || typeof remote !== "object") return;
-    if (Array.isArray(remote.depots) && remote.depots.length > 0) appState.depots = remote.depots;
-    if (Array.isArray(remote.users) && remote.users.length > 0) appState.users = remote.users;
-    if (remote.shiftTimes) appState.shiftTimes = remote.shiftTimes;
-    if (remote.schedules) appState.schedules = remote.schedules;
-    if (Array.isArray(remote.agSlots)) appState.agSlots = remote.agSlots;
-    if (Array.isArray(remote.requests)) appState.requests = remote.requests;
-    if (remote.chats) appState.chats = remote.chats;
-    if (remote.depotUserOrder) appState.depotUserOrder = remote.depotUserOrder;
-    if (Array.isArray(remote.auditLog)) appState.auditLog = remote.auditLog;
-    appState.version = APP_VERSION;
-    ensureMultiDepotConsistency();
-  }
-
-  async function fetchWithTimeout(url, options = {}, timeoutMs = 6000) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      return await fetch(url, { ...options, signal: controller.signal });
-    } finally {
-      clearTimeout(id);
-    }
-  }
-
-  async function pullFromFirebase(silent = true) {
-    if (silent && currentUser?.role === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges) {
-      return;
-    }
-
-    try {
-      const res = await fetchWithTimeout(FIREBASE_DB_URL, {
-        method: "GET",
-        headers: { "Accept": "application/json" }
-      }, 6000);
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
-      if (data && typeof data === "object") {
-        mergeRemoteState(data);
-        safeStorage.set("depotshift_cache", JSON.stringify(appState));
-      } else {
-        await pushToFirebase(true);
-      }
-      updateSyncBadges(true, "Firebase Online");
-      if (currentUser) {
-        const refreshed = appState.users.find(u => u.id === currentUser.id);
-        if (refreshed) currentUser = refreshed;
-        if (!(currentUser.role === "admin" && activeAdminTab === "settings" && hasUnsavedAdminChanges)) {
-          renderActiveRoleView();
-        }
-      }
-      if (!silent) showToast("Synchronizováno s databází.", "success");
-    } catch (err) {
-      updateSyncBadges(false, "Lokální režim");
-      if (!silent) showToast("Firebase nedostupná – běží lokální záloha.", "warn");
-    }
-  }
-
-  async function pushToFirebase(silent = false) {
-    appState.version = APP_VERSION;
-    safeStorage.set("depotshift_cache", JSON.stringify(appState));
-    try {
-      const res = await fetchWithTimeout(FIREBASE_DB_URL, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(appState)
-      }, 6000);
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      updateSyncBadges(true, "Uloženo v cloudu");
-    } catch (err) {
-      updateSyncBadges(false, "Lokální režim");
-      if (!silent) showToast("Uloženo lokálně (Firebase nedostupná).", "warn");
-    }
-  }
-
-  function manualSyncNow() {
-    if (hasUnsavedAdminChanges && activeAdminTab === "settings") {
-      showToast("Nejprve uložte nebo zrušte rozpracované změny v Nastavení.", "warn");
-      return;
-    }
-    pullFromFirebase(false);
-  }
-
-  // ==================== DATE, PERIOD & HOURS HELPERS ====================
-  function getMonthKey(dateObj = anchorDate) {
-    const y = dateObj.getFullYear();
-    const m = String(dateObj.getMonth() + 1).padStart(2, "0");
-    return `${y}-${m}`;
-  }
-
-  function getDaysInMonth(dateObj = anchorDate) {
-    return new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, 0).getDate();
-  }
-
-  function formatDateStr(y, mZeroIndexed, d) {
-    return `${y}-${String(mZeroIndexed + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-  }
-
-  function parseDateStr(dateStr) {
-    const [y, m, d] = dateStr.split("-").map(Number);
-    return { year: y, month: m - 1, day: d, mKey: `${y}-${String(m).padStart(2, "0")}`, dateObj: new Date(y, m - 1, d) };
-  }
-
-  function getMondayOfWeek(dateObj) {
-    const d = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
-    const diff = (d.getDay() + 6) % 7;
-    d.setDate(d.getDate() - diff);
-    return d;
-  }
-
-  function getVisibleDatesList() {
-    const res = [];
-    if (rosterViewMode === "month") {
-      const y = anchorDate.getFullYear();
-      const m = anchorDate.getMonth();
-      const days = getDaysInMonth(anchorDate);
-      for (let d = 1; d <= days; d++) {
-        const dt = new Date(y, m, d);
-        res.push({
-          dateObj: dt,
-          year: y,
-          month: m,
-          day: d,
-          mKey: getMonthKey(dt),
-          dateStr: formatDateStr(y, m, d),
-          dow: dt.getDay()
-        });
-      }
-    } else {
-      const count = rosterViewMode === "week" ? 7 : 14;
-      const start = getMondayOfWeek(anchorDate);
-      for (let i = 0; i < count; i++) {
-        const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
-        res.push({
-          dateObj: dt,
-          year: dt.getFullYear(),
-          month: dt.getMonth(),
-          day: dt.getDate(),
-          mKey: getMonthKey(dt),
-          dateStr: formatDateStr(dt.getFullYear(), dt.getMonth(), dt.getDate()),
-          dow: dt.getDay()
-        });
-      }
-    }
-    return res;
-  }
-
-  function setRosterViewMode(mode) {
-    rosterViewMode = mode;
-    ["month", "biweek", "week"].forEach(m => {
-      const btn = document.getElementById("vmode-" + m);
-      if (!btn) return;
-      if (m === mode) {
-        btn.className = "px-2.5 py-1 rounded-lg transition bg-blue-600 text-white";
-      } else {
-        btn.className = "px-2.5 py-1 rounded-lg transition text-slate-400 hover:text-white";
-      }
-    });
-    renderAdminSchedule();
-  }
-
-  function stepRosterPeriod(delta) {
-    if (activeAdminTab === "schedule" && currentUser?.role === "admin") {
-      if (rosterViewMode === "week") {
-        anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), anchorDate.getDate() + delta * 7);
-      } else if (rosterViewMode === "biweek") {
-        anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), anchorDate.getDate() + delta * 14);
-      } else {
-        anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + delta, 1);
-      }
-    } else {
-      anchorDate = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + delta, 1);
-    }
-    renderActiveRoleView();
-  }
-
-  function calcDurationHours(startStr, endStr) {
-    if (!startStr || !endStr) return 12;
-    const [sh, sm] = startStr.split(":").map(Number);
-    const [eh, em] = endStr.split(":").map(Number);
-    let mins = (eh * 60 + em) - (sh * 60 + sm);
-    if (mins <= 0) mins += 24 * 60;
-    return Math.round((mins / 60) * 10) / 10;
-  }
-
-  function getShiftHours(entry, depotId = activeDepotId) {
-    if (!entry || !entry.type) return 0;
-    if (entry.start && entry.end) return calcDurationHours(entry.start, entry.end);
-    const dep = getDepotById(entry.depotId || depotId);
-    if (entry.type === "D") return calcDurationHours(dep.dayStart, dep.dayEnd);
-    if (entry.type === "N") return calcDurationHours(dep.nightStart, dep.nightEnd);
-    if (["DOV", "NV", "PN"].includes(entry.type)) return 12;
-    return 0;
-  }
-
-  function addAudit(type, detail) {
-    appState.auditLog.unshift({
-      time: new Date().toLocaleString("cs-CZ"),
-      actor: currentUser ? currentUser.name : "Systém",
-      type,
-      detail
-    });
-    if (appState.auditLog.length > 250) appState.auditLog.length = 250;
-  }
-
-  function showToast(msg, kind = "info") {
-    const box = document.getElementById("toast-box");
-    const styles = {
-      success: "bg-emerald-950/95 border-emerald-500 text-emerald-200",
-      error: "bg-red-950/95 border-red-500 text-red-200",
-      warn: "bg-amber-950/95 border-amber-500 text-amber-200",
-      info: "bg-slate-900/95 border-blue-500 text-blue-200"
-    };
-    box.className = `fixed bottom-4 right-4 z-50 max-w-sm px-4 py-3 rounded-xl shadow-2xl text-xs font-bold border ${styles[kind] || styles.info}`;
-    box.textContent = msg;
-    box.classList.remove("hidden");
-    clearTimeout(box._timer);
-    box._timer = setTimeout(() => box.classList.add("hidden"), 3400);
-  }
-
-  function openModal(id) {
-    const el = document.getElementById(id);
-    if (el) { el.classList.remove("hidden"); el.classList.add("flex"); }
-  }
-  function closeModal(id) {
-    const el = document.getElementById(id);
-    if (el) { el.classList.add("hidden"); el.classList.remove("flex"); }
-  }
-
-  // ==================== AUTHENTICATION ====================
-  function handleLoginSubmit(e) {
-    e.preventDefault();
-    const loginVal = document.getElementById("login-username").value.trim().toLowerCase();
-    const passVal = document.getElementById("login-password").value;
-    attemptLogin(loginVal, passVal);
-  }
-
-  function quickLogin(login, pass) {
-    document.getElementById("login-username").value = login;
-    document.getElementById("login-password").value = pass;
-    attemptLogin(login, pass);
-  }
-
-  function attemptLogin(loginVal, passVal) {
-    const errBox = document.getElementById("login-error");
-    const user = appState.users.find(u => u.login.toLowerCase() === loginVal && u.pass === passVal);
-    if (!user) {
-      errBox.textContent = currentLang === "en" ? "Invalid username or password." : "Neplatné uživatelské jméno nebo heslo.";
-      errBox.classList.remove("hidden");
-      return;
-    }
-    errBox.classList.add("hidden");
-    completeLogin(user);
-  }
-
-  function completeLogin(user) {
-    currentUser = user;
-    safeStorage.set("depotshift_session_uid", user.id);
-    document.getElementById("login-screen").classList.add("hidden");
-    const mainApp = document.getElementById("main-app");
-    mainApp.classList.remove("hidden");
-    mainApp.classList.add("flex");
-
-    document.getElementById("current-user-name").textContent = user.name;
-    document.getElementById("current-user-role").textContent = user.roleLabel || user.role;
-
-    const settingsBtn = document.getElementById("btn-header-settings");
-    if (user.role === "admin") {
-      settingsBtn.classList.remove("hidden");
-      settingsBtn.classList.add("inline-flex");
-    } else {
-      settingsBtn.classList.add("hidden");
-      settingsBtn.classList.remove("inline-flex");
-    }
-
-    if (user.role === "coordinator") {
-      coordSelectedDepotId = "ALL";
-    }
-
-    buildNavigationForRole();
-    renderActiveRoleView();
-
-    if (user.role === "admin") {
-      const pending = appState.requests.filter(r => r.status === "pending");
-      if (pending.length > 0) {
-        openAdminRequestsModal();
-      }
-    }
-  }
-
-  function logout() {
-    currentUser = null;
-    clearAdminDraftDirty();
-    safeStorage.set("depotshift_session_uid", "");
-    document.getElementById("main-app").classList.add("hidden");
-    document.getElementById("main-app").classList.remove("flex");
-    document.getElementById("login-screen").classList.remove("hidden");
-  }
-
-  // ==================== NAVIGATION & ROLE ROUTING ====================
-  function buildNavigationForRole() {
-    const nav = document.getElementById("nav-tabs");
-    nav.innerHTML = "";
-    const bell = document.getElementById("admin-req-bell");
-
-    if (currentUser.role === "admin") {
-      bell.classList.remove("hidden");
-      bell.classList.add("inline-flex");
-      const tabs = [
-        { id: "schedule", icon: "fa-calendar-days", label: t("tabSchedule") },
-        { id: "chat", icon: "fa-comments", label: t("tabChat") }
-      ];
-      tabs.forEach(tItem => {
-        const btn = document.createElement("button");
-        const active = activeAdminTab === tItem.id;
-        btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${active ? "bg-blue-600 text-white shadow" : "bg-slate-800/70 text-slate-300 hover:bg-slate-800"}`;
-        btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${tItem.label}`;
-        btn.onclick = () => switchAdminTab(tItem.id);
-        nav.appendChild(btn);
-      });
-    } else if (currentUser.role === "coordinator") {
-      bell.classList.add("hidden");
-      const tabs = [
-        { id: "requests", icon: "fa-clipboard-list", label: t("tabCoordReq") },
-        { id: "summary", icon: "fa-chart-column", label: t("tabCoordSum") }
-      ];
-      tabs.forEach(tItem => {
-        const btn = document.createElement("button");
-        const active = activeCoordTab === tItem.id;
-        btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${active ? "bg-purple-600 text-white shadow" : "bg-slate-800/70 text-slate-300 hover:bg-slate-800"}`;
-        btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${tItem.label}`;
-        btn.onclick = () => { activeCoordTab = tItem.id; buildNavigationForRole(); renderActiveRoleView(); };
-        nav.appendChild(btn);
-      });
-    } else {
-      bell.classList.add("hidden");
-      const info = document.createElement("div");
-      info.className = "text-xs text-slate-400 font-semibold py-1";
-      info.innerHTML = `<i class="fa-solid fa-user-check text-emerald-500 mr-1.5"></i>${currentLang === "en" ? "Personal shift schedule across assigned depots" : "Osobní přehled směn napříč přiřazenými depy"}`;
-      nav.appendChild(info);
-    }
-  }
-
-  function hideAllSections() {
-    [
-      "view-admin-schedule", "view-admin-settings", "view-admin-chat",
-      "view-coord-requests", "view-coord-summary", "view-employee-home"
-    ].forEach(id => document.getElementById(id).classList.add("hidden"));
-  }
-
-  function renderActiveRoleView() {
-    if (!currentUser) return;
-    hideAllSections();
-
-    if (currentUser.role === "admin") {
-      updateAdminBadges();
-      if (activeAdminTab === "schedule") {
-        document.getElementById("view-admin-schedule").classList.remove("hidden");
-        renderAdminSchedule();
-      } else if (activeAdminTab === "settings") {
-        document.getElementById("view-admin-settings").classList.remove("hidden");
-        setSettingsSubTab(settingsSubTab);
-      } else if (activeAdminTab === "chat") {
-        document.getElementById("view-admin-chat").classList.remove("hidden");
-        renderAdminChatTab();
-      }
-    } else if (currentUser.role === "coordinator") {
-      if (activeCoordTab === "requests") {
-        document.getElementById("view-coord-requests").classList.remove("hidden");
-        renderCoordinatorRequests();
-      } else {
-        document.getElementById("view-coord-summary").classList.remove("hidden");
-        renderCoordinatorSummary();
-      }
-    } else {
-      document.getElementById("view-employee-home").classList.remove("hidden");
-      renderEmployeeHome();
-    }
-  }
-
-  // ==================== ROLE-FIRST SORTING (PŘEDÁK -> SPECIALISTA -> SKLADNÍK) ====================
-  function getUserRoleRank(role) {
-    const r = (role || "").toLowerCase();
-    if (r === "foreman" || r.includes("předák")) return 1;      // 1. Předák
-    if (r === "specialist" || r.includes("specialista")) return 2; // 2. Specialista
-    if (r === "warehouse" || r.includes("skladník")) return 3;   // 3. Skladník
-    return 4;
-  }
-
-  function compareUsersByRules(a, b) {
-    const roleDiff = getUserRoleRank(a.role) - getUserRoleRank(b.role);
-    if (roleDiff !== 0) return roleDiff;
-
-    const dateA = a.createdAt || "9999-12-31";
-    const dateB = b.createdAt || "9999-12-31";
-    if (dateA !== dateB) return dateA.localeCompare(dateB);
-
-    return (a.name || "").localeCompare(b.name || "", "cs");
-  }
-
-  function getVisibleRosterUsers() {
-    const list = appState.users.filter(u =>
-      u.isScheduleable !== false &&
-      u.role !== "admin" &&
-      u.role !== "coordinator" &&
-      Array.isArray(u.depots) && u.depots.includes(activeDepotId) &&
-      (showTerminatedWorkers || !u.terminatedFrom)
-    );
-
-    const customOrder = appState.depotUserOrder?.[activeDepotId];
-    if (Array.isArray(customOrder) && customOrder.length > 0) {
-      return list.sort((a, b) => {
-        const idxA = customOrder.indexOf(a.id);
-        const idxB = customOrder.indexOf(b.id);
-        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-        if (idxA !== -1) return -1;
-        if (idxB !== -1) return 1;
-        return compareUsersByRules(a, b);
-      });
-    }
-
-    return list.sort((a, b) => compareUsersByRules(a, b));
-  }
-
-  function applySmartSortToActiveDepot() {
-    const list = appState.users.filter(u =>
-      u.isScheduleable !== false &&
-      u.role !== "admin" &&
-      u.role !== "coordinator" &&
-      Array.isArray(u.depots) && u.depots.includes(activeDepotId)
-    );
-    list.sort((a, b) => compareUsersByRules(a, b));
-    if (!appState.depotUserOrder) appState.depotUserOrder = {};
-    appState.depotUserOrder[activeDepotId] = list.map(u => u.id);
-    addAudit("Seřazení zaměstnanců", `[${getDepotName(activeDepotId)}] Seřazeno dle pozice (Předák, Specialista, Skladník).`);
-    renderAdminSchedule();
-    pushToFirebase();
-    showToast("Zaměstnanci seřazeni: Předák → Specialista → Skladník.", "success");
-  }
-
-  function onRowDragStart(e, userId) {
-    rowDragUserId = userId;
-    dragPayload = null;
-    e.dataTransfer.effectAllowed = "move";
-  }
-
-  function onRowDragOver(e) {
-    if (!rowDragUserId) return;
-    e.preventDefault();
-    e.currentTarget.classList.add("row-drag-over");
-  }
-
-  function onRowDragLeave(e) {
-    e.currentTarget.classList.remove("row-drag-over");
-  }
-
-  function onRowDrop(e, targetUserId) {
-    e.currentTarget.classList.remove("row-drag-over");
-    if (!rowDragUserId || rowDragUserId === targetUserId) {
-      rowDragUserId = null;
-      return;
-    }
-    e.preventDefault();
-
-    const currentVisible = getVisibleRosterUsers();
-    const ids = currentVisible.map(u => u.id);
-    const fromIdx = ids.indexOf(rowDragUserId);
-    const toIdx = ids.indexOf(targetUserId);
-    if (fromIdx === -1 || toIdx === -1) {
-      rowDragUserId = null;
-      return;
-    }
-
-    ids.splice(fromIdx, 1);
-    ids.splice(toIdx, 0, rowDragUserId);
-
-    if (!appState.depotUserOrder) appState.depotUserOrder = {};
-    appState.depotUserOrder[activeDepotId] = ids;
-
-    const movedUser = appState.users.find(u => u.id === rowDragUserId);
-    addAudit("Změna pořadí zaměstnanců", `[${getDepotName(activeDepotId)}] Přesunut řádek: ${movedUser?.name}`);
-    rowDragUserId = null;
-    renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  // ==================== ADMIN: SCHEDULE MATRIX (MONTH / BIWEEK / WEEK) ====================
-  function selectAdminDepot(depotId) {
-    activeDepotId = depotId;
-    renderAdminSchedule();
-  }
-
-  function toggleShowTerminated(checked) {
-    showTerminatedWorkers = checked;
-    renderAdminSchedule();
-  }
-
-  function getShiftBadgeHtml(entry, otherDepotConflictName = null, isTerminatedDay = false) {
-    const compact = rosterViewMode === "month";
-    if (!entry || !entry.type) {
-      if (isTerminatedDay) {
-        return `<span class="text-[8px] text-red-400/70 font-semibold">${compact ? "UK" : "UKONČEN"}</span>`;
-      }
-      if (otherDepotConflictName) {
-        return `<div class="px-0.5 py-0.5 rounded bg-slate-700/60 text-slate-300 text-[8px] font-bold leading-none truncate" title="${otherDepotConflictName}">${compact ? otherDepotConflictName.split(":")[1]?.trim() || "•" : otherDepotConflictName}</div>`;
-      }
-      return `<span class="text-slate-600 font-bold">—</span>`;
-    }
-    const map = {
-      D: "bg-amber-400 text-slate-950",
-      N: "bg-blue-600 text-white",
-      DOV: "bg-emerald-500 text-slate-950",
-      NV: "bg-teal-500 text-slate-950",
-      PN: "bg-red-500 text-white",
-      A: "bg-purple-600 text-white"
-    };
-    const cls = map[entry.type] || "bg-slate-700 text-white";
-    const showTime = !compact && entry.start && entry.end;
-    const timeTag = showTime ? `<div class="text-[9px] leading-none mt-0.5 opacity-90">${entry.start}-${entry.end}</div>` : "";
-    return `<div class="${compact ? "py-1 px-0.5 text-[10px]" : "px-1.5 py-1 text-[11px]"} rounded font-extrabold leading-tight ${cls}">${entry.type}${timeTag}</div>`;
-  }
-
-  function renderAdminSchedule() {
-    ensureMultiDepotConsistency();
-    const visibleDates = getVisibleDatesList();
-    const depot = getDepotById(activeDepotId);
-    const locale = currentLang === "en" ? "en-US" : "cs-CZ";
-
-    const tableEl = document.getElementById("admin-matrix-table");
-    tableEl.className = `w-full border-collapse text-xs mode-${rosterViewMode}`;
-
-    document.getElementById("chk-show-terminated").checked = showTerminatedWorkers;
-
-    const pillsBox = document.getElementById("admin-depot-pills");
-    pillsBox.innerHTML = appState.depots.map(d => {
-      const isAct = d.id === activeDepotId;
-      const shiftBadge = d.hasDay && d.hasNight ? "D+N" : (d.hasDay ? "D" : "N");
-      const calShort = d.calendarMode === "mon_fri" ? "Po–Pá" : "K/D";
-      return `<button onclick="selectAdminDepot('${d.id}')"
-        class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
-        <span>${d.name}</span>
-        <span class="text-[9px] px-1.5 py-0.2 rounded ${isAct ? "bg-blue-800 text-blue-100" : "bg-slate-700 text-slate-300"}">${calShort} • ${shiftBadge}</span>
-      </button>`;
-    }).join("");
-
-    document.getElementById("auto-depot-name").textContent = depot.name;
-
-    if (rosterViewMode === "month") {
-      document.getElementById("admin-period-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
-    } else {
-      const first = visibleDates[0];
-      const last = visibleDates[visibleDates.length - 1];
-      document.getElementById("admin-period-label").textContent = `${first.day}.${first.month + 1}. – ${last.day}.${last.month + 1}.${last.year}`;
-    }
-
-    let legendHtml = `<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-sky-400 font-bold mr-1"><i class="fa-solid fa-calendar-week mr-1"></i>${getCalendarModeLabel(depot.calendarMode)}</span>`;
-    if (depot.hasDay) {
-      legendHtml += `<span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Day" : "Denní"} (${depot.dayStart}–${depot.dayEnd})</span>`;
-    }
-    if (depot.hasNight) {
-      legendHtml += `<span class="px-2 py-0.5 rounded bg-blue-600 text-white font-extrabold">N</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Night" : "Noční"} (${depot.nightStart}–${depot.nightEnd})</span>`;
-    }
-    legendHtml += `
-      <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold">DOV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Vacation" : "Dovolená"}</span>
-      <span class="px-2 py-0.5 rounded bg-teal-500 text-slate-950 font-extrabold">NV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Comp. Leave" : "Náhradní volno"}</span>
-      <span class="px-2 py-0.5 rounded bg-red-500 text-white font-extrabold">PN</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Sick" : "Nemoc / Lékař"}</span>
-      <span class="px-2 py-0.5 rounded bg-purple-600 text-white font-extrabold">A</span> <span class="text-slate-300">${currentLang === "en" ? "Absence" : "Absence"}</span>
-    `;
-    document.getElementById("admin-legend-items").innerHTML = legendHtml;
-
-    const dayNames = currentLang === "en" ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
-    const nameColClass = rosterViewMode === "month" ? "min-w-[165px] max-w-[180px]" : "min-w-[195px]";
-    let headHtml = `<tr><th class="sticky-corner py-2 px-2.5 text-left ${nameColClass} text-slate-300">${depot.name}</th>`;
-    visibleDates.forEach(dt => {
-      const isWknd = dt.dow === 0 || dt.dow === 6;
-      const dateLbl = rosterViewMode === "month" ? `${dt.day}.` : `${dt.day}.${dt.month + 1}.`;
-      headHtml += `<th class="sticky-header py-1.5 px-0.5 text-center border-l border-slate-800 ${isWknd ? "bg-slate-950 text-amber-500" : "text-slate-300"}">
-        <div class="text-[10px] font-extrabold leading-tight">${dateLbl}</div>
-        <div class="text-[9px] font-normal opacity-75 leading-tight">${dayNames[dt.dow]}</div>
-      </th>`;
-    });
-    headHtml += `<th class="sticky-header py-1.5 px-1.5 text-center border-l border-slate-700 text-emerald-500 min-w-[64px] text-[10px]">${currentLang === "en" ? "Sh / Hr" : "Sm / Hod"}</th></tr>`;
-    document.getElementById("admin-matrix-head").innerHTML = headHtml;
-
-    const scheduleableUsers = getVisibleRosterUsers();
-    let bodyHtml = "";
-    const dailyDCounts = Array(visibleDates.length).fill(0);
-    const dailyNCounts = Array(visibleDates.length).fill(0);
-
-    if (scheduleableUsers.length === 0) {
-      bodyHtml += `<tr><td colspan="${visibleDates.length + 2}" class="py-6 px-4 text-center text-xs text-slate-400">
-        ${currentLang === "en" ? "No active employees assigned to this depot." : `K depu <strong>${depot.name}</strong> nejsou přiřazeni žádní aktivní zaměstnanci.`}
-      </td></tr>`;
-    }
-
-    scheduleableUsers.forEach(user => {
-      let shiftCount = 0;
-      let totalHours = 0;
-      const calBadge = user.calendarMode === "mon_fri"
-        ? `<span class="ml-1 px-1 rounded bg-teal-500/20 text-teal-400 text-[8px]">Po–Pá</span>`
-        : `<span class="ml-1 px-1 rounded bg-slate-700/80 text-slate-300 text-[8px]">K/D</span>`;
-      const termTag = user.terminatedFrom ? `<span class="ml-1 px-1 rounded bg-red-500/20 text-red-400 text-[8px]">Ukončen</span>` : "";
-
-      bodyHtml += `<tr class="hover:bg-slate-800/40 ${user.terminatedFrom ? "opacity-75" : ""}"
-        ondragover="onRowDragOver(event)"
-        ondragleave="onRowDragLeave(event)"
-        ondrop="onRowDrop(event, '${user.id}')">
-        <td class="sticky-col py-1.5 px-2 cursor-grab active:cursor-grabbing ${nameColClass}"
-          draggable="true"
-          ondragstart="onRowDragStart(event, '${user.id}')"
-          title="${user.phone ? 'Tel: ' + user.phone : ''}">
-          <div class="flex items-center gap-1.5">
-            <i class="fa-solid fa-grip-vertical text-slate-500 text-[10px]"></i>
-            <div class="min-w-0">
-              <div class="font-bold text-white text-[11px] truncate">${user.name}</div>
-              <div class="text-[9px] text-slate-400 truncate">${user.roleLabel || user.role}${calBadge}${termTag}</div>
-            </div>
-          </div>
-        </td>`;
-
-      visibleDates.forEach((dt, colIdx) => {
-        const entry = appState.schedules[dt.mKey]?.[activeDepotId]?.[user.id]?.[dt.day];
-        const isWknd = dt.dow === 0 || dt.dow === 6;
-        const isTermDay = user.terminatedFrom && dt.dateStr >= user.terminatedFrom;
-
-        let otherDepotConflict = null;
-        if (!entry || !entry.type) {
-          for (const dep of appState.depots) {
-            if (dep.id === activeDepotId) continue;
-            const otherEntry = appState.schedules[dt.mKey]?.[dep.id]?.[user.id]?.[dt.day];
-            if (otherEntry && otherEntry.type) {
-              otherDepotConflict = `${dep.name.replace("Depo ", "")}: ${otherEntry.type}`;
-              break;
-            }
-          }
-        }
-
-        if (entry && entry.type) {
-          if (entry.type === "D") { dailyDCounts[colIdx]++; shiftCount++; }
-          if (entry.type === "N") { dailyNCounts[colIdx]++; shiftCount++; }
-          totalHours += getShiftHours(entry, activeDepotId);
-        }
-
-        bodyHtml += `<td
-          class="shift-cell text-center border-l border-slate-800/90 cursor-pointer ${isTermDay ? "bg-red-950/20" : (isWknd ? "bg-slate-950/50" : "bg-slate-900/40")}"
-          draggable="${entry && entry.type ? "true" : "false"}"
-          ondragstart="onShiftDragStart(event, '${user.id}', '${dt.dateStr}')"
-          ondragover="onShiftDragOver(event)"
-          ondragleave="onShiftDragLeave(event)"
-          ondrop="onShiftDrop(event, '${user.id}', '${dt.dateStr}')"
-          onclick="openUserCellModal('${user.id}', '${dt.dateStr}')">
-          ${getShiftBadgeHtml(entry, otherDepotConflict, isTermDay)}
-        </td>`;
-      });
-
-      bodyHtml += `<td class="py-1.5 px-1.5 text-center border-l border-slate-800 font-bold text-slate-200 whitespace-nowrap text-[10px]">
-        ${shiftCount}<span class="text-slate-500">/</span><span class="text-emerald-500">${totalHours}h</span>
-      </td></tr>`;
-    });
-
-    const visibleDateSet = new Set(visibleDates.map(d => d.dateStr));
-    const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
-    if (visibleAgSlots.length > 0) {
-      bodyHtml += `<tr><td colspan="${visibleDates.length + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1 px-2.5 text-[10px] font-extrabold text-purple-400 uppercase tracking-wider">
-        <i class="fa-solid fa-people-arrows mr-1"></i> AG – ${depot.name} (${visibleAgSlots.length})
-      </td></tr>`;
-
-      visibleAgSlots.forEach(slot => {
-        const displayName = slot.assignedName ? `${slot.assignedName} (AG)` : slot.label;
-        const hrs = calcDurationHours(slot.start, slot.end);
-
-        bodyHtml += `<tr class="bg-purple-950/10 hover:bg-purple-950/20">
-          <td class="sticky-col py-1.5 px-2.5 ${nameColClass}">
-            <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-[11px] truncate">${displayName}</div>
-            <div class="text-[9px] text-purple-400">AG • ${slot.start}–${slot.end}</div>
-          </td>`;
-
-        visibleDates.forEach((dt, colIdx) => {
-          if (dt.dateStr === slot.date) {
-            if (slot.shift === "D") dailyDCounts[colIdx]++;
-            else dailyNCounts[colIdx]++;
-            bodyHtml += `<td onclick="openAgCellModal('${slot.id}')" class="shift-cell text-center border-l border-slate-800 cursor-pointer">
-              ${getShiftBadgeHtml({ type: slot.shift, start: slot.start, end: slot.end })}
-            </td>`;
-          } else {
-            bodyHtml += `<td class="shift-cell text-center border-l border-slate-800/60 text-slate-600">—</td>`;
-          }
-        });
-
-        bodyHtml += `<td class="py-1.5 px-1.5 text-center border-l border-slate-800 font-bold text-purple-400 text-[10px]">1/${hrs}h</td></tr>`;
-      });
-    }
-
-    document.getElementById("admin-matrix-body").innerHTML = bodyHtml;
-
-    let footHtml = `<tr><td class="sticky-col py-1.5 px-2.5 text-[10px] text-slate-300">D / N</td>`;
-    visibleDates.forEach((dt, colIdx) => {
-      const dOk = dailyDCounts[colIdx] >= 3;
-      footHtml += `<td class="py-1 px-0.5 text-center border-l border-slate-800 text-[9px] leading-tight">
-        ${depot.hasDay ? `<div class="${dOk ? "text-amber-500" : "text-red-500"}">${dailyDCounts[colIdx]}</div>` : ""}
-        ${depot.hasNight ? `<div class="text-blue-500">${dailyNCounts[colIdx]}</div>` : ""}
-      </td>`;
-    });
-    footHtml += `<td class="py-1.5 px-1.5 text-center border-l border-slate-700 text-[9px] text-slate-400">${depot.hasDay && depot.hasNight ? "D+N" : (depot.hasDay ? "D" : "N")}</td></tr>`;
-    document.getElementById("admin-matrix-foot").innerHTML = footHtml;
-  }
-
-  // ==================== EXPORT ROSTER (PNG IMAGE & XLSX) ====================
-  function exportRosterAsImage() {
-    closeModal("modal-export-roster");
-    const visibleDates = getVisibleDatesList();
-    const users = getVisibleRosterUsers();
-    const visibleDateSet = new Set(visibleDates.map(d => d.dateStr));
-    const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
-
-    const rows = [];
-    users.forEach(u => {
-      const map = {};
-      visibleDates.forEach(dt => {
-        const e = appState.schedules[dt.mKey]?.[activeDepotId]?.[u.id]?.[dt.day];
-        if (e) map[dt.dateStr] = e;
-      });
-      rows.push({ name: u.name, role: u.roleLabel || u.role, map, isAg: false });
-    });
-    visibleAgSlots.forEach(s => {
-      rows.push({
-        name: s.assignedName ? `${s.assignedName} (AG)` : s.label,
-        role: `${s.start}-${s.end}`,
-        map: { [s.date]: { type: s.shift } },
-        isAg: true
-      });
-    });
-
-    const nameColW = 210;
-    const dayColW = 36;
-    const sumColW = 72;
-    const headerH = 68;
-    const rowH = 32;
-    const pad = 16;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = pad * 2 + nameColW + visibleDates.length * dayColW + sumColW;
-    canvas.height = pad * 2 + headerH + Math.max(1, rows.length) * rowH + 24;
-    const ctx = canvas.getContext("2d");
-
-    ctx.fillStyle = "#0f172a";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const periodTitle = document.getElementById("admin-period-label").textContent.toUpperCase();
-    ctx.fillStyle = "#f8fafc";
-    ctx.font = "bold 16px sans-serif";
-    ctx.fillText(`DepotShift v${APP_VERSION} • ${getDepotName(activeDepotId)} • ${periodTitle}`, pad, pad + 20);
-
-    const tableTop = pad + 34;
-    const dayNames = currentLang === "en" ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
-
-    ctx.fillStyle = "#1e293b";
-    ctx.fillRect(pad, tableTop, canvas.width - pad * 2, 34);
-    ctx.strokeStyle = "#334155";
-    ctx.strokeRect(pad, tableTop, canvas.width - pad * 2, 34);
-
-    ctx.fillStyle = "#e2e8f0";
-    ctx.font = "bold 12px sans-serif";
-    ctx.fillText(currentLang === "en" ? "Employee" : "Jméno pracovníka", pad + 8, tableTop + 21);
-
-    visibleDates.forEach((dt, i) => {
-      const x = pad + nameColW + i * dayColW;
-      const isWknd = dt.dow === 0 || dt.dow === 6;
-      if (isWknd) {
-        ctx.fillStyle = "#090d16";
-        ctx.fillRect(x, tableTop, dayColW, 34);
-      }
-      ctx.strokeRect(x, tableTop, dayColW, 34);
-      ctx.fillStyle = isWknd ? "#fbbf24" : "#f8fafc";
-      ctx.font = "bold 11px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(`${dt.day}.`, x + dayColW / 2, tableTop + 14);
-      ctx.font = "10px sans-serif";
-      ctx.fillText(dayNames[dt.dow], x + dayColW / 2, tableTop + 28);
-    });
-
-    const sumX = pad + nameColW + visibleDates.length * dayColW;
-    ctx.strokeRect(sumX, tableTop, sumColW, 34);
-    ctx.fillStyle = "#34d399";
-    ctx.font = "bold 11px sans-serif";
-    ctx.fillText(currentLang === "en" ? "Total" : "Celkem", sumX + sumColW / 2, tableTop + 21);
-
-    const badgeColors = {
-      D: { bg: "#fbbf24", fg: "#0f172a" },
-      N: { bg: "#2563eb", fg: "#ffffff" },
-      DOV: { bg: "#10b981", fg: "#0f172a" },
-      NV: { bg: "#14b8a6", fg: "#0f172a" },
-      PN: { bg: "#ef4444", fg: "#ffffff" },
-      A: { bg: "#9333ea", fg: "#ffffff" }
-    };
-
-    rows.forEach((r, idx) => {
-      const ry = tableTop + 34 + idx * rowH;
-      ctx.fillStyle = r.isAg ? "#1e1b4b" : (idx % 2 === 0 ? "#0f172a" : "#162033");
-      ctx.fillRect(pad, ry, canvas.width - pad * 2, rowH);
-      ctx.strokeStyle = "#334155";
-      ctx.strokeRect(pad, ry, canvas.width - pad * 2, rowH);
-
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#f8fafc";
-      ctx.font = "bold 11px sans-serif";
-      ctx.fillText(r.name.slice(0, 26), pad + 8, ry + 14);
-      ctx.fillStyle = "#94a3b8";
-      ctx.font = "9px sans-serif";
-      ctx.fillText(r.role, pad + 8, ry + 26);
-
-      let cnt = 0;
-      let hrs = 0;
-
-      visibleDates.forEach((dt, i) => {
-        const cx = pad + nameColW + i * dayColW;
-        ctx.strokeRect(cx, ry, dayColW, rowH);
-        const entry = r.map[dt.dateStr];
-        if (entry && entry.type) {
-          if (entry.type === "D" || entry.type === "N") cnt++;
-          hrs += getShiftHours(entry, activeDepotId);
-          const col = badgeColors[entry.type] || { bg: "#475569", fg: "#ffffff" };
-          ctx.fillStyle = col.bg;
-          ctx.fillRect(cx + 3, ry + 4, dayColW - 6, rowH - 8);
-          ctx.fillStyle = col.fg;
-          ctx.font = "bold 10px sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(entry.type, cx + dayColW / 2, ry + 20);
-        }
-      });
-
-      ctx.strokeRect(sumX, ry, sumColW, rowH);
-      ctx.fillStyle = "#34d399";
-      ctx.font = "bold 10px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(`${cnt} / ${hrs}h`, sumX + sumColW / 2, ry + 20);
-    });
-
-    const link = document.createElement("a");
-    link.download = `DepotShift_v${APP_VERSION}_${getDepotName(activeDepotId).replace(/\s+/g, "_")}_${getMonthKey()}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-    showToast("Obrázek docházky (.PNG) byl stažen.", "success");
-  }
-
-  function exportRosterAsExcel() {
-    closeModal("modal-export-roster");
-    const visibleDates = getVisibleDatesList();
-    const users = getVisibleRosterUsers();
-    const visibleDateSet = new Set(visibleDates.map(d => d.dateStr));
-    const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
-
-    const header = ["Jméno / Name", "Pozice / Role", "Telefon"];
-    visibleDates.forEach(dt => header.push(`${dt.day}.${dt.month + 1}.`));
-    header.push("Směn / Shifts", "Hodin / Hours");
-
-    const aoa = [header];
-
-    users.forEach(u => {
-      const row = [u.name, u.roleLabel || u.role, u.phone || ""];
-      let cnt = 0, hrs = 0;
-      visibleDates.forEach(dt => {
-        const e = appState.schedules[dt.mKey]?.[activeDepotId]?.[u.id]?.[dt.day];
-        row.push(e && e.type ? e.type : "");
-        if (e && (e.type === "D" || e.type === "N")) cnt++;
-        hrs += getShiftHours(e, activeDepotId);
-      });
-      row.push(cnt, hrs);
-      aoa.push(row);
-    });
-
-    visibleAgSlots.forEach(s => {
-      const row = [s.assignedName ? `${s.assignedName} (AG)` : s.label, `AG (${s.start}-${s.end})`, ""];
-      visibleDates.forEach(dt => {
-        row.push(dt.dateStr === s.date ? s.shift : "");
-      });
-      row.push(1, calcDurationHours(s.start, s.end));
-      aoa.push(row);
-    });
-
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-    XLSX.utils.book_append_sheet(wb, ws, getDepotName(activeDepotId).slice(0, 30));
-    XLSX.writeFile(wb, `DepotShift_v${APP_VERSION}_${getDepotName(activeDepotId).replace(/\s+/g, "_")}_${getMonthKey()}.xlsx`);
-    showToast("Excel soubor (.xlsx) byl stažen.", "success");
-  }
-
-  // ==================== CREATE USER MODAL & TERMINATION & DATABASE WIPE ====================
-  function openCreateUserModal() {
-    document.getElementById("new-user-name").value = "";
-    document.getElementById("new-user-phone").value = "";
-    document.getElementById("new-user-role").value = "warehouse";
-    const activeDep = (draftDepots.find(d => d.id === activeDepotId) || draftDepots[0] || getDepotById(activeDepotId));
-    document.getElementById("new-user-calendar").value = activeDep.calendarMode || "short_long";
-
-    const depotsSource = draftDepots.length ? draftDepots : appState.depots;
-    document.getElementById("new-user-depots-box").innerHTML = depotsSource.map(d => `
-      <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-200 cursor-pointer">
-        <input type="checkbox" value="${d.id}" ${d.id === activeDep.id ? "checked" : ""} class="new-user-depot-chk w-4 h-4 accent-blue-600 rounded" />
-        <span>${d.name}</span>
-      </label>
-    `).join("");
-
-    openModal("modal-create-user");
-  }
-
-  function submitCreateUserModal(e) {
-    e.preventDefault();
-    const name = document.getElementById("new-user-name").value.trim();
-    if (!name) return;
-    const phone = document.getElementById("new-user-phone").value.trim();
-    const role = document.getElementById("new-user-role").value;
-    const calendarMode = document.getElementById("new-user-calendar").value;
-
-    const selectedDepots = Array.from(document.querySelectorAll(".new-user-depot-chk:checked")).map(cb => cb.value);
-    const labels = { admin: "Admin", coordinator: "Koordinátor AG", foreman: "Předák", specialist: "Specialista", warehouse: "Skladník" };
-
-    const slugBase = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 10) || "user";
-    const suffix = Math.floor(10 + Math.random() * 89);
-    const login = `${slugBase}${suffix}`;
-    const pass = `${slugBase}123`;
-    const todayStr = new Date().toISOString().split("T")[0];
-
-    draftUsers.push({
-      id: "u_" + Date.now(),
-      name,
-      phone,
-      role,
-      roleLabel: labels[role] || role,
-      calendarMode,
-      login,
-      pass,
-      token: "tok_" + Math.random().toString(36).slice(2, 10),
-      isScheduleable: !["admin", "coordinator"].includes(role),
-      depots: selectedDepots.length ? selectedDepots : [activeDepotId],
-      terminatedFrom: null,
-      createdAt: todayStr
-    });
-
-    markAdminDraftDirty();
-    closeModal("modal-create-user");
-    renderDraftUsersTable();
-    showToast(`Uživatel "${name}" vytvořen (login: ${login}). Potvrďte kliknutím na „Uložit změny“.`, "success");
-  }
-
-  function openTerminateModal(draftIdx) {
-    terminatingUserIdx = draftIdx;
-    const u = draftUsers[draftIdx];
-    document.getElementById("term-emp-info").innerHTML = `Zaměstnanec: <strong class="text-white">${u.name}</strong> (${u.roleLabel || u.role})`;
-    document.getElementById("term-emp-date").value = new Date().toISOString().split("T")[0];
-    openModal("modal-terminate-emp");
-  }
-
-  function confirmTerminateEmployee() {
-    if (terminatingUserIdx === null) return;
-    const dateVal = document.getElementById("term-emp-date").value;
-    if (!dateVal) {
-      showToast("Vyberte datum ukončení.", "warn");
-      return;
-    }
-    const u = draftUsers[terminatingUserIdx];
-    u.terminatedFrom = dateVal;
-    markAdminDraftDirty();
-
-    Object.keys(appState.schedules || {}).forEach(mKey => {
-      const [yStr, mStr] = mKey.split("-");
-      const yNum = parseInt(yStr, 10);
-      const mNum = parseInt(mStr, 10) - 1;
-      Object.keys(appState.schedules[mKey] || {}).forEach(depId => {
-        const uSched = appState.schedules[mKey][depId]?.[u.id];
-        if (!uSched) return;
-        Object.keys(uSched).forEach(dayKey => {
-          const dNum = parseInt(dayKey, 10);
-          const cellDate = formatDateStr(yNum, mNum, dNum);
-          if (cellDate >= dateVal) {
-            delete uSched[dayKey];
-          }
-        });
-      });
-    });
-
-    closeModal("modal-terminate-emp");
-    renderDraftUsersTable();
-    showToast(`Ukončení pro ${u.name} od ${dateVal} nastaveno. Potvrďte kliknutím na „Uložit změny“.`, "info");
-  }
-
-  function restoreTerminatedUser(draftIdx) {
-    const u = draftUsers[draftIdx];
-    u.terminatedFrom = null;
-    markAdminDraftDirty();
-    renderDraftUsersTable();
-    showToast(`Zaměstnanec ${u.name} obnoven v návrhu. Klikněte na „Uložit změny“.`, "info");
-  }
-
-  function openResetDbModal() {
-    document.getElementById("reset-db-pass").value = "";
-    openModal("modal-reset-db");
-  }
-
-  function confirmResetDatabase() {
-    const entered = document.getElementById("reset-db-pass").value;
-    if (!currentUser || entered !== currentUser.pass) {
-      showToast(currentLang === "en" ? "Incorrect administrator password!" : "Nesprávné heslo administrátora!", "error");
-      return;
-    }
-
-    appState.schedules = {};
-    appState.agSlots = [];
-    appState.requests = [];
-    appState.chats = {};
-    appState.depotUserOrder = {};
-    appState.auditLog = [];
-    addAudit("Vymazání databáze", "Administrátor vymazal veškerá zapsaná data z databáze.");
-
-    closeModal("modal-reset-db");
-    pushToFirebase();
-    renderActiveRoleView();
-    showToast("Databáze byla kompletně vymazána.", "success");
-  }
-
-  // ==================== REST RULE, CELL DRAG & DROP, CELL MODALS ====================
-  function getUserShiftAcrossDepots(mKey, userId, day) {
-    for (const dep of appState.depots) {
-      const e = appState.schedules[mKey]?.[dep.id]?.[userId]?.[day];
-      if (e && e.type) return e;
-    }
-    return null;
-  }
-
-  function violatesNightToDayByDateStr(userId, dateStr, newType) {
-    const p = parseDateStr(dateStr);
-    const prevDt = new Date(p.year, p.month, p.day - 1);
-    const nextDt = new Date(p.year, p.month, p.day + 1);
-
-    if (newType === "D" && getUserShiftAcrossDepots(getMonthKey(prevDt), userId, prevDt.getDate())?.type === "N") {
-      return "Nelze naplánovat Denní směnu (D) hned po Noční směně (N) z předchozího dne!";
-    }
-    if (newType === "N" && getUserShiftAcrossDepots(getMonthKey(nextDt), userId, nextDt.getDate())?.type === "D") {
-      return "Nelze naplánovat Noční směnu (N), protože následující den má pracovník Denní směnu (D)!";
-    }
-    return null;
-  }
-
-  function onShiftDragStart(e, userId, fromDateStr) {
-    e.stopPropagation();
-    rowDragUserId = null;
-    dragPayload = { userId, fromDateStr };
-    e.dataTransfer.effectAllowed = "move";
-  }
-  function onShiftDragOver(e) {
-    if (!dragPayload) return;
-    e.preventDefault();
-    e.currentTarget.classList.add("drag-over");
-  }
-  function onShiftDragLeave(e) {
-    e.currentTarget.classList.remove("drag-over");
-  }
-  function onShiftDrop(e, targetUserId, targetDateStr) {
-    e.currentTarget.classList.remove("drag-over");
-    if (!dragPayload) return;
-    e.stopPropagation();
-
-    if (dragPayload.userId !== targetUserId) {
-      showToast("Přesun směny je povolen pouze v rámci stejného zaměstnance.", "error");
-      dragPayload = null;
-      return;
-    }
-    if (dragPayload.fromDateStr === targetDateStr) return;
-
-    const fromP = parseDateStr(dragPayload.fromDateStr);
-    const toP = parseDateStr(targetDateStr);
-
-    const fromSched = getDepotScheduleMap(fromP.mKey, activeDepotId);
-    const toSched = getDepotScheduleMap(toP.mKey, activeDepotId);
-    if (!fromSched[targetUserId]) fromSched[targetUserId] = {};
-    if (!toSched[targetUserId]) toSched[targetUserId] = {};
-
-    const movingEntry = fromSched[targetUserId][fromP.day];
-    if (!movingEntry || !movingEntry.type) return;
-
-    delete fromSched[targetUserId][fromP.day];
-    const restErr = violatesNightToDayByDateStr(targetUserId, targetDateStr, movingEntry.type);
-    if (restErr) {
-      fromSched[targetUserId][fromP.day] = movingEntry;
-      showToast(restErr, "error");
-      dragPayload = null;
-      return;
-    }
-
-    toSched[targetUserId][toP.day] = movingEntry;
-    const emp = appState.users.find(u => u.id === targetUserId);
-    addAudit("Přesun směny (D&D)", `[${getDepotName(activeDepotId)}] ${emp?.name}: ${movingEntry.type} z ${dragPayload.fromDateStr} na ${targetDateStr}`);
-    dragPayload = null;
-    renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  function openUserCellModal(userId, dateStr) {
-    const user = appState.users.find(u => u.id === userId);
-    const p = parseDateStr(dateStr);
-    const depot = getDepotById(activeDepotId);
-    const entry = getDepotScheduleMap(p.mKey, activeDepotId)[userId]?.[p.day] || {};
-    editingCell = { kind: "user", userId, dateStr };
-
-    document.getElementById("cell-modal-title").textContent = `${user.name} – ${p.day}.${p.month + 1}.${p.year}`;
-    document.getElementById("cell-modal-sub").textContent = `Depo: ${depot.name} • ${user.roleLabel || user.role}`;
-    document.getElementById("btn-delete-ag-slot").classList.add("hidden");
-
-    const btnD = document.getElementById("btn-cell-shift-D");
-    const btnN = document.getElementById("btn-cell-shift-N");
-    btnD.classList.toggle("hidden", !depot.hasDay);
-    btnN.classList.toggle("hidden", !depot.hasNight);
-
-    document.getElementById("cell-time-start").value = entry.start || (entry.type === "N" ? depot.nightStart : depot.dayStart);
-    document.getElementById("cell-time-end").value = entry.end || (entry.type === "N" ? depot.nightEnd : depot.dayEnd);
-    openModal("modal-cell-edit");
-  }
-
-  function openAgCellModal(slotId) {
-    const slot = appState.agSlots.find(s => s.id === slotId);
-    if (!slot) return;
-    const depot = getDepotById(slot.depotId);
-    editingCell = { kind: "ag", slotId };
-
-    document.getElementById("cell-modal-title").textContent = `${slot.assignedName || slot.label} (${slot.date})`;
-    document.getElementById("cell-modal-sub").textContent = `Depo: ${depot.name} • AG`;
-    document.getElementById("btn-delete-ag-slot").classList.remove("hidden");
-    document.getElementById("btn-cell-shift-D").classList.toggle("hidden", !depot.hasDay);
-    document.getElementById("btn-cell-shift-N").classList.toggle("hidden", !depot.hasNight);
-    document.getElementById("cell-time-start").value = slot.start || depot.agStart;
-    document.getElementById("cell-time-end").value = slot.end || depot.agEnd;
-    openModal("modal-cell-edit");
-  }
-
-  function applyCellShift(newType) {
-    if (!editingCell) return;
-
-    if (editingCell.kind === "user") {
-      const { userId, dateStr } = editingCell;
-      if (newType) {
-        const restErr = violatesNightToDayByDateStr(userId, dateStr, newType);
-        if (restErr) {
-          showToast(restErr, "error");
-          return;
-        }
-      }
-      const p = parseDateStr(dateStr);
-      const depotSched = getDepotScheduleMap(p.mKey, activeDepotId);
-      if (!depotSched[userId]) depotSched[userId] = {};
-
-      if (!newType) {
-        delete depotSched[userId][p.day];
-      } else {
-        depotSched[userId][p.day] = { type: newType };
-      }
-      const emp = appState.users.find(u => u.id === userId);
-      addAudit("Úprava směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${dateStr}): "${newType || "Volno"}"`);
-    } else if (editingCell.kind === "ag") {
-      const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
-      if (slot) {
-        if (!newType) {
-          appState.agSlots = appState.agSlots.filter(s => s.id !== slot.id);
-          addAudit("Smazání AG slotu", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date})`);
-        } else {
-          slot.shift = newType;
-          addAudit("Úprava AG směny", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date}): ${newType}`);
-        }
-      }
-    }
-
-    closeModal("modal-cell-edit");
-    renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  function saveCellCustomTime() {
-    if (!editingCell) return;
-    const start = document.getElementById("cell-time-start").value;
-    const end = document.getElementById("cell-time-end").value;
-    if (!start || !end) return;
-
-    if (editingCell.kind === "ag") {
-      const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
-      if (slot) {
-        slot.start = start;
-        slot.end = end;
-        addAudit("Čas AG směny", `[${getDepotName(slot.depotId)}] ${slot.assignedName || slot.label} (${slot.date}): ${start}–${end}`);
-      }
-    } else if (editingCell.kind === "user") {
-      const { userId, dateStr } = editingCell;
-      const p = parseDateStr(dateStr);
-      const depotSched = getDepotScheduleMap(p.mKey, activeDepotId);
-      if (!depotSched[userId]?.[p.day]) {
-        showToast("Nejprve vyberte typ směny (D nebo N).", "warn");
-        return;
-      }
-      depotSched[userId][p.day].start = start;
-      depotSched[userId][p.day].end = end;
-      const emp = appState.users.find(u => u.id === userId);
-      addAudit("Vlastní čas směny", `[${getDepotName(activeDepotId)}] ${emp?.name} (${dateStr}): ${start}–${end}`);
-    }
-
-    closeModal("modal-cell-edit");
-    renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  function deleteAgSlotFromCell() {
-    if (!editingCell || editingCell.kind !== "ag") return;
-    const slot = appState.agSlots.find(s => s.id === editingCell.slotId);
-    appState.agSlots = appState.agSlots.filter(s => s.id !== editingCell.slotId);
-    addAudit("Smazání požadavku AG", `[${getDepotName(slot?.depotId)}] ${slot?.assignedName || slot?.label} (${slot?.date})`);
-    closeModal("modal-cell-edit");
-    renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  // ==================== EXACT SHORT / LONG WEEK (MON–SUN) & MON–FRI SCHEDULER ====================
-  function getIsoMondayWeekIndex(y, m, day) {
-    const dt = new Date(y, m, day);
-    const jsDow = dt.getDay();
-    const mondayOffset = (jsDow + 6) % 7;
-    const mondayDate = new Date(y, m, day - mondayOffset);
-    const epochMonday = new Date(1970, 0, 5);
-    const diffDays = Math.round((mondayDate - epochMonday) / 86400000);
-    return Math.floor(diffDays / 7);
-  }
-
-  function isWorkingDayForCalendar(calendarMode, y, m, day, isTurnusA = true) {
-    const dow = new Date(y, m, day).getDay();
-    if (calendarMode === "mon_fri") {
-      return dow >= 1 && dow <= 5;
-    }
-
-    const weekIdx = getIsoMondayWeekIndex(y, m, day);
-    const isEvenWeek = (weekIdx % 2) === 0;
-    const isLongWeek = isTurnusA ? isEvenWeek : !isEvenWeek;
-
-    if (isLongWeek) {
-      return [1, 2, 5, 6, 0].includes(dow); // Po, Út, Pá, So, Ne
-    } else {
-      return [3, 4].includes(dow); // St, Čt
-    }
-  }
-
-  function runAutoSchedule() {
-    const mKey = getMonthKey(anchorDate);
-    const days = getDaysInMonth(anchorDate);
-    const y = anchorDate.getFullYear();
-    const m = anchorDate.getMonth();
-    const depot = getDepotById(activeDepotId);
-
-    if (!depot.hasDay && !depot.hasNight) {
-      showToast("Toto depo nemá povolenou ani denní ani noční směnu!", "error");
-      return;
-    }
-
-    const depotSched = getDepotScheduleMap(mKey, activeDepotId);
-
-    const coreUsers = appState.users.filter(u =>
-      u.isScheduleable !== false &&
-      u.role !== "admin" &&
-      u.role !== "coordinator" &&
-      Array.isArray(u.depots) && u.depots.includes(activeDepotId)
-    );
-
-    coreUsers.forEach(u => { depotSched[u.id] = {}; });
-
-    const canWorkDay = (u, d, isTurnusA = true) => {
-      const dStr = formatDateStr(y, m, d);
-      if (u.terminatedFrom && dStr >= u.terminatedFrom) return false;
-      if (getUserShiftAcrossDepots(mKey, u.id, d)) return false;
-
-      if (depot.calendarMode === "mon_fri") {
-        const dow = new Date(y, m, d).getDay();
-        if (dow === 0 || dow === 6) return false;
-      }
-
-      const uCal = u.calendarMode || depot.calendarMode || "short_long";
-      return isWorkingDayForCalendar(uCal, y, m, d, isTurnusA);
-    };
-
-    const resolveAllowedShift = (preferred) => {
-      if (preferred === "D" && depot.hasDay) return "D";
-      if (preferred === "N" && depot.hasNight) return "N";
-      return depot.hasDay ? "D" : "N";
-    };
-
-    const foremen = coreUsers.filter(u => u.role === "foreman");
-    foremen.forEach((u, idx) => {
-      const turnusA = idx % 2 === 0;
-      for (let d = 1; d <= days; d++) {
-        if (canWorkDay(u, d, turnusA)) {
-          depotSched[u.id][d] = { type: resolveAllowedShift("N") };
-        }
-      }
-    });
-
-    const pair1 = coreUsers.filter(u => u.name.includes("Doležal"));
-    const pair2 = coreUsers.filter(u => u.name.includes("Hossen") || u.name.includes("Hossain"));
-    const pair3 = coreUsers.filter(u => u.name.includes("Rahman") || u.name.includes("Islam"));
-    const pairedIds = new Set([...pair1, ...pair2, ...pair3].map(u => u.id));
-    const singles = coreUsers.filter(u => u.role !== "foreman" && !pairedIds.has(u.id));
-
-    const assignUnit = (members, turnusA, preferDay) => {
-      for (let d = 1; d <= days; d++) {
-        members.forEach(member => {
-          if (!canWorkDay(member, d, turnusA)) return;
-          const prev = getUserShiftAcrossDepots(mKey, member.id, d - 1)?.type;
-          let type = resolveAllowedShift(preferDay ? "D" : "N");
-          if (type === "D" && prev === "N" && depot.hasNight) type = "N";
-          depotSched[member.id][d] = { type };
-        });
-      }
-    };
-
-    assignUnit(pair1, true, false);
-    assignUnit(pair2, false, false);
-    assignUnit(pair3, true, true);
-
-    singles.forEach((u, idx) => {
-      assignUnit([u], idx % 2 === 0, true);
-    });
-
-    if (depot.hasDay) {
-      for (let d = 1; d <= days; d++) {
-        if (depot.calendarMode === "mon_fri") {
-          const dow = new Date(y, m, d).getDay();
-          if (dow === 0 || dow === 6) continue;
-        }
-        let dCount = coreUsers.filter(u => depotSched[u.id]?.[d]?.type === "D").length;
-        if (dCount < 3) {
-          for (let idx = 0; idx < singles.length; idx++) {
-            const u = singles[idx];
-            if (dCount >= 3) break;
-            if (!canWorkDay(u, d, idx % 2 === 0)) continue;
-            const prev = getUserShiftAcrossDepots(mKey, u.id, d - 1)?.type;
-            const next = getUserShiftAcrossDepots(mKey, u.id, d + 1)?.type;
-            if (prev !== "N" && next !== "D") {
-              depotSched[u.id][d] = { type: "D" };
-              dCount++;
-            }
-          }
-        }
-      }
-    }
-
-    addAudit("Autoplánování", `[${depot.name}] Vygenerován rozpis (${mKey}).`);
-    renderAdminSchedule();
-    pushToFirebase();
-    showToast(`Rozpis pro ${depot.name} byl vygenerován.`, "success");
-  }
-
-  function clearCurrentMonth() {
-    const mKey = getMonthKey(anchorDate);
-    if (!appState.schedules[mKey]) appState.schedules[mKey] = {};
-    appState.schedules[mKey][activeDepotId] = {};
-    addAudit("Vyčištění depa", `[${getDepotName(activeDepotId)}] Vymazány směny pro ${mKey}.`);
-    renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  // ==================== AG REQUESTS (ADMIN & COORDINATOR) ====================
-  function openAgRequestModal() {
-    const sel = document.getElementById("ag-req-depot");
-    sel.innerHTML = appState.depots.map(d => `<option value="${d.id}" ${d.id === activeDepotId ? "selected" : ""}>${d.name}</option>`).join("");
-    const defaultDate = formatDateStr(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
-    document.getElementById("ag-req-date").value = defaultDate;
-    onAgModalDepotChange();
-    openModal("modal-ag-request");
-  }
-
-  function onAgModalDepotChange() {
-    const depotId = document.getElementById("ag-req-depot").value || activeDepotId;
-    const depot = getDepotById(depotId);
-    const shiftSel = document.getElementById("ag-req-shift");
-    let opts = "";
-    if (depot.hasNight) opts += `<option value="N">Noční směna (N)</option>`;
-    if (depot.hasDay) opts += `<option value="D">Denní směna (D)</option>`;
-    if (!opts) opts = `<option value="N">Noční směna (N)</option>`;
-    shiftSel.innerHTML = opts;
-    document.getElementById("ag-req-start").value = depot.agStart || "19:00";
-    document.getElementById("ag-req-end").value = depot.agEnd || "07:00";
-  }
-
-  function createAgRequests() {
-    const depotId = document.getElementById("ag-req-depot").value || activeDepotId;
-    const dateVal = document.getElementById("ag-req-date").value;
-    const count = Math.max(1, parseInt(document.getElementById("ag-req-count").value || "1", 10));
-    const shift = document.getElementById("ag-req-shift").value;
-    const start = document.getElementById("ag-req-start").value || "19:00";
-    const end = document.getElementById("ag-req-end").value || "07:00";
-    if (!dateVal) return;
-
-    const existingForDate = appState.agSlots.filter(s => s.date === dateVal && s.depotId === depotId).length;
-    for (let i = 1; i <= count; i++) {
-      appState.agSlots.push({
-        id: "ag_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-        depotId,
-        date: dateVal,
-        label: `Požadavek AG ${existingForDate + i}`,
-        assignedName: "",
-        shift,
-        start,
-        end
-      });
-    }
-
-    addAudit("Požadavek AG", `[${getDepotName(depotId)}] Vytvořeno ${count}× požadavek AG na ${dateVal}.`);
-    closeModal("modal-ag-request");
-    renderAdminSchedule();
-    pushToFirebase();
-    showToast(`Přidáno ${count} požadavků AG (${getDepotName(depotId)}).`, "success");
-  }
-
-  function getAllowedCoordinatorDepots() {
-    const allowedIds = Array.isArray(currentUser.depots) ? currentUser.depots : [];
-    return appState.depots.filter(d => allowedIds.includes(d.id));
-  }
-
-  function selectCoordDepot(depotId) {
-    coordSelectedDepotId = depotId;
-    renderCoordinatorRequests();
-  }
-
-  function renderCoordinatorRequests() {
-    const allowedDepots = getAllowedCoordinatorDepots();
-    const allowedIds = allowedDepots.map(d => d.id);
-
-    const pillsBox = document.getElementById("coord-depot-pills");
-    if (allowedDepots.length === 0) {
-      pillsBox.innerHTML = `<span class="text-xs text-red-400">Nemáte přiřazeno žádné depo.</span>`;
-      document.getElementById("coord-requests-list").innerHTML = "";
-      return;
-    }
-
-    let pillsHtml = `<button onclick="selectCoordDepot('ALL')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === "ALL" ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">All (${allowedDepots.length})</button>`;
-    pillsHtml += allowedDepots.map(d => `
-      <button onclick="selectCoordDepot('${d.id}')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === d.id ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">${d.name}</button>
-    `).join("");
-    pillsBox.innerHTML = pillsHtml;
-
-    const container = document.getElementById("coord-requests-list");
-    const filtered = appState.agSlots
-      .filter(s => allowedIds.includes(s.depotId) && (coordSelectedDepotId === "ALL" || s.depotId === coordSelectedDepotId))
-      .sort((a, b) => a.date.localeCompare(b.date));
-
-    if (filtered.length === 0) {
-      container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-950/60 rounded-xl border border-slate-800">Žádné požadavky na AG pracovníky.</div>`;
-      return;
-    }
-
-    container.innerHTML = filtered.map(slot => `
-      <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-extrabold">${getDepotName(slot.depotId)}</span>
-            <span class="px-2 py-0.5 rounded bg-purple-600 text-white text-[11px] font-extrabold">${slot.date}</span>
-            <span class="font-bold text-white text-xs">${slot.label}</span>
-            <span class="text-[11px] text-slate-400">(${slot.shift} • ${slot.start}–${slot.end})</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 flex-1 sm:flex-initial">
-          <input type="text" data-ag-id="${slot.id}" value="${slot.assignedName || ""}" placeholder="Jméno pracovníka..."
-            class="coord-ag-input flex-1 sm:w-64 bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
-          <button onclick="deleteAgSlotByCoord('${slot.id}')" class="p-2 rounded-xl bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/30">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function deleteAgSlotByCoord(slotId) {
-    const slot = appState.agSlots.find(s => s.id === slotId);
-    appState.agSlots = appState.agSlots.filter(s => s.id !== slotId);
-    addAudit("Smazání požadavku AG", `[${getDepotName(slot?.depotId)}] ${slot?.label} (${slot?.date})`);
-    renderCoordinatorRequests();
-    pushToFirebase();
-    showToast("Požadavek AG byl smazán.", "info");
-  }
-
-  function saveCoordinatorAgAssignments() {
-    const inputs = document.querySelectorAll(".coord-ag-input");
-    inputs.forEach(inp => {
-      const id = inp.getAttribute("data-ag-id");
-      const slot = appState.agSlots.find(s => s.id === id);
-      if (slot) slot.assignedName = inp.value.trim();
-    });
-    addAudit("Potvrzení AG jmen", "Koordinátor uložil jména agenturních pracovníků.");
-    pushToFirebase();
-    showToast("Jména agenturních pracovníků byla uložena!", "success");
-  }
-
-  function renderCoordinatorSummary() {
-    const mKey = getMonthKey(anchorDate);
-    const allowedIds = getAllowedCoordinatorDepots().map(d => d.id);
-    const locale = currentLang === "en" ? "en-US" : "cs-CZ";
-    document.getElementById("coord-month-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
-    const slots = appState.agSlots.filter(s => s.date.startsWith(mKey) && allowedIds.includes(s.depotId));
-
-    if (slots.length === 0) {
-      document.getElementById("coord-summary-content").innerHTML = `<p class="text-xs text-slate-400 py-4">V tomto měsíci nejsou žádné agenturní směny.</p>`;
-      return;
-    }
-
-    let totalHours = 0;
-    const rows = slots.sort((a, b) => a.date.localeCompare(b.date)).map(s => {
-      const h = calcDurationHours(s.start, s.end);
-      totalHours += h;
-      return `<tr class="border-b border-slate-800">
-        <td class="py-2.5 px-3 font-bold text-blue-500">${getDepotName(s.depotId)}</td>
-        <td class="py-2.5 px-3 font-bold text-white">${s.date}</td>
-        <td class="py-2.5 px-3">${s.assignedName ? `<span class="text-emerald-500 font-bold">${s.assignedName}</span>` : `<span class="text-amber-500">${s.label}</span>`}</td>
-        <td class="py-2.5 px-3">${s.shift}</td>
-        <td class="py-2.5 px-3 font-mono">${s.start} – ${s.end}</td>
-        <td class="py-2.5 px-3 text-right font-bold text-purple-500">${h} h</td>
-      </tr>`;
-    }).join("");
-
-    document.getElementById("coord-summary-content").innerHTML = `
-      <table class="w-full text-left border-collapse text-xs">
-        <thead>
-          <tr class="border-b border-slate-700 text-slate-400 uppercase text-[10px]">
-            <th class="py-2 px-3">Depo</th>
-            <th class="py-2 px-3">Datum</th>
-            <th class="py-2 px-3">Pracovník</th>
-            <th class="py-2 px-3">Směna</th>
-            <th class="py-2 px-3">Čas</th>
-            <th class="py-2 px-3 text-right">Hodin</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-        <tfoot>
-          <tr class="bg-slate-950 font-extrabold text-white">
-            <td colspan="5" class="py-2.5 px-3">Celkem (${slots.length})</td>
-            <td class="py-2.5 px-3 text-right text-emerald-500">${totalHours} h</td>
-          </tr>
-        </tfoot>
-      </table>
-    `;
-  }
-
-  // ==================== ADMIN: SETTINGS (DEPOTS & USERS DRAFT MANAGEMENT) ====================
-  function renderAdminSettingsMain() {
-    if (!hasUnsavedAdminChanges || draftDepots.length === 0 || draftUsers.length === 0) {
-      draftDepots = JSON.parse(JSON.stringify(appState.depots));
-      draftUsers = JSON.parse(JSON.stringify(appState.users));
-      clearAdminDraftDirty();
-    }
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
-  }
-
-  function discardAdminDraftChanges() {
-    draftDepots = JSON.parse(JSON.stringify(appState.depots));
-    draftUsers = JSON.parse(JSON.stringify(appState.users));
-    clearAdminDraftDirty();
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
-    showToast("Dočasné změny byly vráceny zpět.", "info");
-  }
-
-  function saveAllAdminChanges() {
-    if (draftDepots.length > 0) {
-      draftDepots.forEach(d => {
-        if (!d.hasDay && !d.hasNight) d.hasDay = true;
-      });
-      appState.depots = JSON.parse(JSON.stringify(draftDepots));
-    }
-
-    if (!appState.depots.some(d => d.id === activeDepotId)) {
-      activeDepotId = appState.depots[0].id;
-    }
-
-    const validDepotIds = new Set(appState.depots.map(d => d.id));
-    draftUsers.forEach(u => {
-      u.depots = (u.depots || []).filter(id => validDepotIds.has(id));
-    });
-
-    appState.users = JSON.parse(JSON.stringify(draftUsers));
-    clearAdminDraftDirty();
-
-    addAudit("Nastavení dep a uživatelů", "Uloženy změny v nastavení dep, plánovacích kalendářů, uživatelů a časů směn.");
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
-    pushToFirebase();
-    showToast("Všechny změny byly trvale uloženy do databáze!", "success");
-  }
-
-  function createNewDepot() {
-    const inp = document.getElementById("new-depot-name");
-    const name = inp.value.trim();
-    if (!name) return;
-    const newId = "depo_" + Date.now();
-    draftDepots.push({
-      id: newId,
-      name,
-      calendarMode: "short_long",
-      hasDay: true,
-      dayStart: "03:00",
-      dayEnd: "15:00",
-      hasNight: true,
-      nightStart: "18:30",
-      nightEnd: "06:30",
-      agStart: "19:00",
-      agEnd: "07:00"
-    });
-    inp.value = "";
-    markAdminDraftDirty();
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
-    showToast(`Depo "${name}" přidáno do návrhu. Potvrďte kliknutím na „Uložit změny“.`, "info");
-  }
-
-  function deleteDepot(depotId) {
-    if (draftDepots.length <= 1) {
-      showToast("V systému musí zůstat alespoň jedno depo.", "error");
-      return;
-    }
-    const target = draftDepots.find(d => d.id === depotId);
-    draftDepots = draftDepots.filter(d => d.id !== depotId);
-    draftUsers.forEach(u => { u.depots = (u.depots || []).filter(id => id !== depotId); });
-    markAdminDraftDirty();
-    renderDepotsConfigGrid();
-    renderDraftUsersTable();
-    showToast(`Depo "${target?.name}" odebráno z návrhu. Klikněte na „Uložit změny“.`, "info");
-  }
-
-  function updateDepotField(idx, field, value) {
-    if (!draftDepots[idx]) return;
-    draftDepots[idx][field] = value;
-    markAdminDraftDirty();
-  }
-
-  function renderDepotsConfigGrid() {
-    const grid = document.getElementById("depots-config-grid");
-    grid.innerHTML = draftDepots.map((d, idx) => `
-      <div class="p-4 rounded-2xl bg-slate-800/70 border border-slate-700 space-y-3">
-        <div class="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
-          <div class="flex items-center gap-2 flex-1">
-            <i class="fa-solid fa-warehouse text-blue-500"></i>
-            <input type="text" value="${d.name}" oninput="updateDepotField(${idx}, 'name', this.value)" onchange="renderDraftUsersTable()"
-              class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-extrabold text-white w-full max-w-[220px]" />
-          </div>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="saveAllAdminChanges()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold">
-              Uložit změny
-            </button>
-            ${idx === 0 ? "" : `
-              <button type="button" onclick="deleteDepot('${d.id}')" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400" title="Smazat depo">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            `}
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/70">
-          <span class="font-bold text-sky-400"><i class="fa-solid fa-calendar-week mr-1"></i> Plánovací kalendář</span>
-          <select onchange="updateDepotField(${idx}, 'calendarMode', this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-white">
-            <option value="short_long" ${d.calendarMode === "short_long" ? "selected" : ""}>Krátký / Dlouhý (Po–Ne)</option>
-            <option value="mon_fri" ${d.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
-          </select>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-          <label class="inline-flex items-center gap-2 font-bold text-amber-500 cursor-pointer">
-            <input type="checkbox" ${d.hasDay ? "checked" : ""} onchange="updateDepotField(${idx}, 'hasDay', this.checked)" class="w-4 h-4 accent-amber-500 rounded" />
-            <span>Denní směna (D)</span>
-          </label>
-          <div class="flex items-center gap-1.5">
-            <input type="time" value="${d.dayStart}" onchange="updateDepotField(${idx}, 'dayStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
-            <span class="text-slate-400">–</span>
-            <input type="time" value="${d.dayEnd}" onchange="updateDepotField(${idx}, 'dayEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-          <label class="inline-flex items-center gap-2 font-bold text-blue-500 cursor-pointer">
-            <input type="checkbox" ${d.hasNight ? "checked" : ""} onchange="updateDepotField(${idx}, 'hasNight', this.checked)" class="w-4 h-4 accent-blue-600 rounded" />
-            <span>Noční směna (N)</span>
-          </label>
-          <div class="flex items-center gap-1.5">
-            <input type="time" value="${d.nightStart}" onchange="updateDepotField(${idx}, 'nightStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
-            <span class="text-slate-400">–</span>
-            <input type="time" value="${d.nightEnd}" onchange="updateDepotField(${idx}, 'nightEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1 border-t border-slate-700/60">
-          <span class="font-bold text-purple-400"><i class="fa-solid fa-people-arrows mr-1"></i> Výchozí čas AG</span>
-          <div class="flex items-center gap-1.5">
-            <input type="time" value="${d.agStart}" onchange="updateDepotField(${idx}, 'agStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
-            <span class="text-slate-400">–</span>
-            <input type="time" value="${d.agEnd}" onchange="updateDepotField(${idx}, 'agEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
-          </div>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function updateDraftUserField(userIdx, field, value) {
-    if (!draftUsers[userIdx]) return;
-    draftUsers[userIdx][field] = value;
-    markAdminDraftDirty();
-  }
-
-  function toggleDraftUserDepot(userIdx, depotId, checked) {
-    if (!Array.isArray(draftUsers[userIdx].depots)) draftUsers[userIdx].depots = [];
-    if (checked) {
-      if (!draftUsers[userIdx].depots.includes(depotId)) draftUsers[userIdx].depots.push(depotId);
-    } else {
-      draftUsers[userIdx].depots = draftUsers[userIdx].depots.filter(id => id !== depotId);
-    }
-    markAdminDraftDirty();
-  }
-
-  function renderDraftUsersTable() {
-    const tbody = document.getElementById("users-draft-tbody");
-    const depotsSource = draftDepots.length ? draftDepots : appState.depots;
-    tbody.innerHTML = draftUsers.map((u, idx) => {
-      const uDepots = Array.isArray(u.depots) ? u.depots : [];
-      const depotCheckboxes = depotsSource.map(d => {
-        const isChecked = uDepots.includes(d.id);
-        return `<label class="inline-flex items-center gap-1 mr-2 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
-          <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${d.id}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
-          <span>${(d.name || "").replace("Depo ", "")}</span>
-        </label>`;
-      }).join("");
-
-      const termControls = u.id === "u_admin" ? `<span class="text-[10px] text-slate-500">Admin</span>` : `
-        <div class="inline-flex items-center gap-1">
-          ${u.terminatedFrom
-            ? `<button type="button" onclick="restoreTerminatedUser(${idx})" class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold" title="Ukončen od ${u.terminatedFrom}">Obnovit (${u.terminatedFrom})</button>`
-            : `<button type="button" onclick="openTerminateModal(${idx})" class="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 text-[10px] font-bold">Ukončit</button>`
-          }
-          <button type="button" onclick="removeDraftUser(${idx})" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
-      `;
-
-      return `<tr class="${u.terminatedFrom ? "opacity-65" : ""}">
-        <td class="py-2 px-1.5">
-          <input type="text" value="${u.name}" oninput="updateDraftUserField(${idx}, 'name', this.value)"
-            class="w-full min-w-[135px] bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white" />
-        </td>
-        <td class="py-2 px-1.5">
-          <input type="tel" value="${u.phone || ""}" oninput="updateDraftUserField(${idx}, 'phone', this.value)" placeholder="+420..."
-            class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 font-mono" />
-        </td>
-        <td class="py-2 px-1.5">
-          <select onchange="updateDraftUserRole(${idx}, this.value)" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
-            <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
-            <option value="coordinator" ${u.role === "coordinator" ? "selected" : ""}>Koordinátor</option>
-            <option value="foreman" ${u.role === "foreman" ? "selected" : ""}>Předák</option>
-            <option value="specialist" ${u.role === "specialist" ? "selected" : ""}>Specialista</option>
-            <option value="warehouse" ${u.role === "warehouse" ? "selected" : ""}>Skladník</option>
-          </select>
-        </td>
-        <td class="py-2 px-1.5">
-          <select onchange="updateDraftUserField(${idx}, 'calendarMode', this.value)" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-sky-400 font-bold">
-            <option value="short_long" ${(u.calendarMode || "short_long") === "short_long" ? "selected" : ""}>Krátký / Dlouhý</option>
-            <option value="mon_fri" ${u.calendarMode === "mon_fri" ? "selected" : ""}>Pondělí – Pátek</option>
-          </select>
-        </td>
-        <td class="py-2 px-1.5 min-w-[140px]">
-          <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
-        </td>
-        <td class="py-2 px-1.5">
-          <input type="text" value="${u.login}" oninput="updateDraftUserField(${idx}, 'login', this.value.trim())"
-            class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
-        </td>
-        <td class="py-2 px-1.5">
-          <input type="text" value="${u.pass}" oninput="updateDraftUserField(${idx}, 'pass', this.value)"
-            class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
-        </td>
-        <td class="py-2 px-1.5 text-center">
-          <input type="checkbox" ${u.isScheduleable !== false && u.role !== "admin" && u.role !== "coordinator" ? "checked" : ""}
-            onchange="updateDraftUserField(${idx}, 'isScheduleable', this.checked)" class="w-4 h-4 accent-blue-600" />
-        </td>
-        <td class="py-2 px-1.5 text-center">
-          <button type="button" onclick="openQrForUser('${u.id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-500 border border-slate-700">
-            <i class="fa-solid fa-qrcode"></i>
-          </button>
-        </td>
-        <td class="py-2 px-1.5 text-right whitespace-nowrap">${termControls}</td>
-      </tr>`;
-    }).join("");
-  }
-
-  function updateDraftUserRole(idx, role) {
-    const labels = { admin: "Admin", coordinator: "Koordinátor AG", foreman: "Předák", specialist: "Specialista", warehouse: "Skladník" };
-    draftUsers[idx].role = role;
-    draftUsers[idx].roleLabel = labels[role] || role;
-    draftUsers[idx].isScheduleable = !["admin", "coordinator"].includes(role);
-    markAdminDraftDirty();
-    renderDraftUsersTable();
-  }
-
-  function removeDraftUser(idx) {
-    draftUsers.splice(idx, 1);
-    markAdminDraftDirty();
-    renderDraftUsersTable();
-  }
-
-  // ==================== EMPLOYEE VIEW ====================
-  function getEmployeeMergedDayEntry(mKey, userId, day) {
-    for (const dep of appState.depots) {
-      const e = appState.schedules[mKey]?.[dep.id]?.[userId]?.[day];
-      if (e && e.type) {
-        return { ...e, depotId: dep.id, depotName: dep.name, depotObj: dep };
-      }
-    }
-    return null;
-  }
-
-  function renderEmployeeHome() {
-    const mKey = getMonthKey(anchorDate);
-    const days = getDaysInMonth(anchorDate);
-    const y = anchorDate.getFullYear();
-    const m = anchorDate.getMonth();
-    const locale = currentLang === "en" ? "en-US" : "cs-CZ";
-
-    document.getElementById("emp-month-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
-
-    const myDepotNames = (currentUser.depots || []).map(id => getDepotName(id)).join(", ") || "—";
-    const calLabel = getCalendarModeLabel(currentUser.calendarMode || "short_long");
-    document.getElementById("emp-assigned-depots-bar").innerHTML = `<i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Depa: <strong class="text-white">${myDepotNames}</strong> • <i class="fa-solid fa-calendar-week text-sky-400 ml-2 mr-1"></i> Kalendář: <strong class="text-white">${calLabel}</strong>`;
-
-    const rejected = appState.requests.find(r => r.userId === currentUser.id && r.status === "rejected" && !r.seenByUser);
-    const rejBanner = document.getElementById("emp-rejected-banner");
-    if (rejected) {
-      rejBanner.classList.remove("hidden");
-      document.getElementById("emp-rejected-text").textContent = `Požadavek (${rejected.type}) na dny ${rejected.dates.join(", ")} byl zamítnut.`;
-    } else {
-      rejBanner.classList.add("hidden");
-    }
-
-    const thread = appState.chats[currentUser.id] || [];
-    const hasUnread = thread.some(msg => msg.senderRole === "admin" && !msg.readByEmp);
-    document.getElementById("emp-unread-badge").classList.toggle("hidden", !hasUnread);
-
-    let cntD = 0, cntN = 0, cntOff = 0, totalHours = 0;
-
-    for (let d = 1; d <= days; d++) {
-      const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
-      if (!entry || !entry.type) continue;
-      if (entry.type === "D") cntD++;
-      else if (entry.type === "N") cntN++;
-      else cntOff++;
-      totalHours += getShiftHours(entry, entry.depotId);
-    }
-
-    document.getElementById("emp-stats-grid").innerHTML = `
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
-        <div class="text-[10px] uppercase text-slate-400 font-bold">Denní (D)</div>
-        <div class="text-xl font-extrabold text-amber-500 mt-0.5">${cntD}</div>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
-        <div class="text-[10px] uppercase text-slate-400 font-bold">Noční (N)</div>
-        <div class="text-xl font-extrabold text-blue-500 mt-0.5">${cntN}</div>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
-        <div class="text-[10px] uppercase text-slate-400 font-bold">Celkem směn</div>
-        <div class="text-xl font-extrabold text-white mt-0.5">${cntD + cntN}</div>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
-        <div class="text-[10px] uppercase text-slate-400 font-bold">DOV / NV / PN</div>
-        <div class="text-xl font-extrabold text-emerald-500 mt-0.5">${cntOff}</div>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 col-span-2 sm:col-span-1">
-        <div class="text-[10px] uppercase text-slate-400 font-bold">Hodin</div>
-        <div class="text-xl font-extrabold text-sky-500 mt-0.5">${totalHours} h</div>
-      </div>
-    `;
-
-    const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;
-    let calHtml = "";
-    for (let i = 0; i < firstDow; i++) {
-      calHtml += `<div class="h-24 rounded-xl bg-slate-950/40 border border-slate-800/40"></div>`;
-    }
-
-    for (let d = 1; d <= days; d++) {
-      const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
-      const dep = entry?.depotObj || getDepotById(activeDepotId);
-      const typeMeta = {
-        D: { label: "DENNÍ", cls: "bg-amber-400 text-slate-950", time: `${dep.dayStart}–${dep.dayEnd}` },
-        N: { label: "NOČNÍ", cls: "bg-blue-600 text-white", time: `${dep.nightStart}–${dep.nightEnd}` },
-        DOV: { label: "DOVOLENÁ", cls: "bg-emerald-500 text-slate-950", time: "Celý den" },
-        NV: { label: "NÁHR. VOLNO", cls: "bg-teal-500 text-slate-950", time: "Celý den" },
-        PN: { label: "NEMOC / PN", cls: "bg-red-500 text-white", time: "Celý den" },
-        A: { label: "ABSENCE", cls: "bg-purple-600 text-white", time: "—" }
-      };
-
-      const meta = entry?.type ? typeMeta[entry.type] : null;
-      const customTime = (entry?.start && entry?.end) ? `${entry.start}–${entry.end}` : meta?.time;
-      const shortDepot = entry?.depotName ? entry.depotName.replace("Depo ", "") : "";
-
-      calHtml += `
-        <div class="min-h-[92px] rounded-xl p-1.5 border flex flex-col justify-between ${meta ? "bg-slate-800/90 border-slate-700" : "bg-slate-950/60 border-slate-800/70"}">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold ${meta ? "text-white" : "text-slate-500"}">${d}.</span>
-            ${shortDepot ? `<span class="text-[9px] font-bold px-1 rounded bg-slate-900/80 text-slate-300">${shortDepot}</span>` : ""}
-          </div>
-          ${meta ? `
-            <div class="rounded-lg px-1.5 py-1 text-center ${meta.cls}">
-              <div class="text-[10px] font-extrabold leading-tight">${meta.label}</div>
-              <div class="text-[9px] opacity-90 leading-tight mt-0.5">${customTime}</div>
-            </div>
-          ` : `<div class="text-center text-slate-600 text-xs pb-2">—</div>`}
-        </div>
-      `;
-    }
-    document.getElementById("emp-calendar-grid").innerHTML = calHtml;
-  }
-
-  function dismissRejectedNotice() {
-    appState.requests.forEach(r => {
-      if (r.userId === currentUser.id && r.status === "rejected") r.seenByUser = true;
-    });
-    renderEmployeeHome();
-    pushToFirebase();
-  }
-
-  function openEmployeeRequestModal() {
-    empReqType = "DOV";
-    empReqDates = [];
-    document.getElementById("emp-req-note").value = "";
-    selectEmpReqType("DOV");
-    renderEmpRequestCalendar();
-    openModal("modal-emp-request");
-  }
-
-  function selectEmpReqType(type) {
-    empReqType = type;
-    ["DOV", "NV", "PN"].forEach(tKey => {
-      const btn = document.getElementById("req-type-" + tKey);
-      if (tKey === type) {
-        btn.className = "req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-amber-500/20 border-amber-400 text-amber-500";
-      } else {
-        btn.className = "req-type-btn p-3 rounded-xl border text-xs font-extrabold text-left transition bg-slate-800 border-slate-700 text-slate-300";
-      }
-    });
-  }
-
-  function renderEmpRequestCalendar() {
-    const mKey = getMonthKey(anchorDate);
-    const days = getDaysInMonth(anchorDate);
-    const y = anchorDate.getFullYear();
-    const m = anchorDate.getMonth();
-    const firstDow = (new Date(y, m, 1).getDay() + 6) % 7;
-
-    document.getElementById("emp-req-selected-count").textContent = `Vybráno: ${empReqDates.length}`;
-
-    let html = "";
-    for (let i = 0; i < firstDow; i++) html += `<div></div>`;
-
-    for (let d = 1; d <= days; d++) {
-      const dateStr = formatDateStr(y, m, d);
-      const entry = getEmployeeMergedDayEntry(mKey, currentUser.id, d);
-      const shiftType = entry?.type || "";
-      const isSelected = empReqDates.includes(dateStr);
-
-      let baseCls = "bg-slate-800/70 border-slate-700 text-slate-400";
-      if (shiftType === "D") baseCls = "bg-amber-500/15 border-amber-500/40 text-amber-500";
-      if (shiftType === "N") baseCls = "bg-blue-500/15 border-blue-500/40 text-blue-500";
-      if (isSelected) baseCls = "bg-emerald-500 border-emerald-300 text-slate-950 font-extrabold ring-2 ring-emerald-300";
-
-      html += `
-        <button type="button" onclick="toggleEmpReqDate('${dateStr}')"
-          class="p-2 rounded-xl border text-center transition flex flex-col items-center justify-center ${baseCls}">
-          <span class="text-xs font-bold">${d}.</span>
-          <span class="text-[9px] uppercase">${shiftType || "—"}</span>
-        </button>
-      `;
-    }
-    document.getElementById("emp-req-calendar").innerHTML = html;
-  }
-
-  function toggleEmpReqDate(dateStr) {
-    const idx = empReqDates.indexOf(dateStr);
-    if (idx >= 0) empReqDates.splice(idx, 1);
-    else empReqDates.push(dateStr);
-    empReqDates.sort();
-    renderEmpRequestCalendar();
-  }
-
-  function submitEmployeeRequest() {
-    if (empReqDates.length === 0) {
-      showToast("Vyberte v kalendáři alespoň jeden den.", "warn");
-      return;
-    }
-    const note = document.getElementById("emp-req-note").value.trim();
-    const typeNames = { DOV: "Žádost o Dovolenou", NV: "Žádost o Náhradní volno", PN: "Nahlášení PN / Lékař" };
-
-    appState.requests.unshift({
-      id: "req_" + Date.now(),
-      userId: currentUser.id,
-      userName: currentUser.name,
-      type: empReqType,
-      typeLabel: typeNames[empReqType],
-      dates: [...empReqDates],
-      note,
-      status: "pending",
-      seenByUser: false,
-      createdAt: new Date().toLocaleString("cs-CZ")
-    });
-
-    if (!appState.chats[currentUser.id]) appState.chats[currentUser.id] = [];
-    appState.chats[currentUser.id].push({
-      id: "m_" + Date.now(),
-      senderRole: "employee",
-      senderName: currentUser.name,
-      text: `📋 Požadavek: ${typeNames[empReqType]} (${empReqDates.join(", ")})${note ? " – " + note : ""}`,
-      time: new Date().toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" }),
-      readByAdmin: false,
-      readByEmp: true
-    });
-
-    addAudit("Nový požadavek zaměstnance", `${currentUser.name}: ${typeNames[empReqType]} (${empReqDates.join(", ")})`);
-    closeModal("modal-emp-request");
-    pushToFirebase();
-    showToast("Požadavek byl odeslán.", "success");
-  }
-
-  // ==================== ADMIN REQUESTS & CHAT ====================
-  function updateAdminBadges() {
-    const pendingCount = appState.requests.filter(r => r.status === "pending").length;
-    const bellCount = document.getElementById("admin-req-count");
-    const tabCount = document.getElementById("chat-tab-req-count");
-    if (bellCount) bellCount.textContent = pendingCount;
-    if (tabCount) tabCount.textContent = pendingCount;
-  }
-
-  function openAdminRequestsModal() {
-    renderAdminRequestsList();
-    openModal("modal-admin-requests");
-  }
-
-  function renderAdminRequestsList() {
-    const container = document.getElementById("admin-requests-list");
-    const pending = appState.requests.filter(r => r.status === "pending");
-
-    if (pending.length === 0) {
-      container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Žádné nevyřízené požadavky.</div>`;
-      return;
-    }
-
-    container.innerHTML = pending.map(r => `
-      <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2.5">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="font-extrabold text-sm text-white">${r.userName}</div>
-            <div class="text-xs font-bold text-amber-500">${r.typeLabel} (${r.type})</div>
-          </div>
-          <span class="text-[10px] text-slate-400">${r.createdAt}</span>
-        </div>
-        <div class="text-xs text-slate-200 bg-slate-900/90 p-2.5 rounded-lg border border-slate-700/70">
-          <strong>Dny:</strong> ${r.dates.join(", ")}
-          ${r.note ? `<div class="text-slate-400 mt-1">Poznámka: ${r.note}</div>` : ""}
-        </div>
-        <div class="flex justify-end gap-2">
-          <button onclick="resolveEmployeeRequest('${r.id}', 'rejected')" class="px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 text-xs font-bold">
-            Zamítnout
-          </button>
-          <button onclick="resolveEmployeeRequest('${r.id}', 'approved')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">
-            Potvrdit
-          </button>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function resolveEmployeeRequest(reqId, decision) {
-    const req = appState.requests.find(r => r.id === reqId);
-    if (!req) return;
-    req.status = decision;
-
-    if (!appState.chats[req.userId]) appState.chats[req.userId] = [];
-
-    if (decision === "approved") {
-      const empObj = appState.users.find(u => u.id === req.userId);
-      const fallbackDepot = (empObj && empObj.depots && empObj.depots[0]) ? empObj.depots[0] : activeDepotId;
-
-      req.dates.forEach(dateStr => {
-        const p = parseDateStr(dateStr);
-        let targetDepot = fallbackDepot;
-        for (const dep of appState.depots) {
-          if (appState.schedules[p.mKey]?.[dep.id]?.[req.userId]?.[p.day]) {
-            targetDepot = dep.id;
-            break;
-          }
-        }
-        const depotSched = getDepotScheduleMap(p.mKey, targetDepot);
-        if (!depotSched[req.userId]) depotSched[req.userId] = {};
-        depotSched[req.userId][p.day] = { type: req.type };
-      });
-
-      appState.chats[req.userId].push({
-        id: "m_" + Date.now(),
-        senderRole: "admin",
-        senderName: currentUser.name,
-        text: `✅ Požadavek (${req.typeLabel}) na dny ${req.dates.join(", ")} byl POTVRZEN.`,
-        time: new Date().toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" }),
-        readByAdmin: true,
-        readByEmp: false
-      });
-
-      addAudit("Schválení požadavku", `${req.userName}: ${req.typeLabel} (${req.dates.join(", ")})`);
-      showToast("Požadavek potvrzen.", "success");
-    } else {
-      appState.chats[req.userId].push({
-        id: "m_" + Date.now(),
-        senderRole: "admin",
-        senderName: currentUser.name,
-        text: `❌ Požadavek (${req.typeLabel}) na dny ${req.dates.join(", ")} byl ZAMÍTNUT.`,
-        time: new Date().toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" }),
-        readByAdmin: true,
-        readByEmp: false
-      });
-
-      addAudit("Zamítnutí požadavku", `${req.userName}: ${req.typeLabel} (${req.dates.join(", ")})`);
-      showToast("Požadavek zamítnut.", "info");
-    }
-
-    updateAdminBadges();
-    renderAdminRequestsList();
-    if (activeAdminTab === "schedule") renderAdminSchedule();
-    pushToFirebase();
-  }
-
-  function openEmployeeChatModal() {
-    const thread = appState.chats[currentUser.id] || [];
-    thread.forEach(m => { if (m.senderRole === "admin") m.readByEmp = true; });
-    renderEmployeeChatMessages();
-    openModal("modal-emp-chat");
-    pushToFirebase(true);
-  }
-
-  function renderEmployeeChatMessages() {
-    const box = document.getElementById("emp-chat-messages");
-    const thread = appState.chats[currentUser.id] || [];
-    if (thread.length === 0) {
-      box.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">Zatím žádné zprávy.</div>`;
-      return;
-    }
-    box.innerHTML = thread.map(m => {
-      const isMe = m.senderRole === "employee";
-      return `<div class="flex flex-col ${isMe ? "items-end" : "items-start"}">
-        <div class="max-w-[82%] px-3.5 py-2 rounded-2xl text-xs ${isMe ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}">
-          <div class="text-[10px] opacity-75 font-bold mb-0.5">${m.senderName} • ${m.time}</div>
-          <div>${m.text}</div>
-        </div>
-      </div>`;
-    }).join("");
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function sendEmployeeChatMessage(e) {
-    e.preventDefault();
-    const inp = document.getElementById("emp-chat-input");
-    const text = inp.value.trim();
-    if (!text) return;
-
-    if (!appState.chats[currentUser.id]) appState.chats[currentUser.id] = [];
-    appState.chats[currentUser.id].push({
-      id: "m_" + Date.now(),
-      senderRole: "employee",
-      senderName: currentUser.name,
-      text,
-      time: new Date().toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" }),
-      readByAdmin: false,
-      readByEmp: true
-    });
-    inp.value = "";
-    renderEmployeeChatMessages();
-    pushToFirebase();
-  }
-
-  function renderAdminChatTab() {
-    const employees = appState.users.filter(u => u.role !== "admin" && u.role !== "coordinator");
-    if (!selectedChatUserId && employees.length > 0) selectedChatUserId = employees[0].id;
-
-    const threadsBox = document.getElementById("admin-chat-threads");
-    threadsBox.innerHTML = employees.map(u => {
-      const thread = appState.chats[u.id] || [];
-      const unread = thread.filter(m => m.senderRole === "employee" && !m.readByAdmin).length;
-      const active = selectedChatUserId === u.id;
-      return `<button onclick="selectAdminChatThread('${u.id}')"
-        class="w-full p-2.5 rounded-xl text-left flex items-center justify-between transition ${active ? "bg-blue-600 text-white" : "bg-slate-800/60 hover:bg-slate-800 text-slate-200"}">
-        <div>
-          <div class="text-xs font-bold">${u.name}</div>
-          <div class="text-[10px] opacity-75">${thread.length} zpráv</div>
-        </div>
-        ${unread > 0 ? `<span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold">${unread}</span>` : ""}
-      </button>`;
-    }).join("");
-
-    renderAdminActiveConversation();
-  }
-
-  function selectAdminChatThread(userId) {
-    selectedChatUserId = userId;
-    const thread = appState.chats[userId] || [];
-    thread.forEach(m => { if (m.senderRole === "employee") m.readByAdmin = true; });
-    renderAdminChatTab();
-    pushToFirebase(true);
-  }
-
-  function renderAdminActiveConversation() {
-    const emp = appState.users.find(u => u.id === selectedChatUserId);
-    const hdr = document.getElementById("admin-chat-header");
-    const box = document.getElementById("admin-chat-messages");
-    if (!emp) return;
-
-    hdr.textContent = `${emp.name} (${emp.roleLabel || emp.role}) ${emp.phone ? "• " + emp.phone : ""}`;
-    const thread = appState.chats[emp.id] || [];
-    if (thread.length === 0) {
-      box.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">Žádné zprávy.</div>`;
-      return;
-    }
-
-    box.innerHTML = thread.map(m => {
-      const isAdmin = m.senderRole === "admin";
-      return `<div class="flex flex-col ${isAdmin ? "items-end" : "items-start"}">
-        <div class="max-w-[80%] px-3.5 py-2 rounded-2xl text-xs ${isAdmin ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}">
-          <div class="text-[10px] opacity-75 font-bold mb-0.5">${m.senderName} • ${m.time}</div>
-          <div>${m.text}</div>
-        </div>
-      </div>`;
-    }).join("");
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function sendAdminChatReply(e) {
-    e.preventDefault();
-    if (!selectedChatUserId) return;
-    const inp = document.getElementById("admin-chat-input");
-    const text = inp.value.trim();
-    if (!text) return;
-
-    if (!appState.chats[selectedChatUserId]) appState.chats[selectedChatUserId] = [];
-    appState.chats[selectedChatUserId].push({
-      id: "m_" + Date.now(),
-      senderRole: "admin",
-      senderName: currentUser.name,
-      text,
-      time: new Date().toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" }),
-      readByAdmin: true,
-      readByEmp: false
-    });
-    inp.value = "";
-    renderAdminActiveConversation();
-    pushToFirebase();
-  }
-
-  // ==================== AUDIT LOG & QR CODES ====================
-  function renderAuditTab() {
-    const tbody = document.getElementById("audit-log-tbody");
-    if (appState.auditLog.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-500">Zatím žádné záznamy.</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = appState.auditLog.map(item => `
-      <tr>
-        <td class="py-2 px-3 font-mono text-slate-400 whitespace-nowrap">${item.time}</td>
-        <td class="py-2 px-3 font-bold text-white">${item.actor}</td>
-        <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-blue-500 font-semibold">${item.type}</span></td>
-        <td class="py-2 px-3 text-slate-300">${item.detail}</td>
-      </tr>
-    `).join("");
-  }
-
-  function exportAuditCSV() {
-    const NL = String.fromCharCode(10);
-    let csv = "\uFEFFCas;Uzivatel;Typ;Detail" + NL;
-    appState.auditLog.forEach(a => {
-      csv += `"${a.time}";"${a.actor}";"${a.type}";"${a.detail}"` + NL;
-    });
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `DepotShift_v${APP_VERSION}_AuditLog.csv`;
-    a.click();
-  }
-
-  function showMyQrModal() {
-    if (currentUser) openQrForUser(currentUser.id);
-  }
-
-  function openQrForUser(userId) {
-    const u = (draftUsers.length ? draftUsers : appState.users).find(x => x.id === userId);
-    if (!u) return;
-    const baseUrl = window.location.href.split("?")[0];
-    const qrUrl = `${baseUrl}?token=${encodeURIComponent(u.token)}`;
-
-    document.getElementById("qr-modal-name").textContent = `QR: ${u.name}`;
-    document.getElementById("qr-link-text").textContent = qrUrl;
-    const box = document.getElementById("qr-code-box");
-    box.innerHTML = "";
-    new QRCode(box, { text: qrUrl, width: 180, height: 180 });
-    openModal("modal-qr");
-  }
-
-  function copyQrLink() {
-    const txt = document.getElementById("qr-link-text").textContent;
-    navigator.clipboard?.writeText(txt);
-    showToast("Odkaz zkopírován.", "success");
-  }
-
-  // ==================== INITIALIZATION ====================
-  async function initApp() {
-    const savedLang = safeStorage.get("depotshift_lang") || "cs";
-    applyLanguage(savedLang);
-
-    const savedTheme = safeStorage.get("depotshift_theme") || "dark";
-    applyTheme(savedTheme);
-
-    const cached = safeStorage.get("depotshift_cache");
-    if (cached) {
-      try { mergeRemoteState(JSON.parse(cached)); } catch (e) {}
-    }
-    ensureMultiDepotConsistency();
-
-    await pullFromFirebase(true);
-
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    if (token) {
-      const tokenUser = appState.users.find(u => u.token === token);
-      if (tokenUser) {
-        completeLogin(tokenUser);
-        return;
-      }
-    }
-
-    const savedUid = safeStorage.get("depotshift_session_uid");
-    if (savedUid) {
-      const savedUser = appState.users.find(u => u.id === savedUid);
-      if (savedUser) completeLogin(savedUser);
-    }
-
-    setInterval(() => pullFromFirebase(true), 15000);
-  }
-
-  window.addEventListener("DOMContentLoaded", initApp);
-</script>
+<script src="js/state.js"></script>
+<script src="js/scheduler.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
