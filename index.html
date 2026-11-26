@@ -92,10 +92,6 @@
           <i class="fa-solid fa-gear text-blue-400"></i> <span id="lbl-btn-settings">Nastavení</span>
         </button>
 
-        <button type="button" onclick="openChangePasswordModal()" class="px-3 py-2 rounded-xl bg-slate-800 hover:border-emerald-500 border border-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5" title="Změnit vlastní heslo">
-          <i class="fa-solid fa-key text-emerald-400"></i> <span id="lbl-btn-changepass" class="hidden sm:inline">Heslo</span>
-        </button>
-
         <button type="button" onclick="toggleLanguage()" class="lang-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5">
           <i class="fa-solid fa-globe text-blue-400"></i> <span>EN</span>
         </button>
@@ -165,7 +161,7 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="lbl-btn-auto">Autoplánování</span> (<span id="auto-depot-name"></span>)
           </button>
           <button onclick="applySmartSortToActiveDepot()" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="lbl-btn-sort">Seřadit dle pozic</span>
+            <i class="fa-solid fa-arrow-down-short-wide"></i> <span id="lbl-btn-sort">Seřadit dle pravidel</span>
           </button>
           <button onclick="openAgRequestModal()" class="px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
             <i class="fa-solid fa-user-plus"></i> <span id="lbl-btn-add-ag">Požadavek AG</span>
@@ -182,7 +178,7 @@
       <div class="bg-slate-900/70 border border-slate-800 rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px]">
         <div id="admin-legend-items" class="flex flex-wrap items-center gap-2"></div>
         <div class="text-slate-400">
-          <i class="fa-solid fa-grip-vertical text-sky-400"></i> <span id="lbl-drag-hint">Přetažením jména změníte pořadí • Kliknutím upravíte směnu</span>
+          <i class="fa-solid fa-grip-vertical text-sky-400"></i> <span id="lbl-drag-hint">Řazení: 1. Směna 1/2 • 2. Pozice • 3. Příjmení</span>
         </div>
       </div>
 
@@ -254,7 +250,6 @@
           <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- Firebase Auth Connection Key (for auth != null rules) -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h4 class="text-xs font-extrabold text-sky-400 flex items-center gap-1.5">
@@ -275,11 +270,14 @@
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div>
               <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Administrace uživatelů, rolí, oprávnění a dep</span>
+                <i class="fa-solid fa-users-gear text-emerald-500"></i> <span id="lbl-users-title">Administrace uživatelů, rolí, směn 1/2, oprávnění a dep</span>
               </h3>
               <p id="lbl-users-sub" class="text-xs text-slate-400 mt-0.5"></p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="openChangePasswordModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:border-emerald-500 border border-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-key text-emerald-400"></i> <span id="lbl-btn-changepass">Změna hesla</span>
+              </button>
               <button type="button" onclick="openCreateUserModal()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow">
                 <i class="fa-solid fa-user-plus"></i> <span id="lbl-btn-add-user">Vytvořit uživatele</span>
               </button>
@@ -296,7 +294,7 @@
                   <th class="py-2.5 px-1.5">Jméno</th>
                   <th class="py-2.5 px-1.5">Telefon</th>
                   <th class="py-2.5 px-1.5">Typ / Role</th>
-                  <th class="py-2.5 px-1.5">Kalendář</th>
+                  <th class="py-2.5 px-1.5">Kalendář / Směna</th>
                   <th class="py-2.5 px-1.5">Oprávnění</th>
                   <th class="py-2.5 px-1.5">Depa</th>
                   <th class="py-2.5 px-1.5">Login</th>
@@ -529,8 +527,15 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-400 mb-1">Typ kalendáře</label>
-          <select id="new-user-calendar" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-400 font-bold"></select>
+          <select id="new-user-calendar" onchange="onNewUserCalendarChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-400 font-bold"></select>
         </div>
+      </div>
+      <div id="new-user-shiftgroup-wrap">
+        <label class="block text-xs font-bold text-slate-400 mb-1">Turnus (Krátký / Dlouhý)</label>
+        <select id="new-user-shiftgroup" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-extrabold text-amber-400">
+          <option value="1">Směna 1 (2.11.2026 = dlouhý týden)</option>
+          <option value="2">Směna 2 (2.11.2026 = krátký týden / volno)</option>
+        </select>
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-400 mb-1.5">Oprávnění (jako Admin)</label>
