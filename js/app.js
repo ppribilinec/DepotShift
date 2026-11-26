@@ -1,19 +1,55 @@
+let failedLoginAttempts = 0;
+let loginLockoutUntil = 0;
+let lockoutTicker = null;
+
+async function ensureFirebaseAuth() {
+  const apiKey = getFirebaseApiKey();
+  if (!apiKey) return null;
+  if (firebaseAuthToken) return firebaseAuthToken;
+
+  try {
+    const res = await fetchWithTimeout(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${encodeURIComponent(apiKey)}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ returnSecureToken: true })
+      },
+      6000
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data && data.idToken) {
+      firebaseAuthToken = data.idToken;
+      return firebaseAuthToken;
+    }
+  } catch (e) {}
+  return null;
+}
+
+function getAuthenticatedDbUrl(token) {
+  if (token) {
+    return `${FIREBASE_DB_BASE}?auth=${encodeURIComponent(token)}`;
+  }
+  return FIREBASE_DB_BASE;
+}
+
 function updateSyncBadges(online, labelText) {
   const loginBadge = document.getElementById("login-sync-badge");
   const headerBadge = document.getElementById("header-sync-badge");
   if (online) {
     if (loginBadge) {
       loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30";
-      loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${labelText || "Firebase Online"}`;
+      loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${escapeHtml(labelText || "Firebase Online")}`;
     }
     if (headerBadge) {
       headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30";
-      headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ${labelText || "Online"}`;
+      headerBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ${escapeHtml(labelText || "Online")}`;
     }
   } else {
     if (loginBadge) {
       loginBadge.className = "inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-500 border border-amber-500/30";
-      loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> ${labelText || "Lokální režim"}`;
+      loginBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> ${escapeHtml(labelText || "Lokální režim")}`;
     }
     if (headerBadge) {
       headerBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-500 border border-amber-500/30";
@@ -55,19 +91,26 @@ async function pullFromFirebase(silent = true) {
   }
 
   try {
-    const res = await fetchWithTimeout(FIREBASE_DB_URL, {
+    const token = await ensureFirebaseAuth();
+    const res = await fetchWithTimeout(getAuthenticatedDbUrl(token), {
       method: "GET",
       headers: { "Accept": "application/json" }
     }, 6000);
+    if (res.status === 401 || res.status === 403) {
+      firebaseAuthToken = null;
+      updateSyncBadges(false, "Vyžaduje auth token");
+      if (!silent) showToast("Firebase vyžaduje přihlášení (auth != null). Zadejte Web API klíč v Nastavení -> Depa.", "warn");
+      return;
+    }
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
     if (data && typeof data === "object") {
       mergeRemoteState(data);
-      safeStorage.set("depotshift_cache", JSON.stringify(appState));
+      persistSafeLocalCache();
     } else {
       await pushToFirebase(true);
     }
-    updateSyncBadges(true, "Firebase Online");
+    updateSyncBadges(true, token ? "Firebase Auth Online" : "Firebase Online");
     if (currentUser) {
       const refreshed = appState.users.find(u => u.id === currentUser.id);
       if (refreshed) {
@@ -87,13 +130,20 @@ async function pullFromFirebase(silent = true) {
 
 async function pushToFirebase(silent = false) {
   appState.version = APP_VERSION;
-  safeStorage.set("depotshift_cache", JSON.stringify(appState));
+  persistSafeLocalCache();
   try {
-    const res = await fetchWithTimeout(FIREBASE_DB_URL, {
+    const token = await ensureFirebaseAuth();
+    const res = await fetchWithTimeout(getAuthenticatedDbUrl(token), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(appState)
     }, 6000);
+    if (res.status === 401 || res.status === 403) {
+      firebaseAuthToken = null;
+      updateSyncBadges(false, "Vyžaduje auth token");
+      if (!silent) showToast("Zápis zamítnut pravidly Firebase (auth != null). Zadejte Web API klíč v Nastavení.", "warn");
+      return;
+    }
     if (!res.ok) throw new Error("HTTP " + res.status);
     updateSyncBadges(true, "Uloženo v cloudu");
   } catch (err) {
@@ -124,8 +174,8 @@ function applyLanguage(lang) {
   setTxt("lbl-login-pass", "loginPass");
   const loginSubSpan = document.querySelector("#btn-login-submit span");
   if (loginSubSpan) loginSubSpan.textContent = t("loginSubmit");
-  setTxt("lbl-quick-access", "quickAccess");
   setTxt("lbl-btn-settings", "btnSettings");
+  setTxt("lbl-btn-changepass", "btnChangePass");
   setTxt("lbl-bell-req", "bellReq");
   setTxt("lbl-logout", "logout");
   setTxt("lbl-active-depot", "activeDepot");
@@ -195,28 +245,65 @@ function toggleTheme() {
   applyTheme(cur === "dark" ? "light" : "dark");
 }
 
+// ==================== BRUTE-FORCE PROTECTION & LOGIN ====================
+function updateLoginLockoutUI() {
+  const errBox = document.getElementById("login-error");
+  const submitBtn = document.getElementById("btn-login-submit");
+  const now = Date.now();
+  if (loginLockoutUntil > now) {
+    const secs = Math.ceil((loginLockoutUntil - now) / 1000);
+    errBox.textContent = currentLang === "en"
+      ? `Too many failed attempts. Try again in ${secs}s.`
+      : `Příliš mnoho neúspěšných pokusů. Zkuste to znovu za ${secs} s.`;
+    errBox.classList.remove("hidden");
+    if (submitBtn) submitBtn.disabled = true;
+    return true;
+  }
+  if (submitBtn) submitBtn.disabled = false;
+  return false;
+}
+
 function handleLoginSubmit(e) {
   e.preventDefault();
+  if (updateLoginLockoutUI()) return;
+
   const loginVal = document.getElementById("login-username").value.trim().toLowerCase();
   const passVal = document.getElementById("login-password").value;
   attemptLogin(loginVal, passVal);
 }
 
-function quickLogin(login, pass) {
-  document.getElementById("login-username").value = login;
-  document.getElementById("login-password").value = pass;
-  attemptLogin(login, pass);
-}
-
 function attemptLogin(loginVal, passVal) {
+  if (updateLoginLockoutUI()) return;
+
   const errBox = document.getElementById("login-error");
   const user = appState.users.find(u => u.login.toLowerCase() === loginVal && u.pass === passVal);
   if (!user) {
-    errBox.textContent = currentLang === "en" ? "Invalid username or password." : "Neplatné uživatelské jméno nebo heslo.";
+    failedLoginAttempts++;
+    if (failedLoginAttempts >= 5) {
+      loginLockoutUntil = Date.now() + 60000;
+      failedLoginAttempts = 0;
+      updateLoginLockoutUI();
+      clearInterval(lockoutTicker);
+      lockoutTicker = setInterval(() => {
+        if (!updateLoginLockoutUI()) {
+          clearInterval(lockoutTicker);
+          errBox.classList.add("hidden");
+        }
+      }, 1000);
+      return;
+    }
+    const left = 5 - failedLoginAttempts;
+    errBox.textContent = currentLang === "en"
+      ? `Invalid username or password (${left} attempts left).`
+      : `Neplatné uživatelské jméno nebo heslo (zbývá pokusů: ${left}).`;
     errBox.classList.remove("hidden");
     return;
   }
+
+  failedLoginAttempts = 0;
+  loginLockoutUntil = 0;
   errBox.classList.add("hidden");
+  document.getElementById("login-password").value = "";
   completeLogin(user);
 }
 
@@ -224,6 +311,8 @@ function completeLogin(user) {
   user.role = normalizeUserRole(user);
   currentUser = user;
   safeStorage.set("depotshift_session_uid", user.id);
+  persistSafeLocalCache();
+
   document.getElementById("login-screen").classList.add("hidden");
   const mainApp = document.getElementById("main-app");
   mainApp.classList.remove("hidden");
@@ -264,6 +353,61 @@ function logout() {
   document.getElementById("login-screen").classList.remove("hidden");
 }
 
+// ==================== SELF PASSWORD CHANGE (VISIBLE ONLY TO USER & ADMIN) ====================
+function openChangePasswordModal() {
+  if (!currentUser) return;
+  document.getElementById("cp-current-pass-display").value = currentUser.pass || "";
+  document.getElementById("cp-current-pass-display").type = "password";
+  document.getElementById("cp-eye-icon").className = "fa-solid fa-eye";
+  document.getElementById("cp-new-pass").value = "";
+  document.getElementById("cp-confirm-pass").value = "";
+  openModal("modal-change-password");
+}
+
+function toggleSelfPasswordPreview() {
+  const inp = document.getElementById("cp-current-pass-display");
+  const icon = document.getElementById("cp-eye-icon");
+  if (!inp) return;
+  if (inp.type === "password") {
+    inp.type = "text";
+    icon.className = "fa-solid fa-eye-slash";
+  } else {
+    inp.type = "password";
+    icon.className = "fa-solid fa-eye";
+  }
+}
+
+function submitChangePassword(e) {
+  e.preventDefault();
+  if (!currentUser) return;
+  const newPass = document.getElementById("cp-new-pass").value;
+  const confirmPass = document.getElementById("cp-confirm-pass").value;
+
+  if (!newPass || newPass.length < 6) {
+    showToast("Nové heslo musí mít alespoň 6 znaků.", "warn");
+    return;
+  }
+  if (newPass !== confirmPass) {
+    showToast("Zadaná hesla se neshodují.", "error");
+    return;
+  }
+
+  const target = appState.users.find(u => u.id === currentUser.id);
+  if (target) {
+    target.pass = newPass;
+    currentUser.pass = newPass;
+  }
+  if (Array.isArray(draftUsers) && draftUsers.length > 0) {
+    const dTarget = draftUsers.find(u => u.id === currentUser.id);
+    if (dTarget) dTarget.pass = newPass;
+  }
+
+  addAudit("Změna vlastního hesla", `Uživatel ${currentUser.name} si změnil přihlašovací heslo.`);
+  closeModal("modal-change-password");
+  pushToFirebase();
+  showToast("Vaše nové heslo bylo úspěšně uloženo.", "success");
+}
+
 function buildNavigationForRole() {
   const nav = document.getElementById("nav-tabs");
   nav.innerHTML = "";
@@ -281,7 +425,7 @@ function buildNavigationForRole() {
       const btn = document.createElement("button");
       const active = activeAdminTab === tItem.id;
       btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${active ? "bg-blue-600 text-white shadow" : "bg-slate-800/70 text-slate-300 hover:bg-slate-800"}`;
-      btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${tItem.label}`;
+      btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${escapeHtml(tItem.label)}`;
       btn.onclick = () => switchAdminTab(tItem.id);
       nav.appendChild(btn);
     });
@@ -295,7 +439,7 @@ function buildNavigationForRole() {
       const btn = document.createElement("button");
       const active = activeCoordTab === tItem.id;
       btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${active ? "bg-purple-600 text-white shadow" : "bg-slate-800/70 text-slate-300 hover:bg-slate-800"}`;
-      btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${tItem.label}`;
+      btn.innerHTML = `<i class="fa-solid ${tItem.icon}"></i> ${escapeHtml(tItem.label)}`;
       btn.onclick = () => { activeCoordTab = tItem.id; buildNavigationForRole(); renderActiveRoleView(); };
       nav.appendChild(btn);
     });
@@ -308,7 +452,7 @@ function buildNavigationForRole() {
     }
     const info = document.createElement("div");
     info.className = "text-xs text-slate-400 font-semibold py-1";
-    info.innerHTML = `<i class="fa-solid fa-user-check text-emerald-500 mr-1.5"></i>${currentLang === "en" ? "Personal shift schedule across assigned depots" : "Osobní přehled směn napříč přiřazenými depy"}`;
+    info.innerHTML = `<i class="fa-solid fa-user-check text-emerald-500 mr-1.5"></i>${escapeHtml(currentLang === "en" ? "Personal shift schedule across assigned depots" : "Osobní přehled směn napříč přiřazenými depy")}`;
     nav.appendChild(info);
   }
 }
@@ -420,7 +564,10 @@ function getShiftBadgeHtml(entry, otherDepotConflictName = null, isTerminatedDay
   const compact = rosterViewMode === "month";
   if (!entry || !entry.type) {
     if (isTerminatedDay) return `<span class="text-[8px] text-red-400/70 font-semibold">${compact ? "UK" : "UKONČEN"}</span>`;
-    if (otherDepotConflictName) return `<div class="px-0.5 py-0.5 rounded bg-slate-700/60 text-slate-300 text-[8px] font-bold leading-none truncate" title="${otherDepotConflictName}">${compact ? otherDepotConflictName.split(":")[1]?.trim() || "•" : otherDepotConflictName}</div>`;
+    if (otherDepotConflictName) {
+      const safeConflict = escapeHtml(otherDepotConflictName);
+      return `<div class="px-0.5 py-0.5 rounded bg-slate-700/60 text-slate-300 text-[8px] font-bold leading-none truncate" title="${safeConflict}">${compact ? escapeHtml(otherDepotConflictName.split(":")[1]?.trim() || "•") : safeConflict}</div>`;
+    }
     return `<span class="text-slate-600 font-bold">—</span>`;
   }
   const map = {
@@ -433,8 +580,8 @@ function getShiftBadgeHtml(entry, otherDepotConflictName = null, isTerminatedDay
   };
   const cls = map[entry.type] || "bg-slate-700 text-white";
   const showTime = !compact && entry.start && entry.end;
-  const timeTag = showTime ? `<div class="text-[9px] leading-none mt-0.5 opacity-90">${entry.start}-${entry.end}</div>` : "";
-  return `<div class="${compact ? "py-1 px-0.5 text-[10px]" : "px-1.5 py-1 text-[11px]"} rounded font-extrabold leading-tight ${cls}">${entry.type}${timeTag}</div>`;
+  const timeTag = showTime ? `<div class="text-[9px] leading-none mt-0.5 opacity-90">${escapeHtml(entry.start)}-${escapeHtml(entry.end)}</div>` : "";
+  return `<div class="${compact ? "py-1 px-0.5 text-[10px]" : "px-1.5 py-1 text-[11px]"} rounded font-extrabold leading-tight ${cls}">${escapeHtml(entry.type)}${timeTag}</div>`;
 }
 
 function renderAdminSchedule() {
@@ -454,9 +601,9 @@ function renderAdminSchedule() {
     const isAct = d.id === activeDepotId;
     const shiftBadge = d.hasDay && d.hasNight ? "D+N" : (d.hasDay ? "D" : "N");
     const calShort = d.calendarMode === "mon_fri" ? "Po–Pá" : "K/D";
-    return `<button onclick="selectAdminDepot('${d.id}')"
+    return `<button onclick="selectAdminDepot('${escapeAttr(d.id)}')"
       class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 ${isAct ? "bg-blue-600 text-white shadow" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"}">
-      <span>${d.name}</span>
+      <span>${escapeHtml(d.name)}</span>
       <span class="text-[9px] px-1.5 py-0.2 rounded ${isAct ? "bg-blue-800 text-blue-100" : "bg-slate-700 text-slate-300"}">${calShort} • ${shiftBadge}</span>
     </button>`;
   }).join("");
@@ -466,9 +613,9 @@ function renderAdminSchedule() {
     ? anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" })
     : `${visibleDates[0].day}.${visibleDates[0].month + 1}. – ${visibleDates[visibleDates.length - 1].day}.${visibleDates[visibleDates.length - 1].month + 1}.${visibleDates[visibleDates.length - 1].year}`;
 
-  let legendHtml = `<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-sky-400 font-bold mr-1"><i class="fa-solid fa-calendar-week mr-1"></i>${getCalendarModeLabel(depot.calendarMode)}</span>`;
-  if (depot.hasDay) legendHtml += `<span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">(${depot.dayStart}–${depot.dayEnd})</span>`;
-  if (depot.hasNight) legendHtml += `<span class="px-2 py-0.5 rounded bg-blue-600 text-white font-extrabold">N</span> <span class="text-slate-300 mr-2">(${depot.nightStart}–${depot.nightEnd})</span>`;
+  let legendHtml = `<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-sky-400 font-bold mr-1"><i class="fa-solid fa-calendar-week mr-1"></i>${escapeHtml(getCalendarModeLabel(depot.calendarMode))}</span>`;
+  if (depot.hasDay) legendHtml += `<span class="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold">D</span> <span class="text-slate-300 mr-2">(${escapeHtml(depot.dayStart)}–${escapeHtml(depot.dayEnd)})</span>`;
+  if (depot.hasNight) legendHtml += `<span class="px-2 py-0.5 rounded bg-blue-600 text-white font-extrabold">N</span> <span class="text-slate-300 mr-2">(${escapeHtml(depot.nightStart)}–${escapeHtml(depot.nightEnd)})</span>`;
   legendHtml += `
     <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold">DOV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Vacation" : "Dovolená"}</span>
     <span class="px-2 py-0.5 rounded bg-teal-500 text-slate-950 font-extrabold">NV</span> <span class="text-slate-300 mr-2">${currentLang === "en" ? "Comp." : "Náhr. volno"}</span>
@@ -479,7 +626,7 @@ function renderAdminSchedule() {
 
   const dayNames = currentLang === "en" ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] : ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
   const nameColClass = rosterViewMode === "month" ? "min-w-[165px] max-w-[180px]" : "min-w-[195px]";
-  let headHtml = `<tr><th class="sticky-corner py-2 px-2.5 text-left ${nameColClass} text-slate-300">${depot.name}</th>`;
+  let headHtml = `<tr><th class="sticky-corner py-2 px-2.5 text-left ${nameColClass} text-slate-300">${escapeHtml(depot.name)}</th>`;
   visibleDates.forEach(dt => {
     const isWknd = dt.dow === 0 || dt.dow === 6;
     const dateLbl = rosterViewMode === "month" ? `${dt.day}.` : `${dt.day}.${dt.month + 1}.`;
@@ -507,16 +654,16 @@ function renderAdminSchedule() {
     bodyHtml += `<tr class="hover:bg-slate-800/40 ${user.terminatedFrom ? "opacity-75" : ""}"
       ondragover="onRowDragOver(event)"
       ondragleave="onRowDragLeave(event)"
-      ondrop="onRowDrop(event, '${user.id}')">
+      ondrop="onRowDrop(event, '${escapeAttr(user.id)}')">
       <td class="sticky-col py-1.5 px-2 ${canEdit ? "cursor-grab active:cursor-grabbing" : ""} ${nameColClass}"
         draggable="${canEdit ? "true" : "false"}"
-        ondragstart="onRowDragStart(event, '${user.id}')"
-        title="${user.phone ? "Tel: " + user.phone : ""}">
+        ondragstart="onRowDragStart(event, '${escapeAttr(user.id)}')"
+        title="${user.phone ? "Tel: " + escapeAttr(user.phone) : ""}">
         <div class="flex items-center gap-1.5">
           <i class="fa-solid fa-grip-vertical text-slate-500 text-[10px]"></i>
           <div class="min-w-0">
-            <div class="font-bold text-white text-[11px] truncate">${user.name}</div>
-            <div class="text-[9px] text-slate-400 truncate">${user.roleLabel || user.role}${calBadge}${termTag}</div>
+            <div class="font-bold text-white text-[11px] truncate">${escapeHtml(user.name)}</div>
+            <div class="text-[9px] text-slate-400 truncate">${escapeHtml(user.roleLabel || user.role)}${calBadge}${termTag}</div>
           </div>
         </div>
       </td>`;
@@ -547,11 +694,11 @@ function renderAdminSchedule() {
       bodyHtml += `<td
         class="shift-cell text-center border-l border-slate-800/90 ${canEdit ? "cursor-pointer" : ""} ${isTermDay ? "bg-red-950/20" : (isWknd ? "bg-slate-950/50" : "bg-slate-900/40")}"
         draggable="${canEdit && entry && entry.type ? "true" : "false"}"
-        ondragstart="onShiftDragStart(event, '${user.id}', '${dt.dateStr}')"
+        ondragstart="onShiftDragStart(event, '${escapeAttr(user.id)}', '${dt.dateStr}')"
         ondragover="onShiftDragOver(event)"
         ondragleave="onShiftDragLeave(event)"
-        ondrop="onShiftDrop(event, '${user.id}', '${dt.dateStr}')"
-        onclick="openUserCellModal('${user.id}', '${dt.dateStr}')">
+        ondrop="onShiftDrop(event, '${escapeAttr(user.id)}', '${dt.dateStr}')"
+        onclick="openUserCellModal('${escapeAttr(user.id)}', '${dt.dateStr}')">
         ${getShiftBadgeHtml(entry, otherDepotConflict, isTermDay)}
       </td>`;
     });
@@ -565,7 +712,7 @@ function renderAdminSchedule() {
   const visibleAgSlots = appState.agSlots.filter(s => s.depotId === activeDepotId && visibleDateSet.has(s.date));
   if (visibleAgSlots.length > 0) {
     bodyHtml += `<tr><td colspan="${visibleDates.length + 2}" class="bg-purple-950/40 border-y border-purple-500/30 py-1 px-2.5 text-[10px] font-extrabold text-purple-400 uppercase tracking-wider">
-      <i class="fa-solid fa-people-arrows mr-1"></i> AG – ${depot.name} (${visibleAgSlots.length})
+      <i class="fa-solid fa-people-arrows mr-1"></i> AG – ${escapeHtml(depot.name)} (${visibleAgSlots.length})
     </td></tr>`;
 
     visibleAgSlots.forEach(slot => {
@@ -574,15 +721,15 @@ function renderAdminSchedule() {
 
       bodyHtml += `<tr class="bg-purple-950/10 hover:bg-purple-950/20">
         <td class="sticky-col py-1.5 px-2.5 ${nameColClass}">
-          <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-[11px] truncate">${displayName}</div>
-          <div class="text-[9px] text-purple-400">AG • ${slot.start}–${slot.end}</div>
+          <div class="font-bold ${slot.assignedName ? "text-purple-400" : "text-amber-500"} text-[11px] truncate">${escapeHtml(displayName)}</div>
+          <div class="text-[9px] text-purple-400">AG • ${escapeHtml(slot.start)}–${escapeHtml(slot.end)}</div>
         </td>`;
 
       visibleDates.forEach((dt, colIdx) => {
         if (dt.dateStr === slot.date) {
           if (slot.shift === "D") dailyDCounts[colIdx]++;
           else dailyNCounts[colIdx]++;
-          bodyHtml += `<td onclick="openAgCellModal('${slot.id}')" class="shift-cell text-center border-l border-slate-800 ${canEdit ? "cursor-pointer" : ""}">
+          bodyHtml += `<td onclick="openAgCellModal('${escapeAttr(slot.id)}')" class="shift-cell text-center border-l border-slate-800 ${canEdit ? "cursor-pointer" : ""}">
             ${getShiftBadgeHtml({ type: slot.shift, start: slot.start, end: slot.end })}
           </td>`;
         } else {
@@ -802,7 +949,7 @@ function deleteAgSlotFromCell() {
 function openAgRequestModal() {
   if (!canUserRequestAg()) { showToast("Nemáte oprávnění poslat požadavek AG.", "warn"); return; }
   const sel = document.getElementById("ag-req-depot");
-  sel.innerHTML = appState.depots.map(d => `<option value="${d.id}" ${d.id === activeDepotId ? "selected" : ""}>${d.name}</option>`).join("");
+  sel.innerHTML = appState.depots.map(d => `<option value="${escapeAttr(d.id)}" ${d.id === activeDepotId ? "selected" : ""}>${escapeHtml(d.name)}</option>`).join("");
   document.getElementById("ag-req-date").value = formatDateStr(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
   onAgModalDepotChange();
   openModal("modal-ag-request");
@@ -1002,7 +1149,7 @@ function exportRosterAsExcel() {
 function openTerminateModal(draftIdx) {
   terminatingUserIdx = draftIdx;
   const u = draftUsers[draftIdx];
-  document.getElementById("term-emp-info").innerHTML = `Zaměstnanec: <strong class="text-white">${u.name}</strong> (${u.roleLabel || u.role})`;
+  document.getElementById("term-emp-info").innerHTML = `Zaměstnanec: <strong class="text-white">${escapeHtml(u.name)}</strong> (${escapeHtml(u.roleLabel || u.role)})`;
   document.getElementById("term-emp-date").value = new Date().toISOString().split("T")[0];
   openModal("modal-terminate-emp");
 }
@@ -1082,7 +1229,7 @@ function renderCoordinatorRequests() {
     return;
   }
   pillsBox.innerHTML = `<button onclick="selectCoordDepot('ALL')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === "ALL" ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">All (${allowedDepots.length})</button>` +
-    allowedDepots.map(d => `<button onclick="selectCoordDepot('${d.id}')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === d.id ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">${d.name}</button>`).join("");
+    allowedDepots.map(d => `<button onclick="selectCoordDepot('${escapeAttr(d.id)}')" class="px-3 py-1 rounded-xl text-xs font-bold ${coordSelectedDepotId === d.id ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 border border-slate-700"}">${escapeHtml(d.name)}</button>`).join("");
 
   const filtered = appState.agSlots.filter(s => allowedIds.includes(s.depotId) && (coordSelectedDepotId === "ALL" || s.depotId === coordSelectedDepotId)).sort((a, b) => a.date.localeCompare(b.date));
   const container = document.getElementById("coord-requests-list");
@@ -1093,14 +1240,14 @@ function renderCoordinatorRequests() {
   container.innerHTML = filtered.map(slot => `
     <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 flex flex-wrap items-center justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2">
-        <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-extrabold">${getDepotName(slot.depotId)}</span>
-        <span class="px-2 py-0.5 rounded bg-purple-600 text-white text-[11px] font-extrabold">${slot.date}</span>
-        <span class="font-bold text-white text-xs">${slot.label}</span>
-        <span class="text-[11px] text-slate-400">(${slot.shift} • ${slot.start}–${slot.end})</span>
+        <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-extrabold">${escapeHtml(getDepotName(slot.depotId))}</span>
+        <span class="px-2 py-0.5 rounded bg-purple-600 text-white text-[11px] font-extrabold">${escapeHtml(slot.date)}</span>
+        <span class="font-bold text-white text-xs">${escapeHtml(slot.label)}</span>
+        <span class="text-[11px] text-slate-400">(${escapeHtml(slot.shift)} • ${escapeHtml(slot.start)}–${escapeHtml(slot.end)})</span>
       </div>
       <div class="flex items-center gap-2 flex-1 sm:flex-initial">
-        <input type="text" data-ag-id="${slot.id}" value="${slot.assignedName || ""}" placeholder="Jméno pracovníka..." class="coord-ag-input flex-1 sm:w-64 bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs text-white" />
-        <button onclick="deleteAgSlotByCoord('${slot.id}')" class="p-2 rounded-xl bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/30"><i class="fa-solid fa-trash"></i></button>
+        <input type="text" data-ag-id="${escapeAttr(slot.id)}" value="${escapeAttr(slot.assignedName || "")}" placeholder="Jméno pracovníka..." class="coord-ag-input flex-1 sm:w-64 bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs text-white" />
+        <button onclick="deleteAgSlotByCoord('${escapeAttr(slot.id)}')" class="p-2 rounded-xl bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/30"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
   `).join("");
@@ -1137,11 +1284,11 @@ function renderCoordinatorSummary() {
     const h = calcDurationHours(s.start, s.end);
     totalHours += h;
     return `<tr class="border-b border-slate-800">
-      <td class="py-2.5 px-3 font-bold text-blue-500">${getDepotName(s.depotId)}</td>
-      <td class="py-2.5 px-3 font-bold text-white">${s.date}</td>
-      <td class="py-2.5 px-3">${s.assignedName || s.label}</td>
-      <td class="py-2.5 px-3">${s.shift}</td>
-      <td class="py-2.5 px-3 font-mono">${s.start} – ${s.end}</td>
+      <td class="py-2.5 px-3 font-bold text-blue-500">${escapeHtml(getDepotName(s.depotId))}</td>
+      <td class="py-2.5 px-3 font-bold text-white">${escapeHtml(s.date)}</td>
+      <td class="py-2.5 px-3">${escapeHtml(s.assignedName || s.label)}</td>
+      <td class="py-2.5 px-3">${escapeHtml(s.shift)}</td>
+      <td class="py-2.5 px-3 font-mono">${escapeHtml(s.start)} – ${escapeHtml(s.end)}</td>
       <td class="py-2.5 px-3 text-right font-bold text-purple-500">${h} h</td>
     </tr>`;
   }).join("");
@@ -1161,7 +1308,7 @@ function renderEmployeeHome() {
   const locale = currentLang === "en" ? "en-US" : "cs-CZ";
   document.getElementById("emp-month-label").textContent = anchorDate.toLocaleDateString(locale, { month: "long", year: "numeric" });
   const myDepotNames = (currentUser.depots || []).map(id => getDepotName(id)).join(", ") || "—";
-  document.getElementById("emp-assigned-depots-bar").innerHTML = `<i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Depa: <strong class="text-white">${myDepotNames}</strong> • Kalendář: <strong class="text-white">${getCalendarModeLabel(currentUser.calendarMode)}</strong>`;
+  document.getElementById("emp-assigned-depots-bar").innerHTML = `<i class="fa-solid fa-warehouse text-blue-500 mr-1"></i> Depa: <strong class="text-white">${escapeHtml(myDepotNames)}</strong> • Kalendář: <strong class="text-white">${escapeHtml(getCalendarModeLabel(currentUser.calendarMode))}</strong>`;
 
   const rejected = appState.requests.find(r => r.userId === currentUser.id && r.status === "rejected" && !r.seenByUser);
   const rejBanner = document.getElementById("emp-rejected-banner");
@@ -1209,8 +1356,8 @@ function renderEmployeeHome() {
     const shortDepot = entry?.depotName ? entry.depotName.replace("Depo ", "") : "";
 
     calHtml += `<div class="min-h-[92px] rounded-xl p-1.5 border flex flex-col justify-between ${meta ? "bg-slate-800/90 border-slate-700" : "bg-slate-950/60 border-slate-800/70"}">
-      <div class="flex items-center justify-between"><span class="text-xs font-extrabold ${meta ? "text-white" : "text-slate-500"}">${d}.</span>${shortDepot ? `<span class="text-[9px] font-bold px-1 rounded bg-slate-900/80 text-slate-300">${shortDepot}</span>` : ""}</div>
-      ${meta ? `<div class="rounded-lg px-1.5 py-1 text-center ${meta.cls}"><div class="text-[10px] font-extrabold leading-tight">${meta.label}</div><div class="text-[9px] opacity-90 leading-tight mt-0.5">${customTime}</div></div>` : `<div class="text-center text-slate-600 text-xs pb-2">—</div>`}
+      <div class="flex items-center justify-between"><span class="text-xs font-extrabold ${meta ? "text-white" : "text-slate-500"}">${d}.</span>${shortDepot ? `<span class="text-[9px] font-bold px-1 rounded bg-slate-900/80 text-slate-300">${escapeHtml(shortDepot)}</span>` : ""}</div>
+      ${meta ? `<div class="rounded-lg px-1.5 py-1 text-center ${meta.cls}"><div class="text-[10px] font-extrabold leading-tight">${meta.label}</div><div class="text-[9px] opacity-90 leading-tight mt-0.5">${escapeHtml(customTime)}</div></div>` : `<div class="text-center text-slate-600 text-xs pb-2">—</div>`}
     </div>`;
   }
   document.getElementById("emp-calendar-grid").innerHTML = calHtml;
@@ -1255,7 +1402,7 @@ function renderEmpRequestCalendar() {
     if (shiftType === "D") baseCls = "bg-amber-500/15 border-amber-500/40 text-amber-500";
     if (shiftType === "N") baseCls = "bg-blue-500/15 border-blue-500/40 text-blue-500";
     if (isSelected) baseCls = "bg-emerald-500 border-emerald-300 text-slate-950 font-extrabold ring-2 ring-emerald-300";
-    html += `<button type="button" onclick="toggleEmpReqDate('${dateStr}')" class="p-2 rounded-xl border text-center transition flex flex-col items-center justify-center ${baseCls}"><span class="text-xs font-bold">${d}.</span><span class="text-[9px] uppercase">${shiftType || "—"}</span></button>`;
+    html += `<button type="button" onclick="toggleEmpReqDate('${dateStr}')" class="p-2 rounded-xl border text-center transition flex flex-col items-center justify-center ${baseCls}"><span class="text-xs font-bold">${d}.</span><span class="text-[9px] uppercase">${escapeHtml(shiftType || "—")}</span></button>`;
   }
   document.getElementById("emp-req-calendar").innerHTML = html;
 }
@@ -1301,13 +1448,13 @@ function renderAdminRequestsList() {
   container.innerHTML = pending.map(r => `
     <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2.5">
       <div class="flex items-start justify-between gap-2">
-        <div><div class="font-extrabold text-sm text-white">${r.userName}</div><div class="text-xs font-bold text-amber-500">${r.typeLabel} (${r.type})</div></div>
-        <span class="text-[10px] text-slate-400">${r.createdAt}</span>
+        <div><div class="font-extrabold text-sm text-white">${escapeHtml(r.userName)}</div><div class="text-xs font-bold text-amber-500">${escapeHtml(r.typeLabel)} (${escapeHtml(r.type)})</div></div>
+        <span class="text-[10px] text-slate-400">${escapeHtml(r.createdAt)}</span>
       </div>
-      <div class="text-xs text-slate-200 bg-slate-900/90 p-2.5 rounded-lg border border-slate-700/70"><strong>Dny:</strong> ${r.dates.join(", ")}${r.note ? `<div class="text-slate-400 mt-1">Poznámka: ${r.note}</div>` : ""}</div>
+      <div class="text-xs text-slate-200 bg-slate-900/90 p-2.5 rounded-lg border border-slate-700/70"><strong>Dny:</strong> ${escapeHtml(r.dates.join(", "))}${r.note ? `<div class="text-slate-400 mt-1">Poznámka: ${escapeHtml(r.note)}</div>` : ""}</div>
       <div class="flex justify-end gap-2">
-        <button onclick="resolveEmployeeRequest('${r.id}', 'rejected')" class="px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 text-xs font-bold">Zamítnout</button>
-        <button onclick="resolveEmployeeRequest('${r.id}', 'approved')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">Potvrdit</button>
+        <button onclick="resolveEmployeeRequest('${escapeAttr(r.id)}', 'rejected')" class="px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 text-xs font-bold">Zamítnout</button>
+        <button onclick="resolveEmployeeRequest('${escapeAttr(r.id)}', 'approved')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold">Potvrdit</button>
       </div>
     </div>
   `).join("");
@@ -1357,7 +1504,7 @@ function renderEmployeeChatMessages() {
   const thread = appState.chats[currentUser.id] || [];
   box.innerHTML = thread.length === 0
     ? `<div class="text-center text-xs text-slate-500 py-8">Zatím žádné zprávy.</div>`
-    : thread.map(m => `<div class="flex flex-col ${m.senderRole === "employee" ? "items-end" : "items-start"}"><div class="max-w-[82%] px-3.5 py-2 rounded-2xl text-xs ${m.senderRole === "employee" ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}"><div class="text-[10px] opacity-75 font-bold mb-0.5">${m.senderName} • ${m.time}</div><div>${m.text}</div></div></div>`).join("");
+    : thread.map(m => `<div class="flex flex-col ${m.senderRole === "employee" ? "items-end" : "items-start"}"><div class="max-w-[82%] px-3.5 py-2 rounded-2xl text-xs ${m.senderRole === "employee" ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}"><div class="text-[10px] opacity-75 font-bold mb-0.5">${escapeHtml(m.senderName)} • ${escapeHtml(m.time)}</div><div>${escapeHtml(m.text)}</div></div></div>`).join("");
   box.scrollTop = box.scrollHeight;
 }
 
@@ -1382,7 +1529,7 @@ function renderAdminChatTab() {
   document.getElementById("admin-chat-threads").innerHTML = employees.map(u => {
     const thread = appState.chats[u.id] || [];
     const unread = thread.filter(m => m.senderRole === "employee" && !m.readByAdmin).length;
-    return `<button onclick="selectAdminChatThread('${u.id}')" class="w-full p-2.5 rounded-xl text-left flex items-center justify-between transition ${selectedChatUserId === u.id ? "bg-blue-600 text-white" : "bg-slate-800/60 hover:bg-slate-800 text-slate-200"}"><div><div class="text-xs font-bold">${u.name}</div><div class="text-[10px] opacity-75">${thread.length} zpráv</div></div>${unread > 0 ? `<span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold">${unread}</span>` : ""}</button>`;
+    return `<button onclick="selectAdminChatThread('${escapeAttr(u.id)}')" class="w-full p-2.5 rounded-xl text-left flex items-center justify-between transition ${selectedChatUserId === u.id ? "bg-blue-600 text-white" : "bg-slate-800/60 hover:bg-slate-800 text-slate-200"}"><div><div class="text-xs font-bold">${escapeHtml(u.name)}</div><div class="text-[10px] opacity-75">${thread.length} zpráv</div></div>${unread > 0 ? `<span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold">${unread}</span>` : ""}</button>`;
   }).join("");
   renderAdminActiveConversation();
 }
@@ -1403,7 +1550,7 @@ function renderAdminActiveConversation() {
   const thread = appState.chats[emp.id] || [];
   box.innerHTML = thread.length === 0
     ? `<div class="text-center text-xs text-slate-500 py-8">Žádné zprávy.</div>`
-    : thread.map(m => `<div class="flex flex-col ${m.senderRole === "admin" ? "items-end" : "items-start"}"><div class="max-w-[80%] px-3.5 py-2 rounded-2xl text-xs ${m.senderRole === "admin" ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}"><div class="text-[10px] opacity-75 font-bold mb-0.5">${m.senderName} • ${m.time}</div><div>${m.text}</div></div></div>`).join("");
+    : thread.map(m => `<div class="flex flex-col ${m.senderRole === "admin" ? "items-end" : "items-start"}"><div class="max-w-[80%] px-3.5 py-2 rounded-2xl text-xs ${m.senderRole === "admin" ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}"><div class="text-[10px] opacity-75 font-bold mb-0.5">${escapeHtml(m.senderName)} • ${escapeHtml(m.time)}</div><div>${escapeHtml(m.text)}</div></div></div>`).join("");
   box.scrollTop = box.scrollHeight;
 }
 
@@ -1423,7 +1570,7 @@ function sendAdminChatReply(e) {
 function renderAuditTab() {
   const tbody = document.getElementById("audit-log-tbody");
   if (appState.auditLog.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-500">Zatím žádné záznamy.</td></tr>`; return; }
-  tbody.innerHTML = appState.auditLog.map(item => `<tr><td class="py-2 px-3 font-mono text-slate-400 whitespace-nowrap">${item.time}</td><td class="py-2 px-3 font-bold text-white">${item.actor}</td><td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-blue-500 font-semibold">${item.type}</span></td><td class="py-2 px-3 text-slate-300">${item.detail}</td></tr>`).join("");
+  tbody.innerHTML = appState.auditLog.map(item => `<tr><td class="py-2 px-3 font-mono text-slate-400 whitespace-nowrap">${escapeHtml(item.time)}</td><td class="py-2 px-3 font-bold text-white">${escapeHtml(item.actor)}</td><td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-blue-500 font-semibold">${escapeHtml(item.type)}</span></td><td class="py-2 px-3 text-slate-300">${escapeHtml(item.detail)}</td></tr>`).join("");
 }
 
 function exportAuditCSV() {
@@ -1464,6 +1611,7 @@ async function initApp() {
   if (cached) { try { mergeRemoteState(JSON.parse(cached)); } catch (e) {} }
   ensureMultiDepotConsistency();
 
+  await ensureFirebaseAuth();
   await pullFromFirebase(true);
 
   const token = new URLSearchParams(window.location.search).get("token");

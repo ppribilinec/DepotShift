@@ -46,8 +46,18 @@ function renderAdminSettingsMain() {
     draftUsers = JSON.parse(JSON.stringify(appState.users));
     clearAdminDraftDirty();
   }
+  const apiInp = document.getElementById("settings-fb-apikey");
+  if (apiInp) apiInp.value = getFirebaseApiKey();
   renderDepotsConfigGrid();
   renderDraftUsersTable();
+}
+
+function saveFirebaseApiKeyFromUI() {
+  const inp = document.getElementById("settings-fb-apikey");
+  if (!inp) return;
+  setFirebaseApiKey(inp.value);
+  showToast("Firebase Web API klíč uložen. Obnovuji spojení...", "success");
+  ensureFirebaseAuth().then(() => pullFromFirebase(false));
 }
 
 function discardAdminDraftChanges() {
@@ -138,7 +148,7 @@ function getCalendarOptionsHtml(selectedMode) {
   `;
   const extraOpts = (appState.calendars || [])
     .filter(c => !["short_long", "mon_fri"].includes(c.code))
-    .map(c => `<option value="${c.id}" ${selectedMode === c.id ? "selected" : ""}>${c.name}</option>`)
+    .map(c => `<option value="${escapeAttr(c.id)}" ${selectedMode === c.id ? "selected" : ""}>${escapeHtml(c.name)}</option>`)
     .join("");
   return baseOpts + extraOpts;
 }
@@ -151,11 +161,11 @@ function renderDepotsConfigGrid() {
       <div class="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
         <div class="flex items-center gap-2 flex-1">
           <i class="fa-solid fa-warehouse text-blue-500"></i>
-          <input type="text" value="${d.name}" oninput="updateDepotField(${idx}, 'name', this.value)"
+          <input type="text" value="${escapeAttr(d.name)}" oninput="updateDepotField(${idx}, 'name', this.value)"
             class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-extrabold text-white w-full max-w-[220px]" />
         </div>
         ${idx === 0 ? "" : `
-          <button type="button" onclick="deleteDepot('${d.id}')" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400" title="Smazat depo">
+          <button type="button" onclick="deleteDepot('${escapeAttr(d.id)}')" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400" title="Smazat depo">
             <i class="fa-solid fa-trash"></i>
           </button>
         `}
@@ -174,9 +184,9 @@ function renderDepotsConfigGrid() {
           <span>Denní směna (D)</span>
         </label>
         <div class="flex items-center gap-1.5">
-          <input type="time" value="${d.dayStart}" onchange="updateDepotField(${idx}, 'dayStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          <input type="time" value="${escapeAttr(d.dayStart)}" onchange="updateDepotField(${idx}, 'dayStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
           <span class="text-slate-400">–</span>
-          <input type="time" value="${d.dayEnd}" onchange="updateDepotField(${idx}, 'dayEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          <input type="time" value="${escapeAttr(d.dayEnd)}" onchange="updateDepotField(${idx}, 'dayEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
         </div>
       </div>
 
@@ -186,18 +196,18 @@ function renderDepotsConfigGrid() {
           <span>Noční směna (N)</span>
         </label>
         <div class="flex items-center gap-1.5">
-          <input type="time" value="${d.nightStart}" onchange="updateDepotField(${idx}, 'nightStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          <input type="time" value="${escapeAttr(d.nightStart)}" onchange="updateDepotField(${idx}, 'nightStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
           <span class="text-slate-400">–</span>
-          <input type="time" value="${d.nightEnd}" onchange="updateDepotField(${idx}, 'nightEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          <input type="time" value="${escapeAttr(d.nightEnd)}" onchange="updateDepotField(${idx}, 'nightEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
         </div>
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1 border-t border-slate-700/60">
         <span class="font-bold text-purple-400"><i class="fa-solid fa-people-arrows mr-1"></i> Výchozí čas AG</span>
         <div class="flex items-center gap-1.5">
-          <input type="time" value="${d.agStart}" onchange="updateDepotField(${idx}, 'agStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          <input type="time" value="${escapeAttr(d.agStart)}" onchange="updateDepotField(${idx}, 'agStart', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
           <span class="text-slate-400">–</span>
-          <input type="time" value="${d.agEnd}" onchange="updateDepotField(${idx}, 'agEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
+          <input type="time" value="${escapeAttr(d.agEnd)}" onchange="updateDepotField(${idx}, 'agEnd', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white" />
         </div>
       </div>
     </div>
@@ -227,6 +237,19 @@ function toggleDraftUserDepot(userIdx, depotId, checked) {
   markAdminDraftDirty();
 }
 
+function toggleDraftPasswordVisibility(idx) {
+  const inp = document.getElementById("draft-pass-inp-" + idx);
+  const icon = document.getElementById("draft-pass-eye-" + idx);
+  if (!inp) return;
+  if (inp.type === "password") {
+    inp.type = "text";
+    if (icon) icon.className = "fa-solid fa-eye-slash";
+  } else {
+    inp.type = "password";
+    if (icon) icon.className = "fa-solid fa-eye";
+  }
+}
+
 function renderDraftUsersTable() {
   const tbody = document.getElementById("users-draft-tbody");
   if (!tbody) return;
@@ -238,8 +261,8 @@ function renderDraftUsersTable() {
     const depotCheckboxes = depotsSource.map(d => {
       const isChecked = uDepots.includes(d.id);
       return `<label class="inline-flex items-center gap-1 mr-2 mb-1 cursor-pointer text-[11px] font-semibold text-slate-200">
-        <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${d.id}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
-        <span>${(d.name || "").replace("Depo ", "")}</span>
+        <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleDraftUserDepot(${idx}, '${escapeAttr(d.id)}', this.checked)" class="w-3.5 h-3.5 accent-blue-600 rounded" />
+        <span>${escapeHtml((d.name || "").replace("Depo ", ""))}</span>
       </label>`;
     }).join("");
 
@@ -255,7 +278,7 @@ function renderDraftUsersTable() {
     const termControls = u.id === "u_admin" ? `<span class="text-[10px] text-slate-500">Admin</span>` : `
       <div class="inline-flex items-center gap-1">
         ${u.terminatedFrom
-          ? `<button type="button" onclick="restoreTerminatedUser(${idx})" class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold" title="Ukončen od ${u.terminatedFrom}">Obnovit</button>`
+          ? `<button type="button" onclick="restoreTerminatedUser(${idx})" class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold" title="Ukončen od ${escapeAttr(u.terminatedFrom)}">Obnovit</button>`
           : `<button type="button" onclick="openTerminateModal(${idx})" class="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 text-[10px] font-bold">Ukončit</button>`
         }
         <button type="button" onclick="removeDraftUser(${idx})" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400">
@@ -266,11 +289,11 @@ function renderDraftUsersTable() {
 
     return `<tr class="${u.terminatedFrom ? "opacity-65" : ""}">
       <td class="py-2 px-1.5">
-        <input type="text" value="${u.name}" oninput="updateDraftUserField(${idx}, 'name', this.value)"
+        <input type="text" value="${escapeAttr(u.name)}" oninput="updateDraftUserField(${idx}, 'name', this.value)"
           class="w-full min-w-[130px] bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white" />
       </td>
       <td class="py-2 px-1.5">
-        <input type="tel" value="${u.phone || ""}" oninput="updateDraftUserField(${idx}, 'phone', this.value)" placeholder="+420..."
+        <input type="tel" value="${escapeAttr(u.phone || "")}" oninput="updateDraftUserField(${idx}, 'phone', this.value)" placeholder="+420..."
           class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 font-mono" />
       </td>
       <td class="py-2 px-1.5">
@@ -292,19 +315,24 @@ function renderDraftUsersTable() {
         <div class="flex flex-wrap items-center">${depotCheckboxes}</div>
       </td>
       <td class="py-2 px-1.5">
-        <input type="text" value="${u.login}" oninput="updateDraftUserField(${idx}, 'login', this.value.trim())"
+        <input type="text" value="${escapeAttr(u.login)}" oninput="updateDraftUserField(${idx}, 'login', this.value.trim())"
           class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
       </td>
       <td class="py-2 px-1.5">
-        <input type="text" value="${u.pass}" oninput="updateDraftUserField(${idx}, 'pass', this.value)"
-          class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
+        <div class="inline-flex items-center gap-1">
+          <input id="draft-pass-inp-${idx}" type="password" value="${escapeAttr(u.pass)}" oninput="updateDraftUserField(${idx}, 'pass', this.value)"
+            class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono text-white" />
+          <button type="button" onclick="toggleDraftPasswordVisibility(${idx})" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white" title="Zobrazit / skrýt heslo">
+            <i id="draft-pass-eye-${idx}" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
       </td>
       <td class="py-2 px-1.5 text-center">
         <input type="checkbox" ${u.isScheduleable !== false && uRole !== "admin" && uRole !== "coordinator" ? "checked" : ""}
           onchange="updateDraftUserField(${idx}, 'isScheduleable', this.checked)" class="w-4 h-4 accent-blue-600" />
       </td>
       <td class="py-2 px-1.5 text-center">
-        <button type="button" onclick="openQrForUser('${u.id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-500 border border-slate-700">
+        <button type="button" onclick="openQrForUser('${escapeAttr(u.id)}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-500 border border-slate-700">
           <i class="fa-solid fa-qrcode"></i>
         </button>
       </td>
@@ -343,8 +371,8 @@ function openCreateUserModal() {
   const depotsSource = draftDepots.length ? draftDepots : appState.depots;
   document.getElementById("new-user-depots-box").innerHTML = depotsSource.map(d => `
     <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-200 cursor-pointer">
-      <input type="checkbox" value="${d.id}" ${d.id === activeDep.id ? "checked" : ""} class="new-user-depot-chk w-4 h-4 accent-blue-600 rounded" />
-      <span>${d.name}</span>
+      <input type="checkbox" value="${escapeAttr(d.id)}" ${d.id === activeDep.id ? "checked" : ""} class="new-user-depot-chk w-4 h-4 accent-blue-600 rounded" />
+      <span>${escapeHtml(d.name)}</span>
     </label>
   `).join("");
 
@@ -408,14 +436,14 @@ function renderCalendarsManager() {
       <div>
         <div class="font-extrabold text-sm text-white flex items-center gap-2">
           <i class="fa-solid fa-calendar-check text-sky-400"></i>
-          <span>${c.name}</span>
+          <span>${escapeHtml(c.name)}</span>
           ${patternCount > 0 ? `<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">${patternCount} vzorových dnů</span>` : ""}
         </div>
-        <div class="text-xs text-slate-400 mt-0.5">${c.description || ""}</div>
+        <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(c.description || "")}</div>
       </div>
       <div class="flex items-center gap-2">
         ${isBuiltIn ? `<span class="text-[11px] text-slate-500 font-semibold">Systémový režim</span>` : `
-          <button type="button" onclick="deleteCustomCalendar('${c.id}')" class="px-3 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/30 text-xs font-bold">
+          <button type="button" onclick="deleteCustomCalendar('${escapeAttr(c.id)}')" class="px-3 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/30 text-xs font-bold">
             Smazat
           </button>
         `}

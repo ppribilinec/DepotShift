@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DepotShift v0.8b – Warehouse Roster &amp; Agency Planner</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.sheetjs.com https://*.firebasedatabase.app https://identitytoolkit.googleapis.com 'unsafe-inline' data: blob:;" />
+  <title>DepotShift v0.9b – Warehouse Roster &amp; Agency Planner</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -26,11 +27,11 @@
   <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden">
     <div class="bg-slate-950/90 p-6 text-center border-b border-slate-800">
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
-        <i class="fa-solid fa-calendar-check text-2xl text-white"></i>
+        <i class="fa-solid fa-shield-halved text-2xl text-white"></i>
       </div>
       <div class="inline-flex items-center justify-center gap-2">
         <h1 class="text-2xl font-extrabold tracking-tight text-white">DepotShift</h1>
-        <span class="px-2 py-0.5 rounded-md bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[11px] font-extrabold">v0.8b</span>
+        <span class="px-2 py-0.5 rounded-md bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[11px] font-extrabold">v0.9b</span>
       </div>
       <p id="lbl-login-sub" class="text-xs text-slate-400 mt-1">Warehouse Roster &amp; Agency Planner • Více dep</p>
       <div id="login-sync-badge" class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
@@ -43,7 +44,7 @@
         <label id="lbl-login-user" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Uživatelské jméno</label>
         <div class="relative">
           <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-          <input id="login-username" type="text" autocomplete="username" placeholder="admin, roy, vojtech..."
+          <input id="login-username" type="text" autocomplete="username" required placeholder="Zadejte přihlašovací jméno..."
             class="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
         </div>
       </div>
@@ -52,38 +53,16 @@
         <label id="lbl-login-pass" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Heslo</label>
         <div class="relative">
           <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-          <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••"
+          <input id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••"
             class="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
         </div>
       </div>
 
       <div id="login-error" class="hidden p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-400 text-xs font-medium"></div>
 
-      <button type="submit" id="btn-login-submit" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-bold text-sm shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2">
+      <button type="submit" id="btn-login-submit" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.99] disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2">
         <i class="fa-solid fa-right-to-bracket"></i> <span>Přihlásit se do systému</span>
       </button>
-
-      <div class="pt-3 border-t border-slate-800">
-        <p id="lbl-quick-access" class="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center mb-2.5">Rychlý testovací přístup (1 klik)</p>
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="quickLogin('admin','admin123')" class="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-left transition">
-            <div class="text-xs font-bold text-emerald-500">Admin</div>
-            <div class="text-[10px] text-emerald-600 font-mono">admin / admin123</div>
-          </button>
-          <button type="button" onclick="quickLogin('roy','roy123')" class="p-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-left transition">
-            <div class="text-xs font-bold text-purple-500">Koordinátor Roy</div>
-            <div class="text-[10px] text-purple-600 font-mono">roy / roy123</div>
-          </button>
-          <button type="button" onclick="quickLogin('vojtech','vojtech123')" class="p-2.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-left transition">
-            <div class="text-xs font-bold text-blue-500">Předák Vojtěch</div>
-            <div class="text-[10px] text-blue-600 font-mono">vojtech / vojtech123</div>
-          </button>
-          <button type="button" onclick="quickLogin('adam','adam123')" class="p-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-left transition">
-            <div class="text-xs font-bold text-amber-500">Skladník Adam</div>
-            <div class="text-[10px] text-amber-600 font-mono">adam / adam123</div>
-          </button>
-        </div>
-      </div>
     </form>
   </div>
 </div>
@@ -99,7 +78,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">DepotShift</span>
-            <span class="px-1.5 py-0.5 rounded bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[10px] font-extrabold">v0.8b</span>
+            <span class="px-1.5 py-0.5 rounded bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[10px] font-extrabold">v0.9b</span>
             <button onclick="manualSyncNow()" id="header-sync-badge" title="Synchronizace" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Sync...
             </button>
@@ -111,6 +90,10 @@
       <div class="flex flex-wrap items-center gap-2">
         <button id="btn-header-settings" type="button" onclick="switchAdminTab('settings')" class="hidden px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition items-center gap-1.5">
           <i class="fa-solid fa-gear text-blue-400"></i> <span id="lbl-btn-settings">Nastavení</span>
+        </button>
+
+        <button type="button" onclick="openChangePasswordModal()" class="px-3 py-2 rounded-xl bg-slate-800 hover:border-emerald-500 border border-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5" title="Změnit vlastní heslo">
+          <i class="fa-solid fa-key text-emerald-400"></i> <span id="lbl-btn-changepass" class="hidden sm:inline">Heslo</span>
         </button>
 
         <button type="button" onclick="toggleLanguage()" class="lang-toggle-btn px-3 py-2 rounded-xl bg-slate-800 hover:border-blue-500 border border-slate-700 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5">
@@ -248,26 +231,42 @@
         </div>
       </div>
 
-      <!-- SUB-PANEL: DEPOTS -->
-      <div id="settings-panel-depots" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
-            </h3>
-            <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5"></p>
+      <!-- SUB-PANEL: DEPOTS & FIREBASE SECURITY -->
+      <div id="settings-panel-depots" class="space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                <i class="fa-solid fa-warehouse text-blue-500"></i> <span id="lbl-depots-title">Správa dep, plánovacího kalendáře a směn</span>
+              </h3>
+              <p id="lbl-depots-sub" class="text-xs text-slate-400 mt-0.5"></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
+              <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
+              </button>
+              <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
+              </button>
+            </div>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <input id="new-depot-name" type="text" placeholder="Název nového depa..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white w-48 focus:outline-none focus:border-blue-500" />
-            <button type="button" onclick="createNewDepot()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5">
-              <i class="fa-solid fa-plus"></i> <span id="lbl-btn-add-depot">Přidat depo</span>
-            </button>
-            <button type="button" onclick="saveAllAdminChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 flex items-center gap-1.5">
-              <i class="fa-solid fa-floppy-disk"></i> <span id="lbl-btn-save-depots">Uložit změny</span>
-            </button>
+          <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Firebase Auth Connection Key (for auth != null rules) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h4 class="text-xs font-extrabold text-sky-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved"></i> Zabezpečení databáze Firebase (pravidlo <code>auth != null</code>)
+            </h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">Pro ověření vůči Firebase Realtime Database vložte svůj Firebase Web API klíč (Project Settings → Web API Key) a zapněte Anonymous Auth ve Firebase Console.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="settings-fb-apikey" type="password" placeholder="AIzaSy..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white w-56" />
+            <button type="button" onclick="saveFirebaseApiKeyFromUI()" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold">Uložit API klíč</button>
           </div>
         </div>
-        <div id="depots-config-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
       </div>
 
       <!-- SUB-PANEL: USERS -->
@@ -301,7 +300,7 @@
                   <th class="py-2.5 px-1.5">Oprávnění</th>
                   <th class="py-2.5 px-1.5">Depa</th>
                   <th class="py-2.5 px-1.5">Login</th>
-                  <th class="py-2.5 px-1.5">Heslo</th>
+                  <th class="py-2.5 px-1.5">Heslo (Admin)</th>
                   <th class="py-2.5 px-1.5 text-center">V plánu</th>
                   <th class="py-2.5 px-1.5 text-center">QR</th>
                   <th class="py-2.5 px-1.5 text-right">Akce</th>
@@ -464,7 +463,44 @@
   </main>
 </div>
 
-<!-- ==================== MODALS ==================== -->
+<!-- ==================== MODAL: SELF PASSWORD CHANGE ==================== -->
+<div id="modal-change-password" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
+  <form onsubmit="submitChangePassword(event)" class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-key text-emerald-400 mr-1.5"></i>Nastavení vlastního hesla</h3>
+      <button type="button" onclick="closeModal('modal-change-password')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Vaše aktuální heslo (viditelné jen pro vás a Admina)</label>
+        <div class="flex items-center gap-1.5">
+          <input id="cp-current-pass-display" type="password" readonly class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-200" />
+          <button type="button" onclick="toggleSelfPasswordPreview()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs">
+            <i id="cp-eye-icon" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Nové heslo (min. 6 znaků) *</label>
+        <input id="cp-new-pass" type="password" required minlength="6" placeholder="Zadejte nové heslo..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1">Potvrzení nového hesla *</label>
+        <input id="cp-confirm-pass" type="password" required minlength="6" placeholder="Zopakujte nové heslo..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+      <button type="button" onclick="closeModal('modal-change-password')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Zrušit</button>
+      <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow">Uložit nové heslo</button>
+    </div>
+  </form>
+</div>
+
+<!-- ==================== OTHER MODALS ==================== -->
 <div id="modal-create-user" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm items-center justify-center p-4">
   <form onsubmit="submitCreateUserModal(event)" class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
     <div class="flex items-center justify-between border-b border-slate-800 pb-3">

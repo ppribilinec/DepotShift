@@ -1,11 +1,38 @@
-const APP_VERSION = "0.8b";
-const FIREBASE_DB_URL = "https://planovani-dochazky-default-rtdb.europe-west1.firebasedatabase.app/depotshift_v1.json";
+const APP_VERSION = "0.9b";
+const FIREBASE_PROJECT_ID = "planovani-dochazky";
+const FIREBASE_DB_BASE = "https://planovani-dochazky-default-rtdb.europe-west1.firebasedatabase.app/depotshift_v1.json";
+
+// Optional Firebase Web API Key for `auth != null` Realtime Database rules (can also be configured in Settings -> Depa/Security)
+const DEFAULT_FIREBASE_API_KEY = "";
 
 const memStore = {};
 const safeStorage = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; } }
 };
+
+function getFirebaseApiKey() {
+  return (safeStorage.get("depotshift_fb_apikey") || DEFAULT_FIREBASE_API_KEY || "").trim();
+}
+
+function setFirebaseApiKey(key) {
+  safeStorage.set("depotshift_fb_apikey", (key || "").trim());
+}
+
+// Strict HTML escaping to prevent XSS across all user-supplied fields
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeAttr(str) {
+  return escapeHtml(str);
+}
 
 let currentLang = "cs";
 
@@ -15,10 +42,10 @@ const I18N = {
     loginUser: "Uživatelské jméno",
     loginPass: "Heslo",
     loginSubmit: "Přihlásit se do systému",
-    quickAccess: "Rychlý testovací přístup (1 klik)",
     lightTheme: "Světlý motiv",
     darkTheme: "Tmavý motiv",
     btnSettings: "Nastavení",
+    btnChangePass: "Heslo",
     bellReq: "Žádosti",
     logout: "Odhlásit",
     tabSchedule: "Plánování směn",
@@ -45,7 +72,7 @@ const I18N = {
     btnAddDepot: "Přidat depo",
     btnSaveDepots: "Uložit změny",
     usersTitle: "Administrace uživatelů, rolí, oprávnění a dep",
-    usersSub: "Změny zůstávají dočasné a viditelné, dokud nekliknete na Uložit změny.",
+    usersSub: "Hesla uživatelů jsou chráněna a viditelná pouze administrátorovi a samotnému uživateli.",
     btnAddUser: "Vytvořit uživatele",
     btnSaveUsers: "Uložit změny",
     dangerTitle: "Nebezpečná zóna – Vymazání databáze",
@@ -67,10 +94,10 @@ const I18N = {
     loginUser: "Username",
     loginPass: "Password",
     loginSubmit: "Sign In",
-    quickAccess: "Quick Test Access (1-Click)",
     lightTheme: "Light Mode",
     darkTheme: "Dark Mode",
     btnSettings: "Settings",
+    btnChangePass: "Password",
     bellReq: "Requests",
     logout: "Sign Out",
     tabSchedule: "Shift Roster",
@@ -97,7 +124,7 @@ const I18N = {
     btnAddDepot: "Add Depot",
     btnSaveDepots: "Save Changes",
     usersTitle: "User Administration, Roles, Permissions & Depots",
-    usersSub: "Edits remain temporary and visible until you click Save Changes.",
+    usersSub: "User passwords are protected and visible only to the Administrator and the user themselves.",
     btnAddUser: "Create User",
     btnSaveUsers: "Save Changes",
     dangerTitle: "Danger Zone – Wipe Database",
@@ -202,6 +229,7 @@ let appState = {
 };
 
 let currentUser = null;
+let firebaseAuthToken = null;
 let anchorDate = new Date(2026, 10, 1);
 let rosterViewMode = "month";
 let activeDepotId = "depo_plzen";
@@ -235,6 +263,22 @@ function canUserApproveRequests(u = currentUser) {
 }
 function canUserEditShifts(u = currentUser) {
   return !!u && (normalizeUserRole(u) === "admin" || !!u.perms?.editShifts);
+}
+
+// Save sanitized copy in localStorage so non-admin users never store peers' passwords in local cache
+function persistSafeLocalCache() {
+  const isAdmin = normalizeUserRole(currentUser) === "admin";
+  const selfId = currentUser ? currentUser.id : null;
+  const sanitized = {
+    ...appState,
+    users: (appState.users || []).map(u => {
+      if (isAdmin || (selfId && u.id === selfId)) {
+        return { ...u };
+      }
+      return { ...u, pass: "", token: "" };
+    })
+  };
+  safeStorage.set("depotshift_cache", JSON.stringify(sanitized));
 }
 
 function getCalendarModeLabel(mode) {
@@ -276,6 +320,14 @@ function ensureMultiDepotConsistency() {
 
   appState.users.forEach((u, i) => {
     u.role = normalizeUserRole(u);
+    if (!u.pass) {
+      const def = DEFAULT_USERS.find(x => x.id === u.id);
+      if (def) u.pass = def.pass;
+    }
+    if (!u.token) {
+      const def = DEFAULT_USERS.find(x => x.id === u.id);
+      u.token = def ? def.token : ("tok_" + u.id);
+    }
     if (!Array.isArray(u.depots)) {
       const def = DEFAULT_USERS.find(x => x.id === u.id);
       u.depots = def ? [...def.depots] : [defaultDepotId];
